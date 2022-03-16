@@ -2,10 +2,10 @@ import * as Yup from "yup";
 import { useState } from "react";
 // import { capitalCase } from "change-case";
 // next
-import NextLink from 'next/link';
+import NextLink from "next/link";
 // @mui
 import { styled } from "@mui/material/styles";
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   Box,
@@ -15,20 +15,30 @@ import {
   InputAdornment,
   Link,
   Stack,
-  //   Tooltip,
   Typography,
 } from "@mui/material";
 // components
 import Page from "src/components/Page";
 import Logo from "src/components/Logo";
-import Image from "src/components/Image";
 import Iconify from "src/components/Iconify";
 // hooks
-import useResponsive from "src/hooks/useResponsive";
-import { FormProvider, RHFCheckbox, RHFTextField } from "src/components/hook-form";
+import useIsMountedRef from "src/hooks/useIsMountedRef";
+import {
+  FormProvider,
+  RHFCheckbox,
+  RHFTextField,
+} from "src/components/hook-form";
 // form
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+// auth
+import { authenticate } from "src/frontend-utils/network/auth";
+import { saveAuthTokens } from "src/frontend-utils/nextjs/utils";
+import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
+import { User } from "src/frontend-utils/types/user";
+import userSlice from "src/frontend-utils/redux/user";
+import { useRouter } from "next/router";
+import { useAppDispatch } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -54,15 +64,6 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   },
 }));
 
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: "100%",
-  maxWidth: 464,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  margin: theme.spacing(2, 0, 2, 2),
-}));
-
 const ContentStyle = styled("div")(({ theme }) => ({
   maxWidth: 480,
   margin: "auto",
@@ -85,9 +86,12 @@ type FormValuesProps = {
 // ----------------------------------------------------------------------
 
 export default function Login() {
-  const mdUp = useResponsive("up", "md");
-
+  const isMountedRef = useIsMountedRef();
   const [showPassword, setShowPassword] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { authFetch } = useAuth();
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -114,8 +118,26 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = methods;
 
-//   const errors = { afterSubmit: { message: "hola" } };
-  const onSubmit = () => {};
+  const onSubmit = (data: FormValuesProps) => {
+    console.log(data.email);
+    authenticate(data.email, data.password)
+      .then((authToken) => {
+        console.log(authToken);
+        saveAuthTokens(null, authToken);
+        authFetch("users/me/", {}).then((user) => {
+          dispatch(userSlice.actions.setUser(user as User));
+          const nextPath =
+            typeof router.query.next == "string" ? router.query.next : "/";
+          router.push(nextPath).then();
+        });
+      })
+      .catch(() => {
+        reset();
+        if (isMountedRef.current) {
+          setError('afterSubmit', { message: "E-mail / contraseña incorrectos" });
+        }
+      });
+  };
 
   return (
     <Page title="Login">
@@ -123,17 +145,6 @@ export default function Login() {
         <HeaderStyle>
           <Logo />
         </HeaderStyle>
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hola, Bienvenido devuelta
-            </Typography>
-            <Image
-              src="https://minimal-assets-api.vercel.app/assets/illustrations/illustration_login.png"
-              alt="login"
-            />
-          </SectionStyle>
-        )}
         <Container maxWidth="sm">
           <ContentStyle>
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
@@ -145,26 +156,9 @@ export default function Login() {
                   Usar credenciales de ingreso.
                 </Typography>
               </Box>
-
-              {/* <Tooltip title={capitalCase(method)} placement="right">
-                <>
-                  <Image
-                    disabledEffect
-                    alt={method}
-                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_${method}.png`}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                </>
-              </Tooltip> */}
             </Stack>
 
-            {/* <Alert severity="info" sx={{ mb: 3 }}>
-              Use email : <strong>demo@minimals.cc</strong> / password :
-              <strong> demo1234</strong>
-            </Alert> */}
-
-            {/* <LoginForm /> */}
-            <FormProvider methods={methods} onSubmit={onSubmit}>
+            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
                 {!!errors.afterSubmit && (
                   <Alert severity="error">{errors.afterSubmit.message}</Alert>
@@ -202,7 +196,7 @@ export default function Login() {
                 sx={{ my: 2 }}
               >
                 <RHFCheckbox name="remember" label="Remember me" />
-                <NextLink href={'#'} passHref>
+                <NextLink href={"#"} passHref>
                   <Link variant="subtitle2">Forgot password?</Link>
                 </NextLink>
               </Stack>
@@ -213,9 +207,9 @@ export default function Login() {
                 type="submit"
                 variant="contained"
                 loading={isSubmitting}
-            >
+              >
                 Login
-            </LoadingButton>
+              </LoadingButton>
             </FormProvider>
           </ContentStyle>
         </Container>
