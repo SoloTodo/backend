@@ -2,30 +2,30 @@ import * as Yup from "yup";
 import { useState } from "react";
 // import { capitalCase } from "change-case";
 // next
-import NextLink from "next/link";
+import Image from 'next/image'
+// import NextLink from "next/link";
 // @mui
 import { styled } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   Box,
-  Card,
+  // Card,
   Container,
   IconButton,
   InputAdornment,
-  Link,
+  // Link,
   Stack,
   Typography,
 } from "@mui/material";
 // components
 import Page from "src/components/Page";
-import Logo from "src/components/Logo";
 import Iconify from "src/components/Iconify";
 // hooks
 import useIsMountedRef from "src/hooks/useIsMountedRef";
 import {
   FormProvider,
-  RHFCheckbox,
+  // RHFCheckbox,
   RHFTextField,
 } from "src/components/hook-form";
 // form
@@ -39,6 +39,7 @@ import { User } from "src/frontend-utils/types/user";
 import userSlice from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "src/store/hooks";
+import useSettings from "src/hooks/useSettings";
 
 // ----------------------------------------------------------------------
 
@@ -87,6 +88,7 @@ type FormValuesProps = {
 
 export default function Login() {
   const isMountedRef = useIsMountedRef();
+  const settings = useSettings();
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -95,14 +97,14 @@ export default function Login() {
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Email must be a valid email address")
-      .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+      .email("Ingresa un Email válido")
+      .required("Email requerido"),
+    password: Yup.string().required("Contraseña requerido"),
   });
 
   const defaultValues = {
-    email: "demo@minimals.cc",
-    password: "demo1234",
+    email: "",
+    password: "",
     remember: true,
   };
 
@@ -119,10 +121,8 @@ export default function Login() {
   } = methods;
 
   const onSubmit = (data: FormValuesProps) => {
-    console.log(data.email);
     authenticate(data.email, data.password)
       .then((authToken) => {
-        console.log(authToken);
         saveAuthTokens(null, authToken);
         authFetch("users/me/", {}).then((user) => {
           dispatch(userSlice.actions.setUser(user as User));
@@ -134,7 +134,7 @@ export default function Login() {
       .catch(() => {
         reset();
         if (isMountedRef.current) {
-          setError('afterSubmit', { message: "E-mail / contraseña incorrectos" });
+          setError('afterSubmit', { message: "Email y/o contraseña incorrectos" });
         }
       });
   };
@@ -143,7 +143,12 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+          {
+            settings.themeMode === 'dark' ?
+              <Image alt={"Logo"} src="/logo_fondo_oscuro.svg" width={200} height={51} />
+            :
+              <Image alt={"Logo"} src="/logo_fondo_claro.svg" width={200} height={51} />
+          }
         </HeaderStyle>
         <Container maxWidth="sm">
           <ContentStyle>
@@ -164,11 +169,11 @@ export default function Login() {
                   <Alert severity="error">{errors.afterSubmit.message}</Alert>
                 )}
 
-                <RHFTextField name="email" label="Email address" />
+                <RHFTextField name="email" label="Email" />
 
                 <RHFTextField
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type={showPassword ? "text" : "password"}
                   InputProps={{
                     endAdornment: (
@@ -195,10 +200,10 @@ export default function Login() {
                 justifyContent="space-between"
                 sx={{ my: 2 }}
               >
-                <RHFCheckbox name="remember" label="Remember me" />
-                <NextLink href={"#"} passHref>
-                  <Link variant="subtitle2">Forgot password?</Link>
-                </NextLink>
+                {/* <RHFCheckbox name="remember" label="Recordarme" /> */}
+                {/* <NextLink href={"#"} passHref>
+                  <Link variant="subtitle2">Olvidaste tu contraseña?</Link>
+                </NextLink> */}
               </Stack>
 
               <LoadingButton
@@ -208,7 +213,7 @@ export default function Login() {
                 variant="contained"
                 loading={isSubmitting}
               >
-                Login
+                Ingresar
               </LoadingButton>
             </FormProvider>
           </ContentStyle>

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 // next
+import Image from 'next/image'
 import { useRouter } from 'next/router';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
@@ -20,6 +21,7 @@ import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
+import useSettings from 'src/hooks/useSettings';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +43,7 @@ type Props = {
 
 export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props) {
   const theme = useTheme();
+  const settings = useSettings();
 
   const { pathname } = useRouter();
 
@@ -74,7 +77,12 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Logo />
+          {
+            settings.themeMode === 'dark' ?
+              <Image alt={"Logo"} src="/logo_fondo_oscuro.svg" width={47} height={40} />
+            :
+              <Image alt={"Logo"} src="/logo_fondo_claro.svg" width={47} height={40} />
+          }
 
           {isDesktop && !isCollapse && (
             <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />

@@ -1,10 +1,10 @@
 import React, { useContext, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import { FetchJsonInit, InvalidTokenError } from "../network/auth";
 import { deleteAuthTokens, jwtFetch } from "./utils";
 import userSlice from "../redux/user";
+import { useSnackbar } from "notistack";
 
 function defaultAuthFetch(input: string, init?: FetchJsonInit): Promise<any> {
   return Promise.reject();
@@ -23,6 +23,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const snackbar = useSnackbar();
+
   const authFetch = (input: string, init?: FetchJsonInit) => {
     try {
       return jwtFetch(null, input, init);
@@ -30,13 +32,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (err instanceof InvalidTokenError) {
         deleteAuthTokens(null);
         dispatch(userSlice.actions.setUser(null));
-        toast.error(
-          "Error de autenticación, por favor inicie sesión nuevamente"
+        snackbar.enqueueSnackbar(
+          "Error de autenticación, por favor inicie sesión nuevamente",
+          { variant: 'error' }
         );
         router.push("/login?next=" + encodeURIComponent(router.asPath));
       } else {
-        toast.error(
-          "Error al ejecutar la petición, por favor intente de nuevo"
+        snackbar.enqueueSnackbar(
+          "Error al ejecutar la petición, por favor intente de nuevo",
+          { variant: 'error' }
         );
       }
       return Promise.reject();
@@ -46,7 +50,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     deleteAuthTokens(null);
     dispatch(userSlice.actions.setUser(null));
-    toast.success("Sesión cerrada exitosamente");
+    snackbar.enqueueSnackbar("Sesión cerrada exitosamente");
     router.push("/login");
   };
 

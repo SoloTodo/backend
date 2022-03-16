@@ -26,6 +26,7 @@ import RtlLayout from "../components/RtlLayout";
 import ProgressBar from "../components/ProgressBar";
 import ThemeColorPresets from "../components/ThemeColorPresets";
 import MotionLazyContainer from "../components/animate/MotionLazyContainer";
+import NotistackProvider from "../components/NotistackProvider";
 // auth
 import { AuthProvider } from "../frontend-utils/nextjs/JWTContext";
 // redux
@@ -62,15 +63,17 @@ export default function MyApp(props: MyAppProps) {
           <CollapseDrawerProvider>
             <SettingsProvider defaultSettings={settings}>
               <ThemeProvider>
-                <MotionLazyContainer>
-                  <ThemeColorPresets>
-                    <RtlLayout>
-                      <Settings />
-                      <ProgressBar />
-                      {getLayout(<Component {...pageProps} />)}
-                    </RtlLayout>
-                  </ThemeColorPresets>
-                </MotionLazyContainer>
+                <NotistackProvider>
+                  <MotionLazyContainer>
+                    <ThemeColorPresets>
+                      <RtlLayout>
+                        <Settings />
+                        <ProgressBar />
+                        {getLayout(<Component {...pageProps} />)}
+                      </RtlLayout>
+                    </ThemeColorPresets>
+                  </MotionLazyContainer>
+                </NotistackProvider>
               </ThemeProvider>
             </SettingsProvider>
           </CollapseDrawerProvider>
@@ -83,8 +86,6 @@ export default function MyApp(props: MyAppProps) {
 // ----------------------------------------------------------------------
 
 MyApp.getInitialProps = async (context: AppContext) => {
-  const appProps = await App.getInitialProps(context);
-
   const cookies = cookie.parse(
     context.ctx.req ? context.ctx.req.headers.cookie || "" : document.cookie
   );
@@ -97,29 +98,33 @@ MyApp.getInitialProps = async (context: AppContext) => {
     return { pageProps: {}, settings };
   }
 
-  let user = null
+  let user = null;
 
   try {
-    user = await jwtFetch(ctx, 'users/me/')
+    user = await jwtFetch(ctx, "users/me/");
   } catch (err) {
     // Invalid token or some other network error, invalidate the
     // possible auth cookie
-    deleteAuthTokens(ctx)
+    deleteAuthTokens(ctx);
   }
 
-  const store = initializeStore()
+  const store = initializeStore();
 
   if (user) {
-    store.dispatch(userSlice.actions.setUser(user))
+    store.dispatch(userSlice.actions.setUser(user));
     const resultProps = {
       user,
-      initialReduxState: store.getState()
-    }
-    return { pageProps: resultProps, settings }
+      initialReduxState: store.getState(),
+    };
+    return { pageProps: resultProps, settings };
   } else {
-      ctx.res && ctx.res.setHeader('Location', `/login?next=${encodeURIComponent(ctx.asPath || '')}`)
-      ctx.res && (ctx.res.statusCode = 302)
-      ctx.res && ctx.res.end()
-      return { pageProps: {}, settings }
+    ctx.res &&
+      ctx.res.setHeader(
+        "Location",
+        `/login?next=${encodeURIComponent(ctx.asPath || "")}`
+      );
+    ctx.res && (ctx.res.statusCode = 302);
+    ctx.res && ctx.res.end();
+    return { pageProps: {}, settings };
   }
 };
