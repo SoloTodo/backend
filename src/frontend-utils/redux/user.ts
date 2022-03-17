@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ReactUtilsState } from "./redux";
+// import { ReactUtilsState } from "./redux";
+import { RootState } from "src/store/store"; 
 
 import { UserState } from "../types/user";
 
@@ -21,6 +22,6 @@ const userSlice = createSlice({
 
 export default userSlice;
 
-export function useUser(state: ReactUtilsState) {
+export function useUser(state: RootState) {
     return state.user
 }
