@@ -1,10 +1,12 @@
-import React, { useContext, ReactNode } from "react";
+import React, { useContext, ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import { FetchJsonInit, InvalidTokenError } from "../network/auth";
 import { deleteAuthTokens, jwtFetch } from "./utils";
 import userSlice from "../redux/user";
 import { useSnackbar } from "notistack";
+// import { useAppDispatch } from "src/store/hooks";
+// import { useDispatch } from 'react-redux';
+import { dispatch } from "../../store/store";
 
 function defaultAuthFetch(input: string, init?: FetchJsonInit): Promise<any> {
   return Promise.reject();
@@ -20,10 +22,9 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  // const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const dispatch = useDispatch();
-
-  const snackbar = useSnackbar();
 
   const authFetch = (input: string, init?: FetchJsonInit) => {
     try {
@@ -32,13 +33,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (err instanceof InvalidTokenError) {
         deleteAuthTokens(null);
         dispatch(userSlice.actions.setUser(null));
-        snackbar.enqueueSnackbar(
+        enqueueSnackbar(
           "Error de autenticación, por favor inicie sesión nuevamente",
           { variant: 'error' }
         );
         router.push("/login?next=" + encodeURIComponent(router.asPath));
       } else {
-        snackbar.enqueueSnackbar(
+        enqueueSnackbar(
           "Error al ejecutar la petición, por favor intente de nuevo",
           { variant: 'error' }
         );
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     deleteAuthTokens(null);
     dispatch(userSlice.actions.setUser(null));
-    snackbar.enqueueSnackbar("Sesión cerrada exitosamente");
+    enqueueSnackbar("Sesión cerrada exitosamente");
     router.push("/login");
   };
 

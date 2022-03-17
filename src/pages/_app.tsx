@@ -7,7 +7,7 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import "react-lazy-load-image-component/src/effects/black-and-white.css";
 
 import cookie from "cookie";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useMemo } from "react";
 // next
 import { NextPage } from "next";
 import Head from "next/head";
@@ -31,7 +31,7 @@ import NotistackProvider from "../components/NotistackProvider";
 import { AuthProvider } from "../frontend-utils/nextjs/JWTContext";
 // redux
 import { Provider } from "react-redux";
-import { initializeStore } from "src/store/store";
+import { initializeStore, store } from "src/store/store";
 import { deleteAuthTokens, jwtFetch } from "src/frontend-utils/nextjs/utils";
 import userSlice from "src/frontend-utils/redux/user";
 // ----------------------------------------------------------------------
@@ -50,7 +50,9 @@ export default function MyApp(props: MyAppProps) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  const store = initializeStore(pageProps.initialReduxState);
+  const store = useMemo(() => {
+    return initializeStore(pageProps.initialReduxState);
+  }, []);
 
   return (
     <>

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import apiResourceObjectsSlice from 'src/frontend-utils/redux/api_resources/apiResources';
 import userSlice from 'src/frontend-utils/redux/user';
-import configSlice from "./configSlice";
 
 // THE store VARIABLE EXISTS ONLY TO DETERMINE THE RootState and AppDispatch
 // TYPES BELOW IF YOU WANT TO EDIT THE configureStore OF THE APP YOU
@@ -9,7 +8,6 @@ import configSlice from "./configSlice";
 const store = configureStore({
     reducer: {
         user: userSlice.reducer,
-        config: configSlice.reducer,
         apiResourceObjects: apiResourceObjectsSlice.reducer
     }
 })
@@ -22,9 +20,12 @@ export const initializeStore = (preloadedState?: RootState) => {
     return configureStore({
         reducer: {
             user: userSlice.reducer,
-            config: configSlice.reducer,
             apiResourceObjects: apiResourceObjectsSlice.reducer
         },
         preloadedState: preloadedState
     })
 }
+
+const { dispatch } =  store;
+
+export { store, dispatch }
