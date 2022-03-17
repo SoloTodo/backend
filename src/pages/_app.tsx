@@ -59,25 +59,25 @@ export default function MyApp(props: MyAppProps) {
       </Head>
 
       <Provider store={store}>
-        <AuthProvider>
-          <CollapseDrawerProvider>
-            <SettingsProvider defaultSettings={settings}>
-              <ThemeProvider>
-                <NotistackProvider>
+        <SettingsProvider defaultSettings={settings}>
+          <ThemeProvider>
+            <NotistackProvider>
+              <AuthProvider>
+                <CollapseDrawerProvider>
                   <MotionLazyContainer>
                     <ThemeColorPresets>
                       <RtlLayout>
-                        <Settings />
+                        {/* <Settings /> */}
                         <ProgressBar />
                         {getLayout(<Component {...pageProps} />)}
                       </RtlLayout>
                     </ThemeColorPresets>
                   </MotionLazyContainer>
-                </NotistackProvider>
-              </ThemeProvider>
-            </SettingsProvider>
-          </CollapseDrawerProvider>
-        </AuthProvider>
+                </CollapseDrawerProvider>
+              </AuthProvider>
+            </NotistackProvider>
+          </ThemeProvider>
+        </SettingsProvider>
       </Provider>
     </>
   );
