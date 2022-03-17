@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 // @mui
 import { alpha } from "@mui/material/styles";
 import {
@@ -8,30 +9,43 @@ import {
   Stack,
   MenuItem,
   Avatar,
+  Button,
 } from "@mui/material";
 // components
 import MenuPopover from "../../../components/MenuPopover";
 import { IconButtonAnimate } from "../../../components/animate";
+import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
+import { useAppSelector } from "src/store/hooks";
+import { useUser } from "src/frontend-utils/redux/user";
+import { UrlObject } from "url";
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
     label: "Cambiar contraseña",
-    linkTo: "/",
+    linkTo: "/change_password",
   },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const { logout } = useAuth();
+  const user = useAppSelector(useUser);
+  if (!user) return null;
+  const full_name = `${user.first_name} ${user.last_name}`;
+
+  const router = useRouter();
+
   const [open, setOpen] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (linkTo: string) => {
+    router.push(linkTo)
     setOpen(null);
   };
 
@@ -54,7 +68,9 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar alt="Rayan Moran">RM</Avatar>
+        <Avatar alt={full_name}>
+          {`${user.first_name[0]}${user.last_name[0]}`}
+        </Avatar>
       </IconButtonAnimate>
 
       <MenuPopover
@@ -73,10 +89,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            Rayan Moran
+            {full_name}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            rayan.moran@gmail.com
+            {user.email}
           </Typography>
         </Box>
 
@@ -84,7 +100,7 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} onClick={() => handleClose(option.linkTo)}>
               {option.label}
             </MenuItem>
           ))}
@@ -92,7 +108,9 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem sx={{ m: 1 }}>Logout</MenuItem>
+        <MenuItem sx={{ m: 1 }} onClick={() => logout()}>
+          Logout
+        </MenuItem>
       </MenuPopover>
     </>
   );
