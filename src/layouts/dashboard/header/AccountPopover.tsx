@@ -17,14 +17,15 @@ import { IconButtonAnimate } from "../../../components/animate";
 import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
 import { useAppSelector } from "src/store/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
-import { UrlObject } from "url";
+// routes 
+import { PATH_AUTH } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
     label: "Cambiar contraseña",
-    linkTo: "/change_password",
+    linkTo: PATH_AUTH.change_password,
   },
 ];
 
