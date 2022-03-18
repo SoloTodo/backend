@@ -3,7 +3,7 @@ import { useState } from "react";
 // import { capitalCase } from "change-case";
 // next
 import Image from 'next/image'
-// import NextLink from "next/link";
+import NextLink from "next/link";
 // @mui
 import { styled } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
@@ -14,7 +14,7 @@ import {
   Container,
   IconButton,
   InputAdornment,
-  // Link,
+  Link,
   Stack,
   Typography,
 } from "@mui/material";
@@ -39,6 +39,8 @@ import userSlice from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
 import { useAppDispatch } from "src/store/hooks";
 import useSettings from "src/hooks/useSettings";
+// routes
+import { PATH_AUTH, PATH_DASHBOARD } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -126,7 +128,7 @@ export default function Login() {
         authFetch("users/me/", {}).then((user) => {
           dispatch(userSlice.actions.setUser(user));
           const nextPath =
-            typeof router.query.next == "string" ? router.query.next : "/dashboard/one";
+            typeof router.query.next == "string" ? router.query.next : PATH_DASHBOARD.root;
           router.push(nextPath);
         });
       })
@@ -200,9 +202,9 @@ export default function Login() {
                 sx={{ my: 2 }}
               >
                 {/* <RHFCheckbox name="remember" label="Recordarme" /> */}
-                {/* <NextLink href={"#"} passHref>
+                <NextLink href={PATH_AUTH.reset_password} passHref>
                   <Link variant="subtitle2">Olvidaste tu contraseña?</Link>
-                </NextLink> */}
+                </NextLink>
               </Stack>
 
               <LoadingButton
