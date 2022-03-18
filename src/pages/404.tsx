@@ -16,7 +16,7 @@ import { PageNotFoundIllustration } from '../assets';
 
 const RootStyle = styled('div')(({ theme }) => ({
   display: 'flex',
-  height: '100%',
+  minheight: '100%',
   alignItems: 'center',
   paddingTop: theme.spacing(15),
   paddingBottom: theme.spacing(10),
@@ -32,25 +32,24 @@ Page404.getLayout = function getLayout(page: React.ReactElement) {
 
 export default function Page404() {
   return (
-    <Page title="404 Page Not Found" sx={{ height: 1 }}>
+    <Page title="404 Página No Encontrada" sx={{ height: 1 }}>
       <RootStyle>
         <Container component={MotionContainer}>
           <Box sx={{ maxWidth: 480, margin: 'auto', textAlign: 'center' }}>
             <m.div variants={varBounce().in}>
               <Typography variant="h3" paragraph>
-                Sorry, page not found!
+                Lo sentimos, página no encontrada!
               </Typography>
             </m.div>
             <Typography sx={{ color: 'text.secondary' }}>
-              Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL?
-              Be sure to check your spelling.
+              Lo sentimos, no encontramos la página que buscas. ¿Quizás hay un error en la URL?
             </Typography>
             <m.div variants={varBounce().in}>
               <PageNotFoundIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
             </m.div>
             <NextLink href="/">
               <Button size="large" variant="contained">
-                Go to Home
+                Volver al Dashboard
               </Button>
             </NextLink>
           </Box>
