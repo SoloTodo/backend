@@ -96,8 +96,12 @@ MyApp.getInitialProps = async (context: AppContext) => {
 
   const ctx = context.ctx;
 
-  const exclude_urls = ["/login", "/reset/", "/reset_password"]
+  const exclude_urls = ["/login", "/reset/", "/reset_password"];
   if (exclude_urls.find((path) => ctx.pathname.includes(path))) {
+    return { pageProps: {}, settings };
+  }
+
+  if (!ctx.req) {
     return { pageProps: {}, settings };
   }
 
