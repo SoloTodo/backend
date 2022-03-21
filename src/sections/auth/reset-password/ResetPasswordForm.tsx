@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 // form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { fetchJson } from 'src/frontend-utils/network/auth';
+import { fetchJson } from 'src/frontend-utils/network/utils';
 // @mui
 import { Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';

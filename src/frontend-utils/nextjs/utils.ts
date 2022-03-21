@@ -1,6 +1,6 @@
 import { NextPageContext } from "next"
 import { destroyCookie, parseCookies, setCookie } from "nookies"
-import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/auth"
+import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/utils"
 
 
 type NextPageContextOrNull = NextPageContext | null | undefined

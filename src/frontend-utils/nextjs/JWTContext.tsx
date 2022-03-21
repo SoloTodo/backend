@@ -1,6 +1,6 @@
-import React, { useContext, ReactNode, useEffect } from "react";
+import React, { useContext, ReactNode } from "react";
 import { useRouter } from "next/router";
-import { FetchJsonInit, InvalidTokenError } from "../network/auth";
+import { FetchJsonInit, InvalidTokenError } from "../network/utils";
 import { deleteAuthTokens, jwtFetch } from "./utils";
 import userSlice from "../redux/user";
 import { useSnackbar } from "notistack";
