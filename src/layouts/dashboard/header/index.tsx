@@ -13,7 +13,6 @@ import Logo from "../../../components/Logo";
 import Iconify from "../../../components/Iconify";
 import { IconButtonAnimate } from "../../../components/animate";
 //
-import Searchbar from "./Searchbar";
 import AccountPopover from "./AccountPopover";
 import SettingMode from "src/components/settings/SettingMode";
 
@@ -94,7 +93,6 @@ export default function DashboardHeader({
           </IconButtonAnimate>
         )}
 
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -102,9 +100,6 @@ export default function DashboardHeader({
           alignItems="center"
           spacing={{ xs: 1.5, sm: 2.5 }}
         >
-          {/* <LanguagePopover />
-          <NotificationsPopover />
-          <ContactsPopover /> */}
           <SettingMode />
           <AccountPopover />
         </Stack>
