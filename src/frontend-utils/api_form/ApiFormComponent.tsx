@@ -1,0 +1,69 @@
+import React, { ReactNode, useEffect, useState } from "react";
+import { ApiForm, ApiFormFieldMetadata } from "./api_form";
+import { ApiFormProvider } from "./ApiFormContext";
+import { useRouter } from "next/router";
+import * as queryString from "query-string";
+import { ApiFormInitialState } from "./types";
+
+type ApiFormComponentProps = {
+  fieldsMetadata: ApiFormFieldMetadata[];
+  endpoint: string;
+  live?: boolean;
+  initialState?: ApiFormInitialState;
+  children?: ReactNode;
+};
+
+export default function ApiFormComponent(props: ApiFormComponentProps) {
+  const router = useRouter();
+
+  // Create the form this way for two reasons
+  // 1. It just needs to be done once
+  // 2. It has to be done server side too, so we can't use useEffect
+  const [form, _setForm] = useState(
+    new ApiForm(
+      props.fieldsMetadata,
+      props.endpoint,
+      props.initialState && props.initialState.initialData
+    )
+  );
+  const [currentResult, setCurrentResult] = useState(
+    props.initialState ? props.initialState.initialResult : null
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    form.initialize();
+
+    router.events.on("routeChangeComplete", (url) => {
+      form.initialize();
+      form.submit().then((results) => {
+        if (isMounted) setCurrentResult(results);
+      });
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const updateUrl = (newUrlParams: Record<string, string[]>) => {
+    const currentQuery = router.query;
+
+    for (const [key, value] of Object.entries(newUrlParams)) {
+      currentQuery[key] = value;
+    }
+
+    const newSearch = queryString.stringify(currentQuery);
+    const newPath = newSearch ? `${router.route}?${newSearch}` : router.route;
+    router.push(newPath, undefined, { shallow: true });
+  };
+
+  return (
+    <ApiFormProvider
+      form={form}
+      updateUrl={updateUrl}
+      currentResult={currentResult}
+    >
+      {props.children}
+    </ApiFormProvider>
+  );
+}

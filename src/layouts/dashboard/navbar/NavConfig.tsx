@@ -1,6 +1,9 @@
 // components
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import StoreIcon from '@mui/icons-material/Store';
+// routes
+import { PATH_STORE } from 'src/routes/paths';
+
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +26,15 @@ const sidebarConfig = [
     subheader: 'general v3.0.0',
     items: [
       { title: 'Dashboard', path: '/dashboard/one', icon: ICONS.dashboard },
-      { title: 'Tiendas', path: '/dashboard/two', icon: ICONS.store },
+      { 
+        title: 'Tiendas',
+        path: '/dashboard/two',
+        icon: ICONS.store,
+        children: [
+          { title: 'Todas', path: PATH_STORE.all },
+          { title: 'Actualizar', path: PATH_STORE.update_pricing },
+        ]
+      },
       { title: 'Categorías', path: '/dashboard/three', icon: ICONS.analytics },
       { title: 'Productos', path: '/dashboard/four', icon: ICONS.ecommerce },
     ],
