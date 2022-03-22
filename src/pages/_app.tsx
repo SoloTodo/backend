@@ -11,7 +11,7 @@ import { ReactElement, ReactNode, useMemo } from "react";
 // next
 import { NextPage } from "next";
 import Head from "next/head";
-import App, { AppProps, AppContext } from "next/app";
+import { AppProps, AppContext } from "next/app";
 // utils
 import { getSettings } from "../utils/settings";
 import { SettingsValueProps } from "../components/settings/type";
@@ -21,7 +21,6 @@ import { CollapseDrawerProvider } from "../contexts/CollapseDrawerContext";
 // theme
 import ThemeProvider from "../theme";
 // components
-import Settings from "../components/settings";
 import RtlLayout from "../components/RtlLayout";
 import ProgressBar from "../components/ProgressBar";
 import ThemeColorPresets from "../components/ThemeColorPresets";
@@ -31,9 +30,11 @@ import NotistackProvider from "../components/NotistackProvider";
 import { AuthProvider } from "../frontend-utils/nextjs/JWTContext";
 // redux
 import { Provider } from "react-redux";
-import { initializeStore, store } from "src/store/store";
+import { initializeStore } from "src/store/store";
 import { deleteAuthTokens, jwtFetch } from "src/frontend-utils/nextjs/utils";
 import userSlice from "src/frontend-utils/redux/user";
+import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiResources";
+// import { EnhancedStore } from "@reduxjs/toolkit";
 // ----------------------------------------------------------------------
 
 type NextPageWithLayout = NextPage & {
@@ -44,6 +45,14 @@ interface MyAppProps extends AppProps {
   settings: SettingsValueProps;
   Component: NextPageWithLayout;
 }
+
+// export interface MyPageContext extends NextPageContext {
+//   store: EnhancedStore;
+// }
+
+// interface MyAppContext extends AppContext {
+//   ctx: MyPageContext;
+// }
 
 export default function MyApp(props: MyAppProps) {
   const { Component, pageProps, settings } = props;
@@ -118,6 +127,19 @@ MyApp.getInitialProps = async (context: AppContext) => {
   const store = initializeStore();
 
   if (user) {
+    // Store in redux api resources
+    try {
+      // Add resources
+      const resources = ['countries', 'store_types']
+      const resources_query = resources.reduce((acc, r) => {
+        return acc = `${acc}&names=${r}`
+      }, '')
+      const apiResources = await jwtFetch(ctx, `resources/?${resources_query}`);
+      store.dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources));
+    } catch (err) {
+      console.log(err);
+    }
+
     store.dispatch(userSlice.actions.setUser(user));
     const resultProps = {
       user,

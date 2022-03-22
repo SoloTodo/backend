@@ -1,12 +1,12 @@
-import { Country } from "./types";
+import { Country, StoreType } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { apiSettings } from "../../settings";
-import {GetServerSidePropsContext} from "next";
-import { jwtFetch } from "../../nextjs/utils";
-import { ReactUtilsDispatch } from "../redux";
+// import { apiSettings } from "../../settings";
+// import { NextPageContext } from "next";
+// import { jwtFetch } from "../../nextjs/utils";
+import { RootState } from "src/store/store";
 
-type ApiResourceObject = Country;
-type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
+export type ApiResourceObject = Country | StoreType;
+export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
 
 const initialState = {} as ApiResourceObjectRecord;
 
@@ -27,17 +27,21 @@ const apiResourceObjectsSlice = createSlice({
   },
 });
 
-export function updateApiResourceObjects(
-  resourceName: keyof typeof apiSettings.apiResourceEndpoints,
-  context?: GetServerSidePropsContext
-) {
-  return async function fetchResourceObjectsThunk(
-    dispatch: ReactUtilsDispatch
-  ) {
-    const endpoint = apiSettings.apiResourceEndpoints[resourceName];
-    const res = await jwtFetch(context, endpoint);
-    dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(res));
-  };
+export function useApiResourceObjects(state: RootState) {
+  return state.apiResourceObjects;
 }
+
+// export function updateApiResourceObjects(
+//   resourceName: keyof typeof apiSettings.apiResourceEndpoints,
+//   context?: NextPageContext
+// ) {
+//   return async function fetchResourceObjectsThunk(
+//     dispatch: ReactUtilsDispatch
+//   ) {
+//     const endpoint = apiSettings.apiResourceEndpoints[resourceName];
+//     const res = await jwtFetch(context, endpoint);
+//     dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(res));
+//   };
+// }
 
 export default apiResourceObjectsSlice;

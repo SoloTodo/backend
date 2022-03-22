@@ -1,51 +1,56 @@
-import { useContext } from "react";
+import { FC, useContext } from "react";
 // @mui
-import {
-  Table,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableContainer,
-} from "@mui/material";
+import { Box } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 // components
 import Scrollbar from "../Scrollbar";
 // context
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
-import { Store } from "src/frontend-utils/types/store";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import { ApiResourceObjectRecord } from "src/frontend-utils/redux/api_resources/apiResources";
 
-export default function BasicTable() {
+
+export default function ApiFormResultsTable({apiResourceObjects}: { apiResourceObjects: ApiResourceObjectRecord }) {
   const context = useContext(ApiFormContext);
   const stores = context.currentResult;
+
+  const columns: GridColDef[] = [
+    {
+      headerName: "Nombre",
+      field: "name",
+      flex: 1,
+    },
+    {
+      headerName: "País",
+      field: "country",
+      flex: 1,
+      renderCell: params => apiResourceObjects[params.row.country].name
+    },
+    {
+      headerName: "Tipo",
+      field: "type",
+      flex: 1,
+      renderCell: params => apiResourceObjects[params.row.type].name
+    },
+    {
+      headerName: "Última Activación",
+      field: "last_activation",
+      renderCell: params =>
+        params.row.last_activation ? fDateTimeSuffix(params.row.last_activation) : "Inactiva",
+      flex: 1,
+    },
+    {
+      headerName: "Scraper",
+      field: "storescraper_class",
+      flex: 1,
+    },
+  ];
+
   return (
     <Scrollbar>
-      <TableContainer sx={{ minWidth: 800 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell align="right">País</TableCell>
-              <TableCell align="right">Tipo</TableCell>
-              <TableCell align="right">Última&nbsp;Activación</TableCell>
-              <TableCell align="right">Scraper</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {stores.map((row: Store) => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.country}</TableCell>
-                <TableCell align="right">{row.type}</TableCell>
-                <TableCell align="right">{row.last_activation ? fDateTimeSuffix(row.last_activation) : ""}</TableCell>
-                <TableCell align="right">{row.storescraper_class}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Box sx={{ height: 500, width: "100%" }}>
+        <DataGrid columns={columns} rows={stores} />
+      </Box>
     </Scrollbar>
   );
 }

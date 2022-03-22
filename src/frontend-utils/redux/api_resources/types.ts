@@ -10,3 +10,7 @@ export type Country = ApiResourceObject & {
     number_format: string,
     flag: string,
 }
+
+export type StoreType = ApiResourceObject & {
+    name: string
+}
