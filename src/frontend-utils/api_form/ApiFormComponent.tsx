@@ -27,17 +27,19 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   );
 
   useEffect(() => {
-    let isMounted = true;
     form.initialize();
 
-    router.events.on("routeChangeComplete", (url) => {
+    const handleRouteChange = (_url: any) => {
       form.initialize();
       form.submit().then((results) => {
-        if (isMounted) setCurrentResult(results);
+        setCurrentResult(results);
       });
-    });
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+    
     return () => {
-      isMounted = false;
+      router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, []);
 
