@@ -1,5 +1,4 @@
-import { GetServerSidePropsContext, NextPageContext, PreviewData } from "next";
-import { ParsedUrlQuery } from "querystring";
+import { GetServerSidePropsContext } from "next";
 import { ApiFormSelect, ApiFormSelectProps } from "./data_entry/select/select";
 import { FetchJsonInit } from "../network/utils";
 import { jwtFetch } from "../nextjs/utils";
@@ -39,9 +38,9 @@ export class ApiForm {
     }
   }
 
-  initialize(context?: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) {
+  initialize(context?: GetServerSidePropsContext) {
     this.fetchFunction = (input: string, init?: FetchJsonInit) =>
-      jwtFetch(context as unknown as NextPageContext, input, init);
+      jwtFetch(context, input, init);
 
     const currentUrl =
       context && context.req
@@ -59,10 +58,8 @@ export class ApiForm {
     }
 
     const endpointSearch = this.endpoint.searchParams.toString();
+    const querySearchParams: URLSearchParams = new URLSearchParams(endpointSearch);
 
-    const querySearchParams: URLSearchParams = new URLSearchParams(
-      endpointSearch
-    );
     for (const field of this.fields) {
       for (const [key, values] of Object.entries(field.getApiParams())) {
         for (const value of values) {

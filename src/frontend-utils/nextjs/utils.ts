@@ -1,12 +1,12 @@
-import { NextPageContext } from "next"
+import {GetServerSidePropsContext} from "next"
 import { destroyCookie, parseCookies, setCookie } from "nookies"
 import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/utils"
 
 
-type NextPageContextOrNull = NextPageContext | null | undefined
+type GetServerSidePropsContextOrNull = GetServerSidePropsContext | null | undefined
 
 
-export function getAuthTokens(ctx:NextPageContextOrNull) {
+export function getAuthTokens(ctx:GetServerSidePropsContextOrNull) {
     try {
         const tokens = JSON.parse(parseCookies(ctx)['authTokens'])
 
@@ -25,7 +25,7 @@ type AuthTokensType = {
     refresh: string
 }
 
-export function saveAuthTokens(context:NextPageContextOrNull, authTokens:AuthTokensType) {
+export function saveAuthTokens(context:GetServerSidePropsContextOrNull, authTokens:AuthTokensType) {
     const decodedRefreshToken = JSON.parse(atob(authTokens.refresh.split('.')[1]))
 
     const cookieParameters = {
@@ -45,7 +45,7 @@ export function saveAuthTokens(context:NextPageContextOrNull, authTokens:AuthTok
     setCookie(context, 'authTokens', JSON.stringify(authTokens), cookieParameters)
 }
 
-export function deleteAuthTokens(context: NextPageContextOrNull) {
+export function deleteAuthTokens(context: GetServerSidePropsContextOrNull) {
     const cookieParameters = {
         path: '/',
         domain: undefined as string | undefined
@@ -62,7 +62,7 @@ export function deleteAuthTokens(context: NextPageContextOrNull) {
     destroyCookie(context, 'authTokens', cookieParameters)
 }
 
-export async function jwtFetch(context: NextPageContextOrNull, input: string, init?: FetchJsonInit) {
+export async function jwtFetch(context: GetServerSidePropsContextOrNull, input: string, init?: FetchJsonInit) {
     let {access, refresh} = getAuthTokens(context)
 
     const decodedAccessToken = JSON.parse(atob(access.split('.')[1]))

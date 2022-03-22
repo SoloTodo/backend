@@ -1,7 +1,7 @@
 import { Country } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { apiSettings } from "../../settings";
-import { NextPageContext } from "next";
+import {GetServerSidePropsContext} from "next";
 import { jwtFetch } from "../../nextjs/utils";
 import { ReactUtilsDispatch } from "../redux";
 
@@ -29,7 +29,7 @@ const apiResourceObjectsSlice = createSlice({
 
 export function updateApiResourceObjects(
   resourceName: keyof typeof apiSettings.apiResourceEndpoints,
-  context?: NextPageContext
+  context?: GetServerSidePropsContext
 ) {
   return async function fetchResourceObjectsThunk(
     dispatch: ReactUtilsDispatch

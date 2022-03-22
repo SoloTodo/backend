@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, {ReactNode, useEffect, useMemo, useState} from "react";
 import { ApiForm, ApiFormFieldMetadata } from "./api_form";
 import { ApiFormProvider } from "./ApiFormContext";
 import { useRouter } from "next/router";
@@ -16,16 +16,12 @@ type ApiFormComponentProps = {
 export default function ApiFormComponent(props: ApiFormComponentProps) {
   const router = useRouter();
 
-  // Create the form this way for two reasons
-  // 1. It just needs to be done once
-  // 2. It has to be done server side too, so we can't use useEffect
-  const [form, _setForm] = useState(
-    new ApiForm(
+  const form = useMemo(
+      () => new ApiForm(
       props.fieldsMetadata,
       props.endpoint,
       props.initialState && props.initialState.initialData
-    )
-  );
+    ), []);
   const [currentResult, setCurrentResult] = useState(
     props.initialState ? props.initialState.initialResult : null
   );
