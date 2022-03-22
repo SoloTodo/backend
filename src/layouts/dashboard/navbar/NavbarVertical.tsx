@@ -78,9 +78,9 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {
             settings.themeMode === 'dark' ?
-              <Image alt={"Logo"} src="/logo_fondo_oscuro.svg" width={47} height={40} />
+              <Image alt={"Logo"} src="/logo_fondo_oscuro.svg" width={100} height={40} />
             :
-              <Image alt={"Logo"} src="/logo_fondo_claro.svg" width={47} height={40} />
+              <Image alt={"Logo"} src="/logo_fondo_claro.svg" width={100} height={40} />
           }
 
           {isDesktop && !isCollapse && (
