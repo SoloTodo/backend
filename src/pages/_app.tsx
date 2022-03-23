@@ -9,7 +9,7 @@ import "react-lazy-load-image-component/src/effects/black-and-white.css";
 import cookie from "cookie";
 import { ReactElement, ReactNode, useMemo } from "react";
 // next
-import { NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import { AppProps, AppContext } from "next/app";
 // utils
@@ -117,11 +117,11 @@ MyApp.getInitialProps = async (context: AppContext) => {
   let user = null;
 
   try {
-    user = await jwtFetch(ctx, "users/me/");
+    user = await jwtFetch(ctx as unknown as GetServerSidePropsContext, "users/me/");
   } catch (err) {
     // Invalid token or some other network error, invalidate the
     // possible auth cookie
-    deleteAuthTokens(ctx);
+    deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
   }
 
   const store = initializeStore();
@@ -134,7 +134,7 @@ MyApp.getInitialProps = async (context: AppContext) => {
       const resources_query = resources.reduce((acc, r) => {
         return acc = `${acc}&names=${r}`
       }, '')
-      const apiResources = await jwtFetch(ctx, `resources/?${resources_query}`);
+      const apiResources = await jwtFetch(ctx as unknown as GetServerSidePropsContext, `resources/?${resources_query}`);
       store.dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources));
     } catch (err) {
       console.log(err);
