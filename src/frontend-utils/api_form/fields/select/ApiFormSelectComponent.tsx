@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import ApiFormContext from "../../ApiFormContext";
-import { ApiFormSelect, ApiFormSelectChoice } from "./select";
+import { ApiFormSelect, ApiFormSelectChoice } from "./ApiFormSelect";
 
 type ApiFormSelectComponentProps = {
   name: string;

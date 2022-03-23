@@ -31,7 +31,7 @@ const sidebarConfig = [
         path: '/dashboard/two',
         icon: ICONS.store,
         children: [
-          { title: 'Todas', path: PATH_STORE.all },
+          { title: 'Todas', path: PATH_STORE.root },
           { title: 'Actualizar', path: PATH_STORE.update_pricing },
         ]
       },

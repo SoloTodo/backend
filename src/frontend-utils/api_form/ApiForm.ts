@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { ApiFormSelect, ApiFormSelectProps } from "./data_entry/select/select";
+import { ApiFormSelect, ApiFormSelectProps } from "./fields/select/ApiFormSelect";
 import { FetchJsonInit } from "../network/utils";
 import { jwtFetch } from "../nextjs/utils";
 

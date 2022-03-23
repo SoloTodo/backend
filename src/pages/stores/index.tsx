@@ -12,10 +12,10 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 // endponts
 import { apiSettings } from "../../frontend-utils/settings";
 // class
-import { ApiForm } from "../../frontend-utils/api_form/api_form";
+import { ApiForm } from "../../frontend-utils/api_form/ApiForm";
 // types
 import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
-import ApiFormSelectComponent from "src/frontend-utils/api_form/data_entry/select/ApiFormSelectComponent";
+import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { Masonry } from "@mui/lab";
 // redux
 import { useAppSelector } from "src/store/hooks";
