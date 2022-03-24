@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { createWrapper } from 'src/frontend-utils/nextjs/StoreWrapper';
 import apiResourceObjectsSlice from 'src/frontend-utils/redux/api_resources/apiResources';
 import userSlice from 'src/frontend-utils/redux/user';
 
@@ -25,6 +26,19 @@ export const initializeStore = (preloadedState?: RootState) => {
         preloadedState: preloadedState
     })
 }
+
+const makeStore = () =>
+    configureStore({
+        reducer: {
+            user: userSlice.reducer,
+            apiResourceObjects: apiResourceObjectsSlice.reducer
+        },
+        devTools: true,
+    });
+
+export type AppStore = ReturnType<typeof makeStore>;
+
+export const wrapper = createWrapper<AppStore>(makeStore);
 
 const { dispatch } =  store;
 

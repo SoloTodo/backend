@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { NextPageContext } from "next";
 // import { jwtFetch } from "../../nextjs/utils";
 import { RootState } from "src/store/store";
+import { HYDRATE } from "src/frontend-utils/nextjs/StoreWrapper";
 
 export type ApiResourceObject = Country | StoreType;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
@@ -25,6 +26,14 @@ const apiResourceObjectsSlice = createSlice({
       return newState;
     },
   },
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+        return {
+            ...state,
+            ...action.payload.apiResourceObjects,
+        };
+    },
+},
 });
 
 export function useApiResourceObjects(state: RootState) {
