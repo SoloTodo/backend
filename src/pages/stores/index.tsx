@@ -1,6 +1,8 @@
 import { ReactElement } from "react";
 import { Card, CardContent, CardHeader, Container, Stack } from "@mui/material";
 import { Masonry } from "@mui/lab";
+import { GridColDef } from "@mui/x-data-grid";
+import { fDateTimeSuffix } from "src/utils/formatTime";
 // layouts
 import Layout from "src/layouts";
 // sections
@@ -19,6 +21,7 @@ import { ApiFormSelectProps } from "src/frontend-utils/api_form/fields/select/Ap
 import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { wrapper } from "src/store/store";
+import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
 
 // ----------------------------------------------------------------------
 
@@ -28,9 +31,7 @@ Stores.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-type StoresProps = {
-  initialData: Record<string, any> | null;
-  initialResult: any;
+type StoresProps = ApiFormInitialState & {
   fieldsMetadata: ApiFormSelectProps[];
 };
 
@@ -44,6 +45,38 @@ export default function Stores(props: StoresProps) {
     initialResult,
     initialData
   }
+
+  const columns: GridColDef[] = [
+    {
+      headerName: "Nombre",
+      field: "name",
+      flex: 1,
+    },
+    {
+      headerName: "País",
+      field: "country",
+      flex: 1,
+      renderCell: params => apiResourceObjects[params.row.country].name
+    },
+    {
+      headerName: "Tipo",
+      field: "type",
+      flex: 1,
+      renderCell: params => apiResourceObjects[params.row.type].name
+    },
+    {
+      headerName: "Última Activación",
+      field: "last_activation",
+      renderCell: params =>
+        params.row.last_activation ? fDateTimeSuffix(params.row.last_activation) : "Inactiva",
+      flex: 1,
+    },
+    {
+      headerName: "Scraper",
+      field: "storescraper_class",
+      flex: 1,
+    },
+  ];
 
   return (
     <Page title="Tiendas">
@@ -66,7 +99,7 @@ export default function Stores(props: StoresProps) {
             <Card>
               <CardHeader title="Listado de Tiendas" />
               <CardContent>
-                <ApiFormResultsTable apiResourceObjects={apiResourceObjects} />
+                <ApiFormResultsTable columns={columns} />
               </CardContent>
             </Card>
           </Stack>
