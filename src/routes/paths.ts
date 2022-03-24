@@ -6,6 +6,8 @@ function path(root: string, sublink: string) {
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 const ROOTS_STORE = '/stores';
+const ROOTS_CATEGORY = '/categories';
+const ROOTS_USER = '/users';
 
 // ----------------------------------------------------------------------
 
@@ -25,4 +27,12 @@ export const PATH_STORE = {
   root: ROOTS_STORE,
   all: path(ROOTS_STORE, '/all'),
   update_pricing: path(ROOTS_STORE, '/update_pricing')
+}
+
+export const PATH_CATEGORY = {
+  root: ROOTS_CATEGORY,
+}
+
+export const PATH_USER = {
+  root: ROOTS_USER,
 }

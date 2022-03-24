@@ -2,7 +2,7 @@
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import StoreIcon from '@mui/icons-material/Store';
 // routes
-import { PATH_STORE } from 'src/routes/paths';
+import { PATH_CATEGORY, PATH_STORE, PATH_USER } from 'src/routes/paths';
 
 
 // ----------------------------------------------------------------------
@@ -16,6 +16,7 @@ const ICONS = {
   ecommerce: getIcon('ic_ecommerce'),
   analytics: getIcon('ic_analytics'),
   dashboard: getIcon('ic_dashboard'),
+  cart: getIcon('ic_cart'),
   store: <StoreIcon />
 };
 
@@ -28,14 +29,21 @@ const sidebarConfig = [
       { title: 'Dashboard', path: '/dashboard/one', icon: ICONS.dashboard },
       { 
         title: 'Tiendas',
-        path: '/dashboard/two',
+        path: '1',
         icon: ICONS.store,
         children: [
           { title: 'Todas', path: PATH_STORE.root },
           { title: 'Actualizar', path: PATH_STORE.update_pricing },
         ]
       },
-      { title: 'Categorías', path: '/dashboard/three', icon: ICONS.analytics },
+      { 
+        title: 'Categorías', 
+        path: '1', 
+        icon: ICONS.cart,
+        children: [
+          { title: 'Todas', path: PATH_CATEGORY.root },
+        ]
+      },
       { title: 'Productos', path: '/dashboard/four', icon: ICONS.ecommerce },
     ],
   },
@@ -46,13 +54,12 @@ const sidebarConfig = [
     subheader: 'management',
     items: [
       {
-        title: 'user',
-        path: '/dashboard/user',
+        title: 'users',
+        path: '1',
         icon: ICONS.user,
         children: [
-          { title: 'Four', path: '/dashboard/user/four' },
-          { title: 'Five', path: '/dashboard/user/five' },
-          { title: 'Six', path: '/dashboard/user/six' },
+          { title: 'Todos', path: PATH_USER.root },
+          
         ],
       },
     ],
