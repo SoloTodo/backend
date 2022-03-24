@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { Container } from "@mui/material";
+import { Container, Link } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
 // layout
@@ -11,6 +11,7 @@ import BasicTable from "src/sections/BasicTable";
 import { apiSettings } from "src/frontend-utils/settings";
 // fetch
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { fDateTimeSuffix } from "src/utils/formatTime";
 
 // ----------------------------------------------------------------------
 
@@ -43,27 +44,34 @@ export default function UpdatePricing(props: Record<string, any>) {
       headerName: "Última actualización",
       field: "last_updated",
       flex: 1,
+      renderCell: params => fDateTimeSuffix(params.row.last_updated),
     },
     {
       headerName: "Inicio",
       field: "creation_date",
       flex: 1,
+      renderCell: params => fDateTimeSuffix(params.row.creation_date),
     },
     {
       headerName: "Registro",
       field: "registry_file",
       flex: 1,
+      renderCell: (params) => (
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href={params.row.registry_file}
+        >
+          Descargar
+        </Link>
+      ),
     },
   ];
 
   return (
     <Page title="Actualizar Pricing">
       <Container>
-        <BasicTable
-          title="Categorías"
-          columns={columns}
-          data={latest}
-        />
+        <BasicTable title="Categorías" columns={columns} data={latest} />
       </Container>
     </Page>
   );
@@ -72,7 +80,7 @@ export default function UpdatePricing(props: Record<string, any>) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const latest = await jwtFetch(
     context,
-    apiSettings.apiResourceEndpoints.store_update_logs + 'latest/'
+    apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
   );
   return {
     props: {
