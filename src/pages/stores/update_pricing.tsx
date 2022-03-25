@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import NextLink from "next/link";
 import { Container, Link } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
@@ -13,6 +14,9 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
+import { Store } from 'src/frontend-utils/types/store';
+import { PATH_STORE } from "src/routes/paths";
+
 // ----------------------------------------------------------------------
 
 UpdatePricing.getLayout = function getLayout(page: ReactElement) {
@@ -22,13 +26,28 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function UpdatePricing(props: Record<string, any>) {
-  const { latest } = props;
+  const { stores, latest } = props;
+
+  const latestActive = stores.reduce((acc: any[], a: Store) => {
+    if (a.last_activation) {
+      const l = latest[a.url];
+      const exito = l.status === 3 && l.available_products_count !== 0;
+      acc.push({
+        ...l,
+        store: a.name,
+        status: exito ? 'Exitosa' : l.status === 2 ? 'En proceso' : 'Error',
+        resultado: exito ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}` : 'N/A'
+      })
+    }
+    return acc;
+  }, []);
 
   const columns: GridColDef[] = [
     {
       headerName: "Nombre",
       field: "store",
       flex: 1,
+      renderCell: params => <NextLink href={`/${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
     },
     {
       headerName: "Estado",
@@ -37,20 +56,20 @@ export default function UpdatePricing(props: Record<string, any>) {
     },
     {
       headerName: "Resultado",
-      field: "id",
+      field: "resultado",
       flex: 1,
     },
     {
       headerName: "Última actualización",
       field: "last_updated",
       flex: 1,
-      renderCell: params => fDateTimeSuffix(params.row.last_updated),
+      renderCell: (params) => fDateTimeSuffix(params.row.last_updated),
     },
     {
       headerName: "Inicio",
       field: "creation_date",
       flex: 1,
-      renderCell: params => fDateTimeSuffix(params.row.creation_date),
+      renderCell: (params) => fDateTimeSuffix(params.row.creation_date),
     },
     {
       headerName: "Registro",
@@ -71,20 +90,25 @@ export default function UpdatePricing(props: Record<string, any>) {
   return (
     <Page title="Actualizar Pricing">
       <Container>
-        <BasicTable title="Categorías" columns={columns} data={latest} />
+        <BasicTable title="Categorías" columns={columns} data={latestActive} />
       </Container>
     </Page>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const stores = await jwtFetch(
+    context,
+    apiSettings.apiResourceEndpoints.stores
+  );
   const latest = await jwtFetch(
     context,
     apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
   );
   return {
     props: {
-      latest: Object.values(latest),
+      stores: Object.values(stores),
+      latest: latest,
     },
   };
 };
