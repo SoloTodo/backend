@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
-import { Card, CardContent, CardHeader, Container, Stack } from "@mui/material";
+import NextLink from "next/link";
+import { Card, CardContent, CardHeader, Container, Stack, Link } from "@mui/material";
 import { Masonry } from "@mui/lab";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -22,6 +23,7 @@ import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { wrapper } from "src/store/store";
 import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
+import { PATH_STORE } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -51,6 +53,7 @@ export default function Stores(props: StoresProps) {
       headerName: "Nombre",
       field: "name",
       flex: 1,
+      renderCell: params => <NextLink href={`/${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
     },
     {
       headerName: "País",
