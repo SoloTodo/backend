@@ -53,7 +53,7 @@ export default function Stores(props: StoresProps) {
       headerName: "Nombre",
       field: "name",
       flex: 1,
-      renderCell: params => <NextLink href={`/${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
+      renderCell: params => <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
     },
     {
       headerName: "País",
