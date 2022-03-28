@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Card, CardHeader } from "@mui/material";
 import { Store } from "src/frontend-utils/types/store";
+import { fDateTimeSuffix } from "src/utils/formatTime";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,44 +30,45 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedTables({ store } : { store: Store }) {
+export default function CustomizedTables({
+  store,
+  apiResourceObjects,
+}: {
+  store: Store;
+  apiResourceObjects: any;
+}) {
   return (
     <Card style={{ padding: 10 }}>
       <CardHeader title={`${store.name}`} sx={{ mb: 3 }} />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableBody>
-           
-              <StyledTableRow key={store.name}>
-                <StyledTableCell scope="row">
-                  Nombre
-                </StyledTableCell>
-                <StyledTableCell>{store.name}</StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow key={store.type}>
-                <StyledTableCell scope="row">
-                  Tipo
-                </StyledTableCell>
-                <StyledTableCell>{store.type}</StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow key={store.country}>
-                <StyledTableCell scope="row">
-                  País
-                </StyledTableCell>
-                <StyledTableCell>{store.country}</StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow key={store.last_activation}>
-                <StyledTableCell scope="row">
-                  Última Activación
-                </StyledTableCell>
-                <StyledTableCell>{store.last_activation}</StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow key={store.storescraper_class}>
-                <StyledTableCell scope="row">
-                  Scraper
-                </StyledTableCell>
-                <StyledTableCell>{store.storescraper_class}</StyledTableCell>
-              </StyledTableRow>
+            <StyledTableRow key="name">
+              <StyledTableCell scope="row">Nombre</StyledTableCell>
+              <StyledTableCell>{store.name}</StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow key="type">
+              <StyledTableCell scope="row">Tipo</StyledTableCell>
+              <StyledTableCell>
+                {apiResourceObjects[store.type].name}
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow key="country">
+              <StyledTableCell scope="row">País</StyledTableCell>
+              <StyledTableCell>
+                {apiResourceObjects[store.country].name}
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow key="last_activation">
+              <StyledTableCell scope="row">Última Activación</StyledTableCell>
+              <StyledTableCell>
+                {fDateTimeSuffix(store.last_activation)}
+              </StyledTableCell>
+            </StyledTableRow>
+            <StyledTableRow key="storescraper_class">
+              <StyledTableCell scope="row">Scraper</StyledTableCell>
+              <StyledTableCell>{store.storescraper_class}</StyledTableCell>
+            </StyledTableRow>
           </TableBody>
         </Table>
       </TableContainer>
