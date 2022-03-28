@@ -35,6 +35,7 @@ export default function UpdatePricing(props: Record<string, any>) {
       acc.push({
         ...l,
         store: a.name,
+        storeId: a.id,
         status: exito ? 'Exitosa' : l.status === 2 ? 'En proceso' : 'Error',
         resultado: exito ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}` : 'N/A'
       })
@@ -47,7 +48,7 @@ export default function UpdatePricing(props: Record<string, any>) {
       headerName: "Nombre",
       field: "store",
       flex: 1,
-      renderCell: params => <NextLink href={`/${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
+      renderCell: params => <NextLink href={`${PATH_STORE.root}/${params.row.storeId}`} passHref><Link >{params.row.store}</Link></NextLink>
     },
     {
       headerName: "Estado",
