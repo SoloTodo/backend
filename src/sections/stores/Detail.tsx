@@ -6,7 +6,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Card, CardHeader } from "@mui/material";
+import { Card, CardContent, CardHeader } from "@mui/material";
 import { Store } from "src/frontend-utils/types/store";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
@@ -38,40 +38,42 @@ export default function CustomizedTables({
   apiResourceObjects: any;
 }) {
   return (
-    <Card style={{ padding: 10 }}>
-      <CardHeader title={`${store.name}`} sx={{ mb: 3 }} />
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableBody>
-            <StyledTableRow key="name">
-              <StyledTableCell scope="row">Nombre</StyledTableCell>
-              <StyledTableCell>{store.name}</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow key="type">
-              <StyledTableCell scope="row">Tipo</StyledTableCell>
-              <StyledTableCell>
-                {apiResourceObjects[store.type].name}
-              </StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow key="country">
-              <StyledTableCell scope="row">País</StyledTableCell>
-              <StyledTableCell>
-                {apiResourceObjects[store.country].name}
-              </StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow key="last_activation">
-              <StyledTableCell scope="row">Última Activación</StyledTableCell>
-              <StyledTableCell>
-                {fDateTimeSuffix(store.last_activation)}
-              </StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow key="storescraper_class">
-              <StyledTableCell scope="row">Scraper</StyledTableCell>
-              <StyledTableCell>{store.storescraper_class}</StyledTableCell>
-            </StyledTableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <Card>
+      <CardHeader title={`${store.name}`} />
+      <CardContent>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableBody>
+              <StyledTableRow key="name">
+                <StyledTableCell scope="row">Nombre</StyledTableCell>
+                <StyledTableCell>{store.name}</StyledTableCell>
+              </StyledTableRow>
+              <StyledTableRow key="type">
+                <StyledTableCell scope="row">Tipo</StyledTableCell>
+                <StyledTableCell>
+                  {apiResourceObjects[store.type].name}
+                </StyledTableCell>
+              </StyledTableRow>
+              <StyledTableRow key="country">
+                <StyledTableCell scope="row">País</StyledTableCell>
+                <StyledTableCell>
+                  {apiResourceObjects[store.country].name}
+                </StyledTableCell>
+              </StyledTableRow>
+              <StyledTableRow key="last_activation">
+                <StyledTableCell scope="row">Última Activación</StyledTableCell>
+                <StyledTableCell>
+                  {fDateTimeSuffix(store.last_activation)}
+                </StyledTableCell>
+              </StyledTableRow>
+              <StyledTableRow key="storescraper_class">
+                <StyledTableCell scope="row">Scraper</StyledTableCell>
+                <StyledTableCell>{store.storescraper_class}</StyledTableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
     </Card>
   );
 }

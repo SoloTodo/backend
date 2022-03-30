@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemText,
   Link,
+  CardContent,
 } from "@mui/material";
 import { PATH_STORE } from "src/routes/paths";
 import { useRouter } from "next/router";
@@ -19,7 +20,7 @@ type Option = {
 
 export default function CustomizedTables() {
   const router = useRouter();
-  const baseRoute = `${PATH_STORE.root}/${router.query.id}`
+  const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
   const options: Option[] = [
     {
       key: 1,
@@ -59,25 +60,27 @@ export default function CustomizedTables() {
     {
       key: 8,
       text: "Descargar reporte de homologación",
-      path: `${baseRoute}`,
+      path: `${baseRoute}/matching_report`,
     },
   ];
   return (
-    <Card style={{ padding: 10 }}>
-      <CardHeader title="Opciones" sx={{ mb: 3 }} />
-      <List>
-        {options.map((o) => (
-          <ListItem key={o.key}>
-            <ListItemText
-              primary={
-                <NextLink href={o.path} passHref>
-                  <Link>{o.text}</Link>
-                </NextLink>
-              }
-            />
-          </ListItem>
-        ))}
-      </List>
+    <Card>
+      <CardHeader title="Opciones" />
+      <CardContent>
+        <List>
+          {options.map((o) => (
+            <ListItem key={o.key}>
+              <ListItemText
+                primary={
+                  <NextLink href={o.path} passHref>
+                    <Link>{o.text}</Link>
+                  </NextLink>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
     </Card>
   );
 }
