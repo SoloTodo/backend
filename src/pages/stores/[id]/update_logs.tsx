@@ -24,7 +24,7 @@ StoreUpdateLogs.getLayout = function getLayout(page: ReactElement) {
 
 export default function StoreUpdateLogs(props: Record<string, any>) {
   const { latest } = props;
-  const router = useRouter()
+  const router = useRouter();
 
   const columns: any[] = [
     {
@@ -57,7 +57,13 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
       headerName: "Categorías",
       field: "id",
       flex: 1,
-      renderCell: (params: Update) => params.categories.length,
+      renderCell: (params: Update) =>
+        params.categories.reduce((acc: string, a: { name: string }) => {
+          if (acc === "") {
+            return a.name;
+          }
+          return acc + " / " + a.name;
+        }, ""),
     },
     {
       headerName: "Inicio",
@@ -101,9 +107,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     latest = await jwtFetch(
       context,
       apiSettings.apiResourceEndpoints.store_update_logs +
-        `?store=${context.params.id}&page_size=5&page=${
-          context.query.page ? context.query.page : 1
-        }`
+        `?store=${context.params.id}&page_size=${
+          context.query.page_size ? context.query.page_size : 5
+        }&page=${context.query.page ? context.query.page : 1}`
     );
   }
   return {
