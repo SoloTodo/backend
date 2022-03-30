@@ -29,7 +29,7 @@ const sidebarConfig = [
       { title: 'Dashboard', path: '/dashboard/one', icon: ICONS.dashboard },
       { 
         title: 'Tiendas',
-        path: '1',
+        path: '-',
         icon: ICONS.store,
         children: [
           { title: 'Todas', path: PATH_STORE.root },
@@ -38,7 +38,7 @@ const sidebarConfig = [
       },
       { 
         title: 'Categorías', 
-        path: '1', 
+        path: '-', 
         icon: ICONS.cart,
         children: [
           { title: 'Todas', path: PATH_CATEGORY.root },
@@ -55,7 +55,7 @@ const sidebarConfig = [
     items: [
       {
         title: 'users',
-        path: '1',
+        path: '-',
         icon: ICONS.user,
         children: [
           { title: 'Todos', path: PATH_USER.root },
