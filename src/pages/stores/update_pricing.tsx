@@ -82,7 +82,7 @@ export default function UpdatePricing(props: Record<string, any>) {
           rel="noopener noreferrer"
           href={params.row.registry_file}
         >
-          Descargar
+          { params.row.registry_file ? 'Descargar' : 'No disponible'}
         </Link>
       ),
     },
