@@ -1,10 +1,17 @@
 import { GetServerSidePropsContext } from "next";
-import { ApiFormSelect, ApiFormSelectProps } from "./fields/select/ApiFormSelect";
+import {
+  ApiFormSelect,
+  ApiFormSelectProps,
+} from "./fields/select/ApiFormSelect";
 import { FetchJsonInit } from "../network/utils";
 import { jwtFetch } from "../nextjs/utils";
+import {
+  ApiFormPaginationProps,
+  ApiFormPagination,
+} from "./fields/pagination/ApiFormPagination";
 
-export type ApiFormFieldMetadata = ApiFormSelectProps;
-export type ApiFormField = ApiFormSelect;
+export type ApiFormFieldMetadata = ApiFormSelectProps | ApiFormPaginationProps;
+export type ApiFormField = ApiFormSelect | ApiFormPagination;
 
 export class ApiForm {
   private fields: ApiFormField[] = [];
@@ -34,6 +41,14 @@ export class ApiForm {
             )
           );
           break;
+        case "pagination":
+          this.fields.push(
+            new ApiFormPagination(
+              fieldMetadata.name,
+              initialData && initialData[fieldMetadata.name]
+            )
+          );
+          break;
       }
     }
   }
@@ -58,7 +73,9 @@ export class ApiForm {
     }
 
     const endpointSearch = this.endpoint.searchParams.toString();
-    const querySearchParams: URLSearchParams = new URLSearchParams(endpointSearch);
+    const querySearchParams: URLSearchParams = new URLSearchParams(
+      endpointSearch
+    );
 
     for (const field of this.fields) {
       for (const [key, values] of Object.entries(field.getApiParams())) {
@@ -67,7 +84,7 @@ export class ApiForm {
         }
       }
     }
-
+    
     const querySearch = querySearchParams.toString();
     const queryUrl = new URL(this.endpoint.href);
     queryUrl.search = "?" + querySearch;
@@ -92,6 +109,6 @@ export class ApiForm {
   }
 
   getField(name: string) {
-     return this.fields.find(field => field.name === name);
+    return this.fields.find((field) => field.name === name);
   }
 }
