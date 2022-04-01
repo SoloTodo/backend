@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import NextLink from "next/link";
-import { Container, Link } from "@mui/material";
+import { Container, Link, Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
 // layout
@@ -14,8 +14,10 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
-import { Store } from 'src/frontend-utils/types/store';
-import { PATH_STORE } from "src/routes/paths";
+import { Store } from "src/frontend-utils/types/store";
+import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +28,7 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function UpdatePricing(props: Record<string, any>) {
-  const { stores, latest } = props;
+  const { stores, latest, categories } = props;
 
   const latestActive = stores.reduce((acc: any[], a: Store) => {
     if (a.last_activation) {
@@ -36,9 +38,11 @@ export default function UpdatePricing(props: Record<string, any>) {
         ...l,
         store: a.name,
         storeId: a.id,
-        status: exito ? 'Exitosa' : l.status === 2 ? 'En proceso' : 'Error',
-        resultado: exito ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}` : 'N/A'
-      })
+        status: exito ? "Exitosa" : l.status === 2 ? "En proceso" : "Error",
+        resultado: exito
+          ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+          : "N/A",
+      });
     }
     return acc;
   }, []);
@@ -48,7 +52,11 @@ export default function UpdatePricing(props: Record<string, any>) {
       headerName: "Nombre",
       field: "store",
       flex: 1,
-      renderCell: params => <NextLink href={`${PATH_STORE.root}/${params.row.storeId}`} passHref><Link >{params.row.store}</Link></NextLink>
+      renderCell: (params) => (
+        <NextLink href={`${PATH_STORE.root}/${params.row.storeId}`} passHref>
+          <Link>{params.row.store}</Link>
+        </NextLink>
+      ),
     },
     {
       headerName: "Estado",
@@ -82,7 +90,7 @@ export default function UpdatePricing(props: Record<string, any>) {
           rel="noopener noreferrer"
           href={params.row.registry_file}
         >
-          { params.row.registry_file ? 'Descargar' : 'No disponible'}
+          {params.row.registry_file ? "Descargar" : "No disponible"}
         </Link>
       ),
     },
@@ -91,7 +99,25 @@ export default function UpdatePricing(props: Record<string, any>) {
   return (
     <Page title="Actualizar Pricing">
       <Container>
-        <BasicTable title="Categorías" columns={columns} data={latestActive} />
+        <HeaderBreadcrumbs
+          heading=""
+          links={[
+            { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Tiendas", href: PATH_STORE.root },
+            { name: "Actualizar pricing" },
+          ]}
+        />
+        <Stack spacing={3}>
+          <UpdateStorePricingForm
+            store_scraping_options={{
+              categories: categories,
+              prefer_async: true,
+            }}
+            multi
+            store_ids={[]}
+          />
+          <BasicTable title="Tiendas" columns={columns} data={latestActive} />
+        </Stack>
       </Container>
     </Page>
   );
@@ -106,10 +132,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context,
     apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
   );
+  const categories = await jwtFetch(
+    context,
+    apiSettings.apiResourceEndpoints.categories
+  );
   return {
     props: {
       stores: Object.values(stores),
       latest: latest,
+      categories: categories,
     },
   };
 };

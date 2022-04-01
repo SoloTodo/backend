@@ -18,7 +18,12 @@ export default function BasicTable({
       <CardContent>
         <Scrollbar>
           <Box sx={{ height: 500, width: "100%" }}>
-            <DataGrid columns={columns} rows={data} />
+            <DataGrid
+              columns={columns}
+              rows={data}
+              checkboxSelection
+              disableSelectionOnClick
+            />
           </Box>
         </Scrollbar>
       </CardContent>

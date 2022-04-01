@@ -1,6 +1,13 @@
 import { ReactElement } from "react";
 import NextLink from "next/link";
-import { Card, CardContent, CardHeader, Container, Stack, Link } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Stack,
+  Link,
+} from "@mui/material";
 import { Masonry } from "@mui/lab";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -23,7 +30,8 @@ import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { wrapper } from "src/store/store";
 import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
-import { PATH_STORE } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 
 // ----------------------------------------------------------------------
 
@@ -45,33 +53,39 @@ export default function Stores(props: StoresProps) {
 
   const initialState = {
     initialResult,
-    initialData
-  }
+    initialData,
+  };
 
   const columns: GridColDef[] = [
     {
       headerName: "Nombre",
       field: "name",
       flex: 1,
-      renderCell: params => <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref><Link >{params.row.name}</Link></NextLink>
+      renderCell: (params) => (
+        <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref>
+          <Link>{params.row.name}</Link>
+        </NextLink>
+      ),
     },
     {
       headerName: "País",
       field: "country",
       flex: 1,
-      renderCell: params => apiResourceObjects[params.row.country].name
+      renderCell: (params) => apiResourceObjects[params.row.country].name,
     },
     {
       headerName: "Tipo",
       field: "type",
       flex: 1,
-      renderCell: params => apiResourceObjects[params.row.type].name
+      renderCell: (params) => apiResourceObjects[params.row.type].name,
     },
     {
       headerName: "Última Activación",
       field: "last_activation",
-      renderCell: params =>
-        params.row.last_activation ? fDateTimeSuffix(params.row.last_activation) : "Inactiva",
+      renderCell: (params) =>
+        params.row.last_activation
+          ? fDateTimeSuffix(params.row.last_activation)
+          : "Inactiva",
       flex: 1,
     },
     {
@@ -83,12 +97,20 @@ export default function Stores(props: StoresProps) {
 
   return (
     <Page title="Tiendas">
-      <ApiFormComponent
-        fieldsMetadata={fieldsMetadata}
-        endpoint={apiSettings.apiResourceEndpoints.stores}
-        initialState={initialState}
-      >
-        <Container>
+      <Container>
+        <HeaderBreadcrumbs
+          heading=""
+          links={[
+            { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Tiendas", href: PATH_STORE.root },
+          ]}
+        />
+
+        <ApiFormComponent
+          fieldsMetadata={fieldsMetadata}
+          endpoint={apiSettings.apiResourceEndpoints.stores}
+          initialState={initialState}
+        >
           <Stack spacing={3}>
             <Card>
               <CardHeader title="Filtros" />
@@ -106,60 +128,62 @@ export default function Stores(props: StoresProps) {
               </CardContent>
             </Card>
           </Stack>
-        </Container>
-      </ApiFormComponent>
+        </ApiFormComponent>
+      </Container>
     </Page>
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(store => async (context) => {
-  const apiResourceObjects = store.getState().apiResourceObjects;
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    const apiResourceObjects = store.getState().apiResourceObjects;
 
-  const fieldsMetadata = [
-    {
-      fieldType: "select" as "select",
-      name: "countries",
-      label: "Países",
-      multiple: true,
-      choices: Object.values(apiResourceObjects).reduce(
-        (acc: { label: string; value: number }[], r) => {
-          if (r.url.includes("countries")) {
-            return [...acc, { label: r.name, value: r.id }];
-          }
-          return acc;
-        },
-        []
-      ),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "types",
-      label: "Tipos",
-      multiple: true,
-      choices: Object.values(apiResourceObjects).reduce(
-        (acc: { label: string; value: number }[], r) => {
-          if (r.url.includes("types")) {
-            return [...acc, { label: r.name, value: r.id }];
-          }
-          return acc;
-        },
-        []
-      ),
-    },
-  ];
+    const fieldsMetadata = [
+      {
+        fieldType: "select" as "select",
+        name: "countries",
+        label: "Países",
+        multiple: true,
+        choices: Object.values(apiResourceObjects).reduce(
+          (acc: { label: string; value: number }[], r) => {
+            if (r.url.includes("countries")) {
+              return [...acc, { label: r.name, value: r.id }];
+            }
+            return acc;
+          },
+          []
+        ),
+      },
+      {
+        fieldType: "select" as "select",
+        name: "types",
+        label: "Tipos",
+        multiple: true,
+        choices: Object.values(apiResourceObjects).reduce(
+          (acc: { label: string; value: number }[], r) => {
+            if (r.url.includes("types")) {
+              return [...acc, { label: r.name, value: r.id }];
+            }
+            return acc;
+          },
+          []
+        ),
+      },
+    ];
 
-  const form = new ApiForm(
-    fieldsMetadata,
-    apiSettings.apiResourceEndpoints.stores
-  );
-  form.initialize(context);
-  const data = form.isValid() ? await form.submit() : null;
+    const form = new ApiForm(
+      fieldsMetadata,
+      apiSettings.apiResourceEndpoints.stores
+    );
+    form.initialize(context);
+    const data = form.isValid() ? await form.submit() : null;
 
-  return {
-    props: {
-      initialResult: data,
-      initialData: form.getCleanedData(),
-      fieldsMetadata: fieldsMetadata
-    },
-  };
-});
+    return {
+      props: {
+        initialResult: data,
+        initialData: form.getCleanedData(),
+        fieldsMetadata: fieldsMetadata,
+      },
+    };
+  }
+);

@@ -9,6 +9,8 @@ import {
   TextField,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 // form
 import {
   FormProvider,
@@ -19,29 +21,31 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // types
-import { StoreScrapingOptions } from "src/frontend-utils/types/store";
+import {
+  Category,
+  StoreScrapingOptions as FormValuesProps,
+} from "src/frontend-utils/types/store";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { apiSettings } from "src/frontend-utils/settings";
+import { PATH_STORE } from "src/routes/paths";
 
-// ----------------------------------------------------------------------
+export default function UpdateStorePricingForm({
+  store_scraping_options,
+  store_ids,
+  multi,
+}: {
+  store_scraping_options: FormValuesProps;
+  store_ids: number[];
+  multi?: boolean;
+}) {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
-type FormValuesProps = {
-  async: boolean;
-  discover_urls_concurrency: number;
-  products_for_url_concurrency: number;
-  categories: string[];
-};
-
-// ----------------------------------------------------------------------
-
-export default function UpdateStorePricingForm({ store_scraping_options }: { store_scraping_options: StoreScrapingOptions }) {
   const UpdateSchema = Yup.object().shape({});
 
-  const CATEGORIES: string[] = store_scraping_options.categories;
-
   const defaultValues = {
-    async: store_scraping_options.prefer_async,
-    discover_urls_concurrency: store_scraping_options.discover_urls_concurrency,
-    products_for_url_concurrency: store_scraping_options.products_for_url_concurrency,
-    categories: store_scraping_options.categories,
+    ...store_scraping_options,
+    categories: [],
   };
 
   const methods = useForm<FormValuesProps>({
@@ -52,26 +56,63 @@ export default function UpdateStorePricingForm({ store_scraping_options }: { sto
   const {
     reset,
     control,
-    setError,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = methods;
+
+  const onSubmit = async (data: FormValuesProps) => {
+    console.log(data);
+    const send_data = {
+      ...data,
+      categories: data.categories.map((c: Category) => c.id.toString()),
+    };
+    console.log(send_data);
+    console.log(store_ids)
+
+    for (const id in store_ids) {
+      await jwtFetch(
+        null,
+        `${apiSettings.apiResourceEndpoints.stores}${id}/update_pricing/`,
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+        }
+      )
+        .then((res) => {
+          console.log(res);
+          enqueueSnackbar("Actualización de tienda encolada exitosamente");
+          if (!multi) router.push(`${PATH_STORE.root}/${id}/update_logs`);
+        })
+        .catch((err) => {
+          console.log(err);
+          reset();
+          enqueueSnackbar(
+            "Error al ejecutar la petición, por favor intente de nuevo",
+            { variant: "error" }
+          );
+        });
+    }
+  };
 
   return (
     <Card>
-      <CardHeader title="Actualizar" />
+      <CardHeader title={multi ? "Parámetros" : "Actualizar"} />
       <CardContent>
-        <FormProvider methods={methods} onSubmit={() => {}}>
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3}>
-            <RHFCheckbox name="async" label="¿Usar asincronía?" />
-            <RHFTextField
-              name="discover_urls_concurrency"
-              label="Concurrencia para descubrimiento de URLs"
-            />
-            <RHFTextField
-              name="products_for_url_concurrency"
-              label="Concurrencia para scraping de productos"
-            />
+            <RHFCheckbox name="prefer_async" label="¿Usar asincronía?" />
+            {!multi ? (
+              <>
+                <RHFTextField
+                  name="discover_urls_concurrency"
+                  label="Concurrencia para descubrimiento de URLs"
+                />
+                <RHFTextField
+                  name="products_for_url_concurrency"
+                  label="Concurrencia para scraping de productos"
+                />
+              </>
+            ) : null}
             <Controller
               name="categories"
               control={control}
@@ -79,15 +120,16 @@ export default function UpdateStorePricingForm({ store_scraping_options }: { sto
                 <Autocomplete
                   {...field}
                   multiple
-                  onChange={(event, newValue) => field.onChange(newValue)}
-                  options={CATEGORIES.map((option) => option)}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(_event, newValue) => field.onChange(newValue)}
+                  options={store_scraping_options.categories}
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
                         {...getTagProps({ index })}
-                        key={option}
+                        key={option.id}
                         size="small"
-                        label={option}
+                        label={option.name}
                       />
                     ))
                   }
@@ -109,12 +151,16 @@ export default function UpdateStorePricingForm({ store_scraping_options }: { sto
               type="submit"
               variant="contained"
               loading={isSubmitting}
+              disabled={multi && store_ids.length == 0 ? true : false}
             >
-              Actualizar
+              Actualizar {multi ? `(${store_ids.length})` : ""}
             </LoadingButton>
           </Stack>
         </FormProvider>
       </CardContent>
     </Card>
   );
+}
+function enqueueSnackbar(arg0: string) {
+  throw new Error("Function not implemented.");
 }

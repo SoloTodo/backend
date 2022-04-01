@@ -1,11 +1,17 @@
 import { Container, Grid } from "@mui/material";
 import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Category, Store, StoreScrapingOptions } from "src/frontend-utils/types/store";
+import {
+  Category,
+  Store,
+  StoreScrapingOptions,
+} from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
+import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import Options from "src/sections/stores/Options";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 
@@ -30,10 +36,22 @@ export default function UpdateStorePricing(props: StoreProps) {
 
   return (
     <Page title={`${store.name}`}>
-      <Container maxWidth="xl">
+      <Container>
+        <HeaderBreadcrumbs
+          heading=""
+          links={[
+            { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Tiendas", href: PATH_STORE.root },
+            { name: `${store.name}`, href: `${PATH_STORE.root}/${store.id}` },
+            { name: "Actualizar Pricing" },
+          ]}
+        />
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={8}>
-            <UpdateStorePricingForm store_scraping_options={store_scraping_options} />
+            <UpdateStorePricingForm
+              store_scraping_options={store_scraping_options}
+              store_ids={[store.id]}
+            />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <Options />
@@ -50,9 +68,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     apiSettings.apiResourceEndpoints.categories
   );
   categories = categories.reduce((acc: any, a: Category) => {
-    acc[a.url] = a
+    acc[a.url] = a;
     return acc;
-  }, {})
+  }, {});
   let store = {};
   let store_scraping_options: any = {};
   if (context.params) {
@@ -65,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       `${apiSettings.apiResourceEndpoints.stores}${context.params.id}/scraper/`
     );
     store_scraping_options.categories = store_scraping_options.categories.map(
-      (c: string) => categories[c].name
+      (c: string) => categories[c]
     );
   }
   return {
