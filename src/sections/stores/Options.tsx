@@ -37,16 +37,16 @@ export default function CustomizedTables() {
       text: "Registros de actualización",
       path: `${baseRoute}/update_logs`,
     },
-    {
-      key: 4,
-      text: "Leads (listado)",
-      path: `${baseRoute}`,
-    },
-    {
-      key: 5,
-      text: "Leads (estadísticas)",
-      path: `${baseRoute}`,
-    },
+    // {
+    //   key: 4,
+    //   text: "Leads (listado)",
+    //   path: `${baseRoute}`,
+    // },
+    // {
+    //   key: 5,
+    //   text: "Leads (estadísticas)",
+    //   path: `${baseRoute}`,
+    // },
     {
       key: 6,
       text: "Entidades en conflicto",
