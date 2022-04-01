@@ -5,7 +5,8 @@ import { GetServerSideProps } from "next/types";
 import Layout from "src/layouts";
 // components
 import Page from "src/components/Page";
-import PaginationTable from "src/sections/PaginationTable";
+import PaginationTable from "src/components/api_form/ApiFormPaginationTable";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 // settings
 import { apiSettings } from "src/frontend-utils/settings";
 // fetch
@@ -13,6 +14,8 @@ import { fDateTimeSuffix } from "src/utils/formatTime";
 import { Update } from "src/frontend-utils/types/store";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { ApiForm } from "src/frontend-utils/api_form/ApiForm";
+import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
 
@@ -23,11 +26,11 @@ StoreUpdateLogs.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function StoreUpdateLogs(props: Record<string, any>) {
-  const { initialResult, initialData, fieldMetadata } = props;
+  const { store, initialResult, initialData, fieldMetadata } = props;
   const initialState = {
     initialResult,
-    initialData
-  }
+    initialData,
+  };
 
   const columns: any[] = [
     {
@@ -91,18 +94,27 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
   ];
   return (
     <Page title="Registros de Actualización">
-      <ApiFormComponent
-        fieldsMetadata={fieldMetadata}
-        endpoint={apiSettings.apiResourceEndpoints.store_update_logs}
-        initialState={initialState}
-      >
-        <Container>
+      <Container>
+        <HeaderBreadcrumbs
+          heading=""
+          links={[
+            { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Tiendas", href: PATH_STORE.root },
+            { name: `${store.name}`, href: `${PATH_STORE.root}/${store.id}` },
+            { name: "Registros de Actualización" },
+          ]}
+        />
+        <ApiFormComponent
+          fieldsMetadata={fieldMetadata}
+          endpoint={apiSettings.apiResourceEndpoints.store_update_logs}
+          initialState={initialState}
+        >
           <PaginationTable
             title="Registros de Actualización"
             columns={columns}
           />
-        </Container>
-      </ApiFormComponent>
+        </ApiFormComponent>
+      </Container>
     </Page>
   );
 }
@@ -111,42 +123,49 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
-      name: "store",
+      name: "store" as "store",
     },
     {
       fieldType: "pagination" as "pagination",
-      name: "page",
+      name: "page" as "page",
     },
     {
       fieldType: "pagination" as "pagination",
-      name: "page_size",
-    }
-  ]
+      name: "page_size" as "page_size",
+    },
+  ];
+  let store = {};
   if (context.params) {
+    store = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.stores}${context.params.id}/`
+    );
     const form = new ApiForm(
       fieldMetadata,
       apiSettings.apiResourceEndpoints.store_update_logs,
       {
         store: context.params.id,
         page_size: 5,
-        page: 1
+        page: 1,
       }
     );
     form.initialize(context);
     const data = form.isValid() ? await form.submit() : null;
     return {
       props: {
+        store: store,
         initialResult: data,
         initialData: form.getCleanedData(),
-        fieldMetadata: fieldMetadata
+        fieldMetadata: fieldMetadata,
       },
     };
   } else {
     return {
       props: {
+        store: store,
         initialResult: [],
         initialData: [],
-        fieldMetadata: fieldMetadata
+        fieldMetadata: fieldMetadata,
       },
     };
   }

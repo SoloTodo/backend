@@ -9,7 +9,7 @@ export type PagintationData = {
 
 export type ApiFormPaginationProps = {
   fieldType: "pagination";
-  name: string;
+  name: "store" | "page" | "page_size";
 };
 
 export class ApiFormPagination {
