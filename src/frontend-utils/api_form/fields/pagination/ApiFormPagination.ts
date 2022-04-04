@@ -9,7 +9,7 @@ export type PagintationData = {
 
 export type ApiFormPaginationProps = {
   fieldType: "pagination";
-  name: "store" | "page" | "page_size";
+  name: "store" | "page" | "page_size" | "ordering";
 };
 
 export class ApiFormPagination {
@@ -28,7 +28,7 @@ export class ApiFormPagination {
   }
 
   isValid() {
-    return typeof this.cleanedData !== "undefined";
+    return true;
   }
 
   getApiParams(): ApiFormApiParams {

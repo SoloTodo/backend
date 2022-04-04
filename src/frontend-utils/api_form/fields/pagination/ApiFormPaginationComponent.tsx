@@ -1,14 +1,14 @@
 import { useContext } from "react";
-import { useRouter } from "next/router";
 import { TablePagination } from "@mui/material";
 import ApiFormContext from "../../ApiFormContext";
 
 
-export default function ApiFormPaginationComponent() {
+export default function ApiFormPaginationComponent(
+  ) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult;
-  const router = useRouter();
-  const { page, page_size } = router.query;
+  const page = context.getField("page")?.cleanedData;
+  const page_size = context.getField("page_size")?.cleanedData;
 
   const handleChange = (value: string, name: string) => {
     context.updateUrl({
@@ -18,7 +18,7 @@ export default function ApiFormPaginationComponent() {
 
   return (
     <TablePagination
-      rowsPerPageOptions={[5, 10, 25]}
+      rowsPerPageOptions={[5, 10, 25, 50, 100, 200]}
       component="div"
       colSpan={3}
       count={data.count}
