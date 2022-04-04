@@ -1,8 +1,9 @@
 // components
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import StoreIcon from '@mui/icons-material/Store';
+import InboxIcon from '@mui/icons-material/Inbox';
 // routes
-import { PATH_CATEGORY, PATH_STORE, PATH_USER } from 'src/routes/paths';
+import { PATH_CATEGORY, PATH_ENTITY, PATH_STORE, PATH_USER } from 'src/routes/paths';
 
 
 // ----------------------------------------------------------------------
@@ -17,7 +18,8 @@ const ICONS = {
   analytics: getIcon('ic_analytics'),
   dashboard: getIcon('ic_dashboard'),
   cart: getIcon('ic_cart'),
-  store: <StoreIcon />
+  store: <StoreIcon />,
+  inbox: <InboxIcon />
 };
 
 const sidebarConfig = [
@@ -42,6 +44,17 @@ const sidebarConfig = [
         icon: ICONS.cart,
         children: [
           { title: 'Todas', path: PATH_CATEGORY.root },
+        ]
+      },
+      { 
+        title: 'Entidades', 
+        path: '-', 
+        icon: ICONS.inbox,
+        children: [
+          { title: 'Todas', path: PATH_ENTITY.root },
+          { title: 'Pendientes', path: PATH_ENTITY.pending },
+          { title: 'Conflictos', path: PATH_ENTITY.conflicts },
+          { title: 'Ventas estimadas', path: PATH_ENTITY.estimated_sales },
         ]
       },
       { title: 'Productos', path: '/dashboard/four', icon: ICONS.ecommerce },

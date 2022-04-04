@@ -7,6 +7,7 @@ const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
 const ROOTS_STORE = '/stores';
 const ROOTS_CATEGORY = '/categories';
+const ROOTS_ENTITIY = '/entities';
 const ROOTS_USER = '/users';
 
 // ----------------------------------------------------------------------
@@ -31,6 +32,13 @@ export const PATH_STORE = {
 
 export const PATH_CATEGORY = {
   root: ROOTS_CATEGORY,
+}
+
+export const PATH_ENTITY = {
+  root: ROOTS_ENTITIY,
+  pending: path(ROOTS_ENTITIY, '/pending'),
+  conflicts: path(ROOTS_ENTITIY, '/conflicts'),
+  estimated_sales: path(ROOTS_ENTITIY, '/estimated_sales'),
 }
 
 export const PATH_USER = {
