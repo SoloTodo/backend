@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { createWrapper } from 'src/frontend-utils/nextjs/StoreWrapper';
+import { createWrapper } from 'next-redux-wrapper';
 import apiResourceObjectsSlice from 'src/frontend-utils/redux/api_resources/apiResources';
 import userSlice from 'src/frontend-utils/redux/user';
 

@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { NextPageContext } from "next";
 // import { jwtFetch } from "../../nextjs/utils";
 import { RootState } from "src/store/store";
-import { HYDRATE } from "src/frontend-utils/nextjs/StoreWrapper";
+import { HYDRATE } from "next-redux-wrapper";
 
 export type ApiResourceObject = Country | StoreType;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;

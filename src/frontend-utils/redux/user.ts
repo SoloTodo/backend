@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { ReactUtilsState } from "./redux";
 import { RootState } from "src/store/store"; 
-import { HYDRATE } from "../nextjs/StoreWrapper";
+import { HYDRATE } from "next-redux-wrapper";
 
 import { UserState } from "../types/user";
 
