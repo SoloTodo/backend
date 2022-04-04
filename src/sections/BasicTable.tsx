@@ -24,9 +24,10 @@ export default function BasicTable({
               checkboxSelection
               disableSelectionOnClick
               onSelectionModelChange={(ids) => setSelectedRows(ids)}
+              rowsPerPageOptions={[]}
             />
           ) : (
-            <DataGrid columns={columns} rows={data} />
+            <DataGrid columns={columns} rows={data} rowsPerPageOptions={[]} />
           )}
         </Box>
       </CardContent>
