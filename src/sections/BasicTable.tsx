@@ -1,31 +1,34 @@
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
-// components
-import Scrollbar from "src/components/Scrollbar";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 export default function BasicTable({
   title,
   columns,
   data,
+  setSelectedRows,
 }: {
   title: string;
-  columns: GridColumns;
+  columns: GridColDef[];
   data: [];
+  setSelectedRows?: Function;
 }) {
   return (
     <Card>
       <CardHeader title={title} />
       <CardContent>
-        <Scrollbar>
-          <Box sx={{ height: 500, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
+          {setSelectedRows ? (
             <DataGrid
               columns={columns}
               rows={data}
               checkboxSelection
               disableSelectionOnClick
+              onSelectionModelChange={(ids) => setSelectedRows(ids)}
             />
-          </Box>
-        </Scrollbar>
+          ) : (
+            <DataGrid columns={columns} rows={data} />
+          )}
+        </Box>
       </CardContent>
     </Card>
   );

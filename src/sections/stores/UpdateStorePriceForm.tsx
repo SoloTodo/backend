@@ -61,21 +61,18 @@ export default function UpdateStorePricingForm({
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
-    console.log(data);
     const send_data = {
       ...data,
       categories: data.categories.map((c: Category) => c.id.toString()),
     };
-    console.log(send_data);
-    console.log(store_ids)
 
-    for (const id in store_ids) {
+    for (const id of store_ids) {
       await jwtFetch(
         null,
         `${apiSettings.apiResourceEndpoints.stores}${id}/update_pricing/`,
         {
           method: "POST",
-          body: JSON.stringify(data),
+          body: JSON.stringify(send_data),
         }
       )
         .then((res) => {

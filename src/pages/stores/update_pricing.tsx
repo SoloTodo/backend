@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import NextLink from "next/link";
 import { Container, Link, Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
@@ -29,6 +29,7 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 
 export default function UpdatePricing(props: Record<string, any>) {
   const { stores, latest, categories } = props;
+  const [selectedStores, setSelectedStores] = useState([])
 
   const latestActive = stores.reduce((acc: any[], a: Store) => {
     if (a.last_activation) {
@@ -36,8 +37,9 @@ export default function UpdatePricing(props: Record<string, any>) {
       const exito = l.status === 3 && l.available_products_count !== 0;
       acc.push({
         ...l,
+        id: a.id,
         store: a.name,
-        storeId: a.id,
+        updateId: l.id,
         status: exito ? "Exitosa" : l.status === 2 ? "En proceso" : "Error",
         resultado: exito
           ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
@@ -53,7 +55,7 @@ export default function UpdatePricing(props: Record<string, any>) {
       field: "store",
       flex: 1,
       renderCell: (params) => (
-        <NextLink href={`${PATH_STORE.root}/${params.row.storeId}`} passHref>
+        <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref>
           <Link>{params.row.store}</Link>
         </NextLink>
       ),
@@ -114,9 +116,9 @@ export default function UpdatePricing(props: Record<string, any>) {
               prefer_async: true,
             }}
             multi
-            store_ids={[]}
+            store_ids={selectedStores}
           />
-          <BasicTable title="Tiendas" columns={columns} data={latestActive} />
+          <BasicTable title="Tiendas" columns={columns} data={latestActive} setSelectedRows={setSelectedStores} />
         </Stack>
       </Container>
     </Page>
