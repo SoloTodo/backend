@@ -3,7 +3,6 @@ import { ApiFormApiParams } from "../../types";
 export type ApiFormPaginationData = {
   page?: number;
   page_size?: number;
-  ordering?: string;
 };
 
 export type ApiFormPaginationProps = {
@@ -20,7 +19,7 @@ export class ApiFormPagination {
     this.cleanedData = cleanedData;
   }
 
-  loadData(query: URLSearchParams, _name: string) {
+  loadData(query: URLSearchParams) {
     this.cleanedData = this.cleanData(query);
   }
 
@@ -28,7 +27,7 @@ export class ApiFormPagination {
     const newData: any = {
       page_size: 5,
     };
-    const arr = ["page", "page_size", "ordering"];
+    const arr = ["page", "page_size"];
     arr.forEach((a) => {
       const q = query?.get(a);
       if (q) newData[a] = q;

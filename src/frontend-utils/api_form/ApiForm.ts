@@ -63,7 +63,7 @@ export class ApiForm {
         : new URL(window.location.href);
     const query = currentUrl.searchParams;
     for (const field of this.fields) {
-      field.loadData(query, field.name);
+      field.loadData(query);
     }
   }
 
