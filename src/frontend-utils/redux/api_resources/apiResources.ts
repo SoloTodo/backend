@@ -1,4 +1,4 @@
-import { Country, StoreType } from "./types";
+import { Country, Currency, StoreType } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { apiSettings } from "../../settings";
 // import { NextPageContext } from "next";
@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "src/store/store";
 import { HYDRATE } from "next-redux-wrapper";
 
-export type ApiResourceObject = Country | StoreType;
+export type ApiResourceObject = Currency | Country | StoreType ;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
 
 const initialState = {} as ApiResourceObjectRecord;
