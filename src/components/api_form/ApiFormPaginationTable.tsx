@@ -54,7 +54,7 @@ export default function BasicTableWithPagination({
   const context = useContext(ApiFormContext);
   const data = context.currentResult as PagintationData;
 
-  if (!data) return (<div></div>)
+  if (!data) return (<div>Loading...</div>)
   return (
     <Card>
       <CardHeader title={title} />
