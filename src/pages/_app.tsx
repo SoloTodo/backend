@@ -86,7 +86,7 @@ class MyApp extends App<MyAppProps> {
         // Store in redux api resources
         try {
           // Add resources
-          const resources = ["countries", "store_types"];
+          const resources = ["countries", "store_types", "currencies", "categories", "stores"];
           const resources_query = resources.reduce((acc, r) => {
             return (acc = `${acc}&names=${r}`);
           }, "");

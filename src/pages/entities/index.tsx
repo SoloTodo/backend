@@ -14,7 +14,11 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 // api
 import { apiSettings } from "src/frontend-utils/settings";
-import { useRouter } from "next/router";
+// currency
+import currency from "currency.js";
+// redux
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +36,8 @@ const fieldMetadata = [
 ];
 
 export default function Entities() {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+
   const columns: any[] = [
     {
       headerName: "Nombre",
@@ -52,6 +58,7 @@ export default function Entities() {
       headerName: "Categoría",
       field: "category",
       flex: 1,
+      renderCell: (row: any) => apiResourceObjects[row.category].name,
     },
     {
       headerName: "Producto",
@@ -75,11 +82,7 @@ export default function Entities() {
       field: "key",
       flex: 1,
       renderCell: (row: any) =>
-        row.active_registry ? (
-          <CheckIcon />
-        ) : (
-          <ClearIcon />
-        ),
+        row.active_registry ? <CheckIcon /> : <ClearIcon />,
     },
     {
       headerName: "Vis?",
@@ -92,26 +95,44 @@ export default function Entities() {
       headerName: "Normal (orig.)",
       field: "active_registry.normal_price",
       flex: 1,
-      renderCell: (row: any) => row.active_registry ? <CheckIcon /> : "$ 0"
+      renderCell: (row: any) =>
+        row.active_registry
+          ? currency(row.active_registry.normal_price, {
+              precision: 0,
+            }).format()
+          : "$0",
     },
     {
       headerName: "Oferta (orig.)",
       field: "active_registry.offer_price",
       flex: 1,
-      renderCell: (row: any) => row.active_registry ? <CheckIcon /> : "$ 0"
+      renderCell: (row: any) =>
+        row.active_registry
+          ? currency(row.active_registry.offer_price, { precision: 0 }).format()
+          : "$0",
     },
-    // {
-    //   headerName: "Normal (USD)",
-    //   field: "id",
-    //   flex: 1,
-    //   renderCell: (row: any) => row.is_visible ? <CheckIcon /> : <ClearIcon />
-    // },
-    // {
-    //   headerName: "Oferta (USD)",
-    //   field: "id",
-    //   flex: 1,
-    //   renderCell: (row: any) => row.is_visible ? <CheckIcon /> : <ClearIcon />
-    // },
+    {
+      headerName: "Normal (USD)",
+      field: "active_registry.normal_price_usd",
+      flex: 1,
+      renderCell: (row: any) =>
+        row.active_registry
+          ? currency(row.active_registry.normal_price, { precision: 0 })
+              .divide(apiResourceObjects[row.currency].exchange_rate)
+              .format()
+          : "$0",
+    },
+    {
+      headerName: "Oferta (USD)",
+      field: "active_registry.offer_price_usd",
+      flex: 1,
+      renderCell: (row: any) =>
+        row.active_registry
+          ? currency(row.active_registry.offer_price, { precision: 0 })
+              .divide(apiResourceObjects[row.currency].exchange_rate)
+              .format()
+          : "$0",
+    },
   ];
 
   return (
@@ -139,7 +160,11 @@ export default function Entities() {
               </Masonry> */}
             </CardContent>
           </Card>
-          <ApiFormPaginationTable columns={columns} title="Entidades" paginationName="entities" />
+          <ApiFormPaginationTable
+            columns={columns}
+            title="Entidades"
+            paginationName="entities"
+          />
         </Stack>
       </ApiFormComponent>
     </Page>
