@@ -1,34 +1,43 @@
 import { ApiFormApiParams } from "../../types";
 
-export type PagintationData = {
-  count: number;
-  next: string;
-  previous: string;
-  results: any[];
+export type ApiFormPaginationData = {
+  page?: number;
+  page_size?: number;
+  ordering?: string;
 };
 
 export type ApiFormPaginationProps = {
   fieldType: "pagination";
-  name: "store" | "page" | "page_size" | "ordering";
+  name: string;
 };
 
 export class ApiFormPagination {
   readonly name: string;
-  cleanedData?: string;
+  cleanedData?: ApiFormPaginationData;
 
-  constructor(name: string, cleanedData?: string) {
+  constructor(name: string, cleanedData?: ApiFormPaginationData) {
     this.name = name;
     this.cleanedData = cleanedData;
   }
 
-  loadData(data: string | string[]) {
-    if (data.length !== 0) {
-      this.cleanedData = data[0];
-    }
+  loadData(query: URLSearchParams, _name: string) {
+    this.cleanedData = this.cleanData(query);
+  }
+
+  cleanData(query?: URLSearchParams): ApiFormPaginationData {
+    const newData: any = {
+      page_size: 5,
+    };
+    const arr = ["page", "page_size", "ordering"];
+    arr.forEach((a) => {
+      const q = query?.get(a);
+      if (q) newData[a] = q;
+    });
+    return newData;
   }
 
   isValid() {
-    return true;
+    return typeof this.cleanedData !== "undefined";
   }
 
   getApiParams(): ApiFormApiParams {
@@ -37,7 +46,9 @@ export class ApiFormPagination {
     }
 
     const apiParams: ApiFormApiParams = {};
-    apiParams[this.name] = [this.cleanedData];
+    Object.keys(this.cleanedData).map((k) => {
+      apiParams[k] = [(this.cleanedData as any)[k]];
+    });
     return apiParams;
   }
 }

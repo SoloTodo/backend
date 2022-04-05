@@ -14,10 +14,17 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { GridColumns } from "@mui/x-data-grid";
-import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
-import { PagintationData } from "src/frontend-utils/api_form/fields/pagination/ApiFormPagination";
 // components
+import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
+
+
+export type PagintationData = {
+  count: number;
+  next: string;
+  previous: string;
+  results: any[];
+};
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,14 +44,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function BasicTableWithPagination({
   title,
+  paginationName,
   columns,
 }: {
   title: string;
+  paginationName: string;
   columns: GridColumns;
 }) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult as PagintationData;
 
+  if (!data) return (<div></div>)
   return (
     <Card>
       <CardHeader title={title} />
@@ -73,7 +83,7 @@ export default function BasicTableWithPagination({
             </TableBody>
           </Table>
         </TableContainer>
-        <ApiFormPaginationComponent />
+        <ApiFormPaginationComponent name={paginationName} />
       </CardContent>
     </Card>
   );

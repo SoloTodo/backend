@@ -38,8 +38,8 @@ export class ApiFormSelect {
     this.cleanedData = cleanedData;
   }
 
-  loadData(data: string | string[]) {
-    this.cleanedData = this.cleanData(data);
+  loadData(query: URLSearchParams, name: string) {
+    this.cleanedData = this.cleanData(query.getAll(name));
   }
 
   cleanData(data?: string | string[]): ApiFormSelectChoice[] | undefined {

@@ -1,14 +1,29 @@
 import { useContext } from "react";
 import { TablePagination } from "@mui/material";
 import ApiFormContext from "../../ApiFormContext";
+import { ApiFormPagination } from "./ApiFormPagination";
 
+type ApiFormPaginationComponentPorps = {
+  name: string;
+};
 
 export default function ApiFormPaginationComponent(
-  ) {
+  props: ApiFormPaginationComponentPorps
+) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult;
-  const page = context.getField("page")?.cleanedData;
-  const page_size = context.getField("page_size")?.cleanedData;
+  const field = context.getField(props.name) as ApiFormPagination | undefined;
+
+  if (typeof field === "undefined") {
+    throw `Invalid field name: ${props.name}`;
+  }
+
+  let page = null;
+  let page_size = null;
+  if (typeof field.cleanedData !== "undefined") {
+    page = field.cleanedData.page;
+    page_size = field.cleanedData.page_size;
+  }
 
   const handleChange = (value: string, name: string) => {
     context.updateUrl({

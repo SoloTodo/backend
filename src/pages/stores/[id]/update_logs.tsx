@@ -106,11 +106,12 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={apiSettings.apiResourceEndpoints.store_update_logs}
+          endpoint={`${apiSettings.apiResourceEndpoints.store_update_logs}?store=${store.id}`}
           initialState={initialState}
         >
           <PaginationTable
             title="Registros de Actualización"
+            paginationName="udpate_logs"
             columns={columns}
           />
         </ApiFormComponent>
@@ -120,37 +121,26 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const fieldMetadata = [
-    {
-      fieldType: "pagination" as "pagination",
-      name: "store" as "store",
-    },
-    {
-      fieldType: "pagination" as "pagination",
-      name: "page" as "page",
-    },
-    {
-      fieldType: "pagination" as "pagination",
-      name: "page_size" as "page_size",
-    },
-  ];
   let store = {};
   if (context.params) {
+    const fieldMetadata = [
+      {
+        fieldType: "pagination" as "pagination",
+        name: "udpate_logs",
+      },
+    ];
     store = await jwtFetch(
       context,
       `${apiSettings.apiResourceEndpoints.stores}${context.params.id}/`
     );
     const form = new ApiForm(
       fieldMetadata,
-      apiSettings.apiResourceEndpoints.store_update_logs,
-      {
-        store: context.params.id,
-        page_size: 5,
-        page: 1,
-      }
+      `${apiSettings.apiResourceEndpoints.store_update_logs}?store=${context.params.id}`
     );
     form.initialize(context);
-    const data = form.isValid() ? await form.submit() : null;
+    const data = form.isValid()
+      ? await form.submit()
+      : { count: 0, results: [] };
     return {
       props: {
         store: store,
@@ -165,7 +155,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         store: store,
         initialResult: [],
         initialData: [],
-        fieldMetadata: fieldMetadata,
+        fieldMetadata: [],
       },
     };
   }
