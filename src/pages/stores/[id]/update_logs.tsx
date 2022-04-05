@@ -140,7 +140,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     form.initialize(context);
     const data = form.isValid()
       ? await form.submit()
-      : { count: 0, results: [] };
+      : null;
     return {
       props: {
         store: store,
