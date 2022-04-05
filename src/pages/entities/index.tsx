@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import { Card, CardContent, CardHeader, Container, Stack } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
@@ -27,34 +27,11 @@ Entities.getLayout = function getLayout(page: ReactElement) {
 const fieldMetadata = [
   {
     fieldType: "pagination" as "pagination",
-    name: "ordering" as "ordering",
-  },
-  {
-    fieldType: "pagination" as "pagination",
-    name: "page" as "page",
-  },
-  {
-    fieldType: "pagination" as "pagination",
-    name: "page_size" as "page_size",
+    name: "entities",
   },
 ];
 
 export default function Entities() {
-  const [data, setData] = useState({
-    results: [],
-    count: 0,
-  });
-  const [isLoading, setLoading] = useState(false);
-  const router = useRouter();
-  const initialData: any = {
-    page_size: 50,
-    ordering: "name",
-    ...router.query
-  }
-  const query = Object.keys(initialData).reduce((acc, a) => {
-    return (acc = `${acc}${a}=${initialData[a]}&`);
-  }, "");
-
   const columns: any[] = [
     {
       headerName: "Nombre",
@@ -111,18 +88,18 @@ export default function Entities() {
       renderCell: (row: any) =>
         row.is_visible ? <CheckIcon /> : <ClearIcon />,
     },
-    // {
-    //   headerName: "Normal (orig.)",
-    //   field: "id",
-    //   flex: 1,
-    //   renderCell: (row: any) => row.is_visible ? <CheckIcon /> : <ClearIcon />
-    // },
-    // {
-    //   headerName: "Oferta (orig.)",
-    //   field: "id",
-    //   flex: 1,
-    //   renderCell: (row: any) => row.is_visible ? <CheckIcon /> : <ClearIcon />
-    // },
+    {
+      headerName: "Normal (orig.)",
+      field: "active_registry.normal_price",
+      flex: 1,
+      renderCell: (row: any) => row.active_registry ? <CheckIcon /> : "$ 0"
+    },
+    {
+      headerName: "Oferta (orig.)",
+      field: "active_registry.offer_price",
+      flex: 1,
+      renderCell: (row: any) => row.active_registry ? <CheckIcon /> : "$ 0"
+    },
     // {
     //   headerName: "Normal (USD)",
     //   field: "id",
@@ -137,18 +114,6 @@ export default function Entities() {
     // },
   ];
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${apiSettings.apiResourceEndpoints.entities}?${query}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (data.results.length === 0) return <></>;
   return (
     <Page title="Entidades">
       <Container>
@@ -163,10 +128,6 @@ export default function Entities() {
       <ApiFormComponent
         fieldsMetadata={fieldMetadata}
         endpoint={apiSettings.apiResourceEndpoints.entities}
-        initialState={{
-          initialData: initialData,
-          initialResult: data,
-        }}
       >
         <Stack spacing={3}>
           <Card>
@@ -178,7 +139,7 @@ export default function Entities() {
               </Masonry> */}
             </CardContent>
           </Card>
-          <ApiFormPaginationTable columns={columns} title="Entidades" />
+          <ApiFormPaginationTable columns={columns} title="Entidades" paginationName="entities" />
         </Stack>
       </ApiFormComponent>
     </Page>

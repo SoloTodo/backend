@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { ApiForm, ApiFormFieldMetadata } from "./ApiForm";
 import { ApiFormProvider } from "./ApiFormContext";
 import { useRouter } from "next/router";
@@ -17,11 +17,14 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   const router = useRouter();
 
   const form = useMemo(
-      () => new ApiForm(
-      props.fieldsMetadata,
-      props.endpoint,
-      props.initialState && props.initialState.initialData
-    ), []);
+    () =>
+      new ApiForm(
+        props.fieldsMetadata,
+        props.endpoint,
+        props.initialState && props.initialState.initialData
+      ),
+    []
+  );
   const [currentResult, setCurrentResult] = useState(
     props.initialState ? props.initialState.initialResult : null
   );
@@ -29,16 +32,19 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   useEffect(() => {
     let isMounted = true;
     form.initialize();
+    form.submit().then((results) => {
+      if (isMounted) setCurrentResult(results);
+    });
 
-    const handleRouteChange = (_url: any) => {
+    const handleRouteChange = async (_url: any) => {
       form.initialize();
-      form.submit().then((results) => {
+      await form.submit().then((results) => {
         if (isMounted) setCurrentResult(results);
       });
     };
 
     router.events.on("routeChangeComplete", handleRouteChange);
-    
+
     return () => {
       isMounted = false;
       router.events.off("routeChangeComplete", handleRouteChange);
