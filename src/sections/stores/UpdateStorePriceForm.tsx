@@ -22,12 +22,14 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // types
 import {
-  Category,
   StoreScrapingOptions as FormValuesProps,
 } from "src/frontend-utils/types/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_STORE } from "src/routes/paths";
+// redux 
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 export default function UpdateStorePricingForm({
   store_scraping_options,
@@ -40,6 +42,8 @@ export default function UpdateStorePricingForm({
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const UpdateSchema = Yup.object().shape({});
 
@@ -63,7 +67,7 @@ export default function UpdateStorePricingForm({
   const onSubmit = async (data: FormValuesProps) => {
     const send_data = {
       ...data,
-      categories: data.categories.map((c: Category) => c.id.toString()),
+      categories: data.categories.map((c) => apiResourceObjects[c].id.toString()),
     };
 
     for (const id of store_ids) {
@@ -117,16 +121,16 @@ export default function UpdateStorePricingForm({
                 <Autocomplete
                   {...field}
                   multiple
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => apiResourceObjects[option].name}
                   onChange={(_event, newValue) => field.onChange(newValue)}
                   options={store_scraping_options.categories}
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
                         {...getTagProps({ index })}
-                        key={option.id}
+                        key={apiResourceObjects[option].id}
                         size="small"
-                        label={option.name}
+                        label={apiResourceObjects[option].name}
                       />
                     ))
                   }

@@ -1,8 +1,7 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { Container, Link, Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import { GetServerSideProps } from "next/types";
 // layout
 import Layout from "src/layouts";
 // components
@@ -18,6 +17,9 @@ import { Store } from "src/frontend-utils/types/store";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
+// redux
+import { useAppSelector } from "src/store/hooks";
+import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -27,27 +29,42 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function UpdatePricing(props: Record<string, any>) {
-  const { stores, latest, categories } = props;
-  const [selectedStores, setSelectedStores] = useState([])
+export default function UpdatePricing() {
+  const [latestActive, setLatestActive] = useState([] as any[]);
+  const [isLoading, setLoading] = useState(false)
+  const [selectedStores, setSelectedStores] = useState([]);
 
-  const latestActive = stores.reduce((acc: any[], a: Store) => {
-    if (a.last_activation) {
-      const l = latest[a.url];
-      const exito = l.status === 3 && l.available_products_count !== 0;
-      acc.push({
-        ...l,
-        id: a.id,
-        store: a.name,
-        updateId: l.id,
-        status: exito ? "Exitosa" : l.status === 2 ? "En proceso" : "Error",
-        resultado: exito
-          ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
-          : "N/A",
-      });
-    }
-    return acc;
-  }, []);
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const categories = Object.keys(apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url")) as string[];
+  const stores = Object.values(apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "url")) as Store[];
+
+  useEffect(() => {
+    setLoading(true)
+    jwtFetch(null, apiSettings.apiResourceEndpoints.store_update_logs + "latest/")
+      .then((latest) => {
+        const latestActive = stores.reduce((acc: any[], a: Store) => {
+          if (a.last_activation) {
+            const l = latest[a.url];
+            const exito = l.status === 3 && l.available_products_count !== 0;
+            acc.push({
+              ...l,
+              id: a.id,
+              store: a.name,
+              updateId: l.id,
+              status: exito ? "Exitosa" : l.status === 2 ? "En proceso" : "Error",
+              resultado: exito
+              ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+              : "N/A",
+            });
+          }
+          return acc;
+        }, []);
+        setLatestActive(latestActive)
+        setLoading(false)
+
+      })
+  }, [])
+
 
   const columns: GridColDef[] = [
     {
@@ -98,6 +115,7 @@ export default function UpdatePricing(props: Record<string, any>) {
     },
   ];
 
+  if (isLoading) return <p>Loading...</p>
   return (
     <Page title="Actualizar Pricing">
       <Container>
@@ -118,31 +136,14 @@ export default function UpdatePricing(props: Record<string, any>) {
             multi
             store_ids={selectedStores}
           />
-          <BasicTable title="Tiendas" columns={columns} data={latestActive} setSelectedRows={setSelectedStores} />
+          <BasicTable
+            title="Tiendas"
+            columns={columns}
+            data={latestActive}
+            setSelectedRows={setSelectedStores}
+          />
         </Stack>
       </Container>
     </Page>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const stores = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.stores
-  );
-  const latest = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
-  );
-  const categories = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.categories
-  );
-  return {
-    props: {
-      stores: Object.values(stores),
-      latest: latest,
-      categories: categories,
-    },
-  };
-};

@@ -37,7 +37,7 @@ export type Category = {
 };
 
 export type StoreScrapingOptions = {
-  categories: Category[];
+  categories: string[];
   prefer_async: boolean;
   discover_urls_concurrency?: number;
   products_for_url_concurrency?: number;

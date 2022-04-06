@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { useRouter } from "next/router";
 import { Container, Link } from "@mui/material";
 import { GetServerSideProps } from "next/types";
 // layout
@@ -11,11 +12,13 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import { apiSettings } from "src/frontend-utils/settings";
 // fetch
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import { Update } from "src/frontend-utils/types/store";
+import { Store, Update } from "src/frontend-utils/types/store";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { ApiForm } from "src/frontend-utils/api_form/ApiForm";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+// redux
+import { useAppSelector } from "src/store/hooks";
+import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -26,11 +29,23 @@ StoreUpdateLogs.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function StoreUpdateLogs(props: Record<string, any>) {
-  const { store, initialResult, initialData, fieldMetadata } = props;
+  const { initialResult, initialData, fieldMetadata } = props;
   const initialState = {
     initialResult,
     initialData,
   };
+
+  const router = useRouter();
+  const { id } = router.query;
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const stores: {[key: string]: Store} = apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "id");
+  let store = {
+    name: "",
+    id: 0
+  }
+  if (typeof id === 'string' && stores.hasOwnProperty(id)) {
+    store = stores[id];
+  }
 
   const columns: any[] = [
     {
@@ -121,7 +136,6 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let store = {};
   if (context.params) {
     const fieldMetadata = [
       {
@@ -129,10 +143,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         name: "udpate_logs",
       },
     ];
-    store = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.stores}${context.params.id}/`
-    );
     const form = new ApiForm(
       fieldMetadata,
       `${apiSettings.apiResourceEndpoints.store_update_logs}?store=${context.params.id}`
@@ -143,7 +153,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       : null;
     return {
       props: {
-        store: store,
         initialResult: data,
         initialData: form.getCleanedData(),
         fieldMetadata: fieldMetadata,
@@ -152,7 +161,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } else {
     return {
       props: {
-        store: store,
         initialResult: [],
         initialData: [],
         fieldMetadata: [],

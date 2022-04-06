@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "src/store/store";
 import { HYDRATE } from "next-redux-wrapper";
 
-export type ApiResourceObject = Currency | Country | StoreType ;
+export type ApiResourceObject = Currency | Country | StoreType;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
 
 const initialState = {} as ApiResourceObjectRecord;
@@ -28,16 +28,44 @@ const apiResourceObjectsSlice = createSlice({
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
-        return {
-            ...state,
-            ...action.payload.apiResourceObjects,
-        };
+      return {
+        ...state,
+        ...action.payload.apiResourceObjects,
+      };
     },
-},
+  },
 });
 
 export function useApiResourceObjects(state: RootState) {
   return state.apiResourceObjects;
+}
+
+export function selectApiResourceObjects(
+  apiResourceObjects: ApiResourceObjectRecord,
+  resourceName: string
+) {
+  return Object.values(apiResourceObjects).reduce(
+    (acc: { label: string; value: number }[], r) => {
+      if (r.url.includes(resourceName)) {
+        return [...acc, { label: r.name, value: r.id }];
+      }
+      return acc;
+    },
+    []
+  );
+}
+
+export function apiResourceObjectsByIdOrUrl(
+  apiResourceObjects: ApiResourceObjectRecord,
+  resourceName: string,
+  param: "id" | "url"
+) {
+  return Object.values(apiResourceObjects).reduce((acc, r) => {
+    if (r.url.includes(resourceName)) {
+      return { ...acc, [r[param]]: r };
+    }
+    return acc;
+  }, {});
 }
 
 // export function updateApiResourceObjects(

@@ -27,7 +27,7 @@ import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/Ap
 import { ApiFormSelectProps } from "src/frontend-utils/api_form/fields/select/ApiFormSelect";
 // redux
 import { useAppSelector } from "src/store/hooks";
-import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import { selectApiResourceObjects, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { wrapper } from "src/store/store";
 import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
@@ -144,30 +144,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
         name: "countries",
         label: "Países",
         multiple: true,
-        choices: Object.values(apiResourceObjects).reduce(
-          (acc: { label: string; value: number }[], r) => {
-            if (r.url.includes("countries")) {
-              return [...acc, { label: r.name, value: r.id }];
-            }
-            return acc;
-          },
-          []
-        ),
+        choices: selectApiResourceObjects(apiResourceObjects, "countries"),
       },
       {
         fieldType: "select" as "select",
         name: "types",
         label: "Tipos",
         multiple: true,
-        choices: Object.values(apiResourceObjects).reduce(
-          (acc: { label: string; value: number }[], r) => {
-            if (r.url.includes("types")) {
-              return [...acc, { label: r.name, value: r.id }];
-            }
-            return acc;
-          },
-          []
-        ),
+        choices: selectApiResourceObjects(apiResourceObjects, "types"),
       },
     ];
 

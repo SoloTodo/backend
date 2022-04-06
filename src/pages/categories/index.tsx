@@ -1,14 +1,13 @@
 import { ReactElement } from "react";
-import { GetServerSideProps } from "next";
 import { Container } from "@mui/material";
 // layout
 import Layout from "src/layouts";
 // components
 import Page from "src/components/Page";
-// settings
-import { apiSettings } from "src/frontend-utils/settings";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import BasicTable from "src/sections/BasicTable";
+// redux
+import { useAppSelector } from "src/store/hooks";
+import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -18,8 +17,9 @@ Categories.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function Categories(props: Record<string, any>) {
-  const { categoriesData } = props;
+export default function Categories() {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const categoriesData = Object.values(apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url"))
 
   const columns = [
     {
@@ -47,14 +47,3 @@ export default function Categories(props: Record<string, any>) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const categoriesData = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.categories
-  );
-  return {
-    props: {
-      categoriesData: categoriesData,
-    },
-  };
-};
