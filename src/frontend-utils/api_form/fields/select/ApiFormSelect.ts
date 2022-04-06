@@ -60,7 +60,7 @@ export class ApiFormSelect {
       }
     }
 
-    if (!this.multiple) {
+    if (!this.multiple && parsedData.length > 0) {
       return [parsedData[0]];
     }
 
