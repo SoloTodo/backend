@@ -44,7 +44,6 @@ export default function ApiFormSelectComponent(
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={field.cleanedData}
-      isOptionEqualToValue={(o, v) => o.value === v.value}
       disableClearable={field.required}
     />
   );
