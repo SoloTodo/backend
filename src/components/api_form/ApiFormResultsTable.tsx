@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { useContext } from "react";
 // @mui
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -15,7 +15,7 @@ export default function ApiFormResultsTable({columns}: { columns: GridColDef[] }
   return (
     <Scrollbar>
       <Box sx={{ height: 500, width: "100%" }}>
-        <DataGrid columns={columns} rows={stores} rowsPerPageOptions={[]} />
+        <DataGrid columns={columns} rows={stores} rowsPerPageOptions={[100]} />
       </Box>
     </Scrollbar>
   );

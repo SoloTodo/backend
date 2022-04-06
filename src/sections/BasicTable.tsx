@@ -9,7 +9,7 @@ export default function BasicTable({
 }: {
   title: string;
   columns: GridColDef[];
-  data: [];
+  data: any[];
   setSelectedRows?: Function;
 }) {
   return (
@@ -24,10 +24,10 @@ export default function BasicTable({
               checkboxSelection
               disableSelectionOnClick
               onSelectionModelChange={(ids) => setSelectedRows(ids)}
-              rowsPerPageOptions={[]}
+              rowsPerPageOptions={[100]}
             />
           ) : (
-            <DataGrid columns={columns} rows={data} rowsPerPageOptions={[]} />
+            <DataGrid columns={columns} rows={data} rowsPerPageOptions={[100]} />
           )}
         </Box>
       </CardContent>
