@@ -111,6 +111,11 @@ export default function Entities() {
       headerName: "Nombre",
       field: "name",
       flex: 1,
+      renderCell: (row: {id: string, name: string}) => (
+        <NextLink href={`${PATH_ENTITY.root}/${row.id}`} passHref>
+          <Link>{row.name}</Link>
+        </NextLink>
+      ),
     },
     {
       headerName: "Tienda",
@@ -202,7 +207,7 @@ export default function Entities() {
       flex: 1,
       renderCell: (row: any) =>
         row.active_registry
-          ? currency(row.active_registry.normal_price, { precision: 0 })
+          ? currency(row.active_registry.normal_price)
               .divide(
                 (apiResourceObjects[row.currency] as Currency).exchange_rate
               )
@@ -215,7 +220,7 @@ export default function Entities() {
       flex: 1,
       renderCell: (row: any) =>
         row.active_registry
-          ? currency(row.active_registry.offer_price, { precision: 0 })
+          ? currency(row.active_registry.offer_price)
               .divide(
                 (apiResourceObjects[row.currency] as Currency).exchange_rate
               )

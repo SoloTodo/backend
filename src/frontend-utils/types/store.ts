@@ -42,3 +42,39 @@ export type StoreScrapingOptions = {
   discover_urls_concurrency?: number;
   products_for_url_concurrency?: number;
 };
+
+export type Entity = {
+  active_registry: {
+    normal_price: string;
+    offer_price: string;
+    is_available: boolean;
+  };
+  bundle: null;
+  category: string;
+  cell_plan: null;
+  cell_plan_name: null;
+  condition: string;
+  creation_date: string;
+  currency: string;
+  description: string;
+  ean: null;
+  external_url: string;
+  id: number;
+  is_visible: boolean;
+  key: string;
+  last_pricing_update: string;
+  last_updated: string;
+  name: string;
+  part_number: null;
+  picture_urls: string[];
+  product: {
+    id: number;
+    name: string;
+    url: string;
+  };
+  scraped_condition: string;
+  seller: string;
+  sku: string;
+  store: string;
+  url: string;
+};
