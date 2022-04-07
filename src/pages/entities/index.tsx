@@ -5,13 +5,13 @@ import {
   CardContent,
   CardHeader,
   Container,
+  Grid,
   Link,
   Stack,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { Masonry } from "@mui/lab";
 // layouts
 import Layout from "src/layouts";
 // routes
@@ -33,6 +33,7 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
+import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 
 // ----------------------------------------------------------------------
 
@@ -75,6 +76,33 @@ export default function Entities() {
       label: "¿Disponible?",
       multiple: false,
       choices: choicesYesNo,
+    },
+    {
+      fieldType: "select" as "select",
+      name: "is_active",
+      label: "¿Activa?",
+      multiple: false,
+      choices: choicesYesNo,
+    },
+    {
+      fieldType: "select" as "select",
+      name: "is_visible",
+      label: "¿Visible?",
+      multiple: false,
+      choices: choicesYesNo,
+    },
+    {
+      fieldType: "select" as "select",
+      name: "is_associated",
+      label: "¿Asociada?",
+      multiple: false,
+      choices: choicesYesNo,
+    },
+    {
+      fieldType: "text" as "text",
+      name: "search",
+      label: "Palabras clave",
+      inputType: "text" as "text",
     },
   ];
 
@@ -214,11 +242,29 @@ export default function Entities() {
             <Card>
               <CardHeader title="Filtros" />
               <CardContent>
-                <Masonry columns={2} spacing={3}>
-                  <ApiFormSelectComponent name="stores" />
-                  <ApiFormSelectComponent name="categories" />
-                  <ApiFormSelectComponent name="is_available" />
-                </Masonry>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 6, md: 12 }}>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="stores" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="categories" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <ApiFormSelectComponent name="is_available" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <ApiFormSelectComponent name="is_active" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <ApiFormSelectComponent name="is_visible" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <ApiFormSelectComponent name="is_associated" />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <ApiFormTextComponent name="search" />
+                  </Grid>
+                </Grid>
               </CardContent>
             </Card>
             <ApiFormPaginationTable
