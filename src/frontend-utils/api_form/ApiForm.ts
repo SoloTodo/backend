@@ -9,9 +9,10 @@ import {
   ApiFormPaginationProps,
   ApiFormPagination,
 } from "./fields/pagination/ApiFormPagination";
+import { ApiFormText, ApiFormTextProps } from "./fields/text/ApiFormText";
 
-export type ApiFormFieldMetadata = ApiFormSelectProps | ApiFormPaginationProps;
-export type ApiFormField = ApiFormSelect | ApiFormPagination;
+export type ApiFormFieldMetadata = ApiFormSelectProps | ApiFormPaginationProps | ApiFormTextProps;
+export type ApiFormField = ApiFormSelect | ApiFormPagination | ApiFormText;
 
 export class ApiForm {
   private fields: ApiFormField[] = [];
@@ -45,6 +46,16 @@ export class ApiForm {
           this.fields.push(
             new ApiFormPagination(
               fieldMetadata.name,
+              initialData && initialData[fieldMetadata.name]
+            )
+          );
+          break;
+        case "text":
+          this.fields.push(
+            new ApiFormText(
+              fieldMetadata.name,
+              fieldMetadata.label,
+              fieldMetadata.inputType,
               initialData && initialData[fieldMetadata.name]
             )
           );
