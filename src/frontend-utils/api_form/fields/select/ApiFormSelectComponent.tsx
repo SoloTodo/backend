@@ -34,6 +34,17 @@ export default function ApiFormSelectComponent(
     }
   };
 
+  let cleanedData: any = field.cleanedData
+  if (typeof field.cleanedData === "undefined" || field.cleanedData.length === 0) {
+    if (field.multiple) {
+      cleanedData = [];
+    } else {
+      cleanedData = null;
+    }
+  } else if (!field.multiple) {
+    cleanedData = field.cleanedData[0]
+  }
+
   return (
     <Autocomplete
       multiple={field.multiple}
@@ -43,7 +54,7 @@ export default function ApiFormSelectComponent(
       )}
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
-      value={field.cleanedData}
+      value={cleanedData}
       disableClearable={field.required}
     />
   );
