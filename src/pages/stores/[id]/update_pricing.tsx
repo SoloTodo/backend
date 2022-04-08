@@ -16,6 +16,7 @@ import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 // redux 
 import { useAppSelector } from "src/store/hooks";
 import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import { Option } from "src/frontend-utils/types/extras";
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +54,51 @@ export default function UpdateStorePricing() {
     store = stores[id];
   }
 
+  const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
+
+  const options: Option[] = [
+    {
+      key: 1,
+      text: "Información general",
+      path: baseRoute,
+    },
+    {
+      key: 2,
+      text: "Actualizar pricing",
+      path: `${baseRoute}/update_pricing`,
+    },
+    {
+      key: 3,
+      text: "Registros de actualización",
+      path: `${baseRoute}/update_logs`,
+    },
+    // {
+    //   key: 4,
+    //   text: "Leads (listado)",
+    //   path: `${baseRoute}`,
+    // },
+    // {
+    //   key: 5,
+    //   text: "Leads (estadísticas)",
+    //   path: `${baseRoute}`,
+    // },
+    {
+      key: 6,
+      text: "Entidades en conflicto",
+      path: `${baseRoute}`,
+    },
+    {
+      key: 7,
+      text: "Ratings",
+      path: `${baseRoute}`,
+    },
+    {
+      key: 8,
+      text: "Descargar reporte de homologación",
+      path: `${baseRoute}/matching_report`,
+    },
+  ];
+
   if (isLoading) return <p>Loading...</p>
   return (
     <Page title={`${store.name}`}>
@@ -74,7 +120,7 @@ export default function UpdateStorePricing() {
             />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <Options />
+            <Options options={options} />
           </Grid>
         </Grid>
       </Container>
