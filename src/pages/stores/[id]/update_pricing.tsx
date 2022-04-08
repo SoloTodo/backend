@@ -11,7 +11,7 @@ import {
 } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
-import Options from "src/sections/stores/Options";
+import Options from "src/sections/Options";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 // redux 
 import { useAppSelector } from "src/store/hooks";
