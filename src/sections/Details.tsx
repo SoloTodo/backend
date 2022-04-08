@@ -46,13 +46,13 @@ export default function CustomizedTables({
           <Table aria-label="customized table">
             <TableBody>
               {details.map(({ key, label, renderData }) => (
-                <StyledTableRow key={key}>
+                Object.keys(data).length !== 0 ? <StyledTableRow key={key}>
                   <StyledTableCell scope="row">{label}</StyledTableCell>
                   <StyledTableCell>
                       {renderData ? renderData(data) : data[key]}
                   </StyledTableCell>
                 </StyledTableRow>
-              ))}
+              : null ))}
             </TableBody>
           </Table>
         </TableContainer>
