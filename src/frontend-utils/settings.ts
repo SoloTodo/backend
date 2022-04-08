@@ -13,6 +13,7 @@ export const apiSettings = {
         store_update_logs: endpoint + 'store_update_logs/',
         entities: endpoint + 'entities/',
         entity_histories: endpoint + 'entity_histories/',
+        entity_section_positions: endpoint + 'entity_section_positions/',
         users: endpoint + 'users/',
         users_with_staff_actions: endpoint + 'users/with_staff_actions/',
         products: endpoint + 'products/',
