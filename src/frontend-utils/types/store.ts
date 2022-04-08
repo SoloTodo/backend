@@ -43,21 +43,27 @@ export type StoreScrapingOptions = {
   products_for_url_concurrency?: number;
 };
 
+export type InLineProduct = {
+  id: number;
+  name: string;
+  url: string;
+};
+
 export type Entity = {
-  active_registry: {
+  active_registry?: {
     normal_price: string;
     offer_price: string;
     is_available: boolean;
   };
   bundle: null;
   category: string;
-  cell_plan: null;
-  cell_plan_name: null;
+  cell_plan?: InLineProduct;
+  cell_plan_name?: string;
   condition: string;
   creation_date: string;
   currency: string;
-  description: string;
-  ean: null;
+  description?: string;
+  ean?: string;
   external_url: string;
   id: number;
   is_visible: boolean;
@@ -65,16 +71,21 @@ export type Entity = {
   last_pricing_update: string;
   last_updated: string;
   name: string;
-  part_number: null;
+  part_number?: string;
   picture_urls: string[];
-  product: {
-    id: number;
-    name: string;
-    url: string;
-  };
+  product?: InLineProduct;
   scraped_condition: string;
-  seller: string;
-  sku: string;
+  seller?: string;
+  sku?: string;
   store: string;
   url: string;
+};
+
+export type StaffInfo = {
+  discovery_url: string;
+  last_association?: string;
+  last_association_user?: string;
+  last_staff_access?: string;
+  last_staff_access_user?: string;
+  scraped_category: string;
 };
