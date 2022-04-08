@@ -1,24 +1,44 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import NextLink from "next/link";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { wrapper } from "src/store/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { Entity } from "src/frontend-utils/types/store";
+import { Entity, StaffInfo } from "src/frontend-utils/types/store";
 import Page from "src/components/Page";
-import { Button, Container, Grid, Link } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Grid,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
-import { PATH_DASHBOARD, PATH_ENTITY, PATH_STORE } from "src/routes/paths";
-import Options from "src/sections/stores/Options";
+import {
+  PATH_DASHBOARD,
+  PATH_ENTITY,
+  PATH_PRODUCT,
+  PATH_STORE,
+} from "src/routes/paths";
+import Options from "src/sections/Options";
 import { Detail, Option } from "src/frontend-utils/types/extras";
 import { useRouter } from "next/router";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import Details from "src/sections/stores/Details";
+import Details from "src/sections/Details";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 // currency
 import currency from "currency.js";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
+import CarouselBasic from "src/sections/mui/CarouselBasic";
+import { useSnackbar } from "notistack";
+import BasicTable from "src/sections/BasicTable";
+import { GridColDef } from "@mui/x-data-grid";
+import { selectApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -29,9 +49,8 @@ EntityPage.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 type EntityProps = {
-  entity: Entity;
   apiResourceObjects: any;
-  stock: { stock: number };
+  users: any;
 };
 
 // ----------------------------------------------------------------------
@@ -41,9 +60,29 @@ const conditions: any = {
 };
 
 export default function EntityPage(props: EntityProps) {
-  const { entity, apiResourceObjects, stock } = props;
+  const { apiResourceObjects, users } = props;
+  const { enqueueSnackbar } = useSnackbar();
+  const [isLoading, setLoading] = useState(true);
+  const [entity, setEntity] = useState({
+    name: "",
+    picture_urls: [],
+    description: "",
+  });
+  const [staffInfo, setStaffInfo] = useState({});
+  const [stock, setStock] = useState(0);
+  const [positions, setPositions] = useState([]);
   const router = useRouter();
   const baseRoute = `${PATH_ENTITY.root}/${router.query.id}`;
+
+  const userDict = users.reduce(
+    (acc: { [x: string]: any }, a: { url: string }) => {
+      acc[a.url] = a;
+      return acc;
+    },
+    {}
+  );
+
+  const categories = selectApiResourceObjects(apiResourceObjects, "categories");
 
   const options: Option[] = [
     {
@@ -167,7 +206,11 @@ export default function EntityPage(props: EntityProps) {
     {
       key: "product_url",
       label: "Producto",
-      renderData: (entity: Entity) => entity.product.url,
+      renderData: (entity: Entity) => (
+        entity.product ? <NextLink href={`${PATH_PRODUCT.root}/${entity.product.id}`} passHref>
+          <Link>{entity.product.name}</Link>
+        </NextLink> : null
+      ),
     },
     {
       key: "disociar",
@@ -252,14 +295,135 @@ export default function EntityPage(props: EntityProps) {
     {
       key: "stock",
       label: "Stock",
-      renderData: (_entity: Entity) => stock.stock,
+      renderData: (_entity: Entity) => stock,
     },
     {
       key: "last_pricing_update",
       label: "Última actualización",
-      renderData: (entity: Entity) => fDateTimeSuffix(entity.last_pricing_update),
+      renderData: (entity: Entity) =>
+        fDateTimeSuffix(entity.last_pricing_update),
     },
   ];
+
+  const staffDetails: Detail[] = [
+    {
+      key: "key",
+      label: "Llave",
+    },
+    {
+      key: "scraped_category",
+      label: "Categoría original",
+      renderData: (entityPlus: any) =>
+        apiResourceObjects[entityPlus.scraped_category].name,
+    },
+    {
+      key: "discovery_url",
+      label: "URL",
+      renderData: (entityPlus: any) => (
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href={entityPlus.discovery_url}
+        >
+          {entityPlus.discovery_url}
+        </Link>
+      ),
+    },
+    {
+      key: "last_association",
+      label: "Última asociación",
+      renderData: (entityPlus: any) => {
+        if (userDict[entityPlus.last_association_user]) {
+          return `${fDateTimeSuffix(entityPlus.last_association)} (${
+            userDict[entityPlus.last_association_user].first_name
+          } ${userDict[entityPlus.last_association_user].last_name})`;
+        } else {
+          return `${fDateTimeSuffix(entityPlus.last_association)}`;
+        }
+      },
+    },
+    {
+      key: "last_staff_access",
+      label: "Último acceso",
+      renderData: (entityPlus: any) => {
+        if (userDict[entityPlus.last_staff_access_user]) {
+          return `${fDateTimeSuffix(entityPlus.last_staff_access)} (${
+            userDict[entityPlus.last_staff_access_user].first_name
+          } ${userDict[entityPlus.last_staff_access_user].last_name})`;
+        } else {
+          return;
+        }
+      },
+    },
+  ];
+
+  const positionsColumns: GridColDef[] = [
+    {
+      headerName: "Sección",
+      field: "section",
+      flex: 1,
+      renderCell: (params) => params.row.section.name
+    },
+    {
+      headerName: "Posición",
+      field: "value",
+      flex: 1,
+    },
+  ]
+
+  useEffect(() => {
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/staff_info/`
+    )
+      .then((data) => {
+        setStaffInfo(data);
+      })
+      .catch((err) => console.log(err));
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entity_histories}${router.query.id}/stock/`
+    ).then((data) => {
+      setStock(data.stock);
+    });
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`
+    ).then((data) => {
+      setEntity(data);
+      setLoading(false);
+    });
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entity_section_positions}?entities=${router.query.id}&is_active=1`
+    ).then((data) => {
+      setPositions(data.results);
+    });
+  }, []);
+
+  const handleUpdatePricing = () => {
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/update_pricing/`,
+      {
+        method: "POST",
+      }
+    )
+      .then((data) => {
+        setEntity(data);
+        enqueueSnackbar(
+          "La información de pricing ha sido actualizada y debiera mostrarse en los paneles inferiores. Si está incorrecta por favor contacte a nuestro staff",
+          { persist: true }
+        );
+      })
+      .catch((err) => {
+        enqueueSnackbar(
+          "Error al ejecutar la petición, por favor intente de nuevo",
+          { variant: "error" }
+        );
+        console.log(err);
+      });
+  };
 
   return (
     <Page title={entity.name}>
@@ -272,26 +436,78 @@ export default function EntityPage(props: EntityProps) {
             { name: entity.name },
           ]}
         />
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={8}></Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <Options options={options} />
+        {!isLoading ? (
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <Card>
+                <CardHeader title="Fotografías" />
+                <CardContent>
+                  <CarouselBasic images={entity.picture_urls} />
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <Stack spacing={2}>
+                <Options options={options} />
+                <Card>
+                  <CardHeader title="Actualizar información" />
+                  <CardContent>
+                    <Stack spacing={2}>
+                      <Typography>
+                        Obtiene la información actualizada de la entidad desde
+                        el sitio de la tienda
+                      </Typography>
+                      <Button variant="contained" onClick={handleUpdatePricing}>
+                        Actualizar información
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Details
+                title="Información general"
+                data={entity}
+                details={generalDietails}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Details
+                title="Información pricing"
+                data={entity}
+                details={pricingDetails}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <BasicTable 
+                title="Posicionamiento actual"
+                columns={positionsColumns}
+                data={positions}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Details
+                title="Información staff"
+                data={
+                  Object.keys(staffInfo).length !== 0 &&
+                  Object.keys(entity).length !== 0
+                    ? { ...entity, ...staffInfo }
+                    : {}
+                }
+                details={staffDetails}
+              />
+            </Grid>
+            <Grid item xs={24}>
+              <Card>
+                <CardHeader title="Descripción" />
+                <CardContent>{entity.description}</CardContent>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Details
-              title="Información general"
-              data={entity}
-              details={generalDietails}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Details
-              title="Información pricing"
-              data={entity}
-              details={pricingDetails}
-            />
-          </Grid>
-        </Grid>
+        ) : (
+          <p>Loading...</p>
+        )}
       </Container>
     </Page>
   );
@@ -301,25 +517,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (st) => async (context) => {
     const apiResourceObjects = st.getState().apiResourceObjects;
 
-    let entity: any = {};
-    let stock = { stock: 0 };
-    if (context.params) {
-      entity = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/`
-      );
-      if (entity.active_registry) {
-        stock = await jwtFetch(
-          context,
-          `${apiSettings.apiResourceEndpoints.entity_histories}${entity.active_registry.id}/stock/`
-        );
-      }
-    }
+    const users = await jwtFetch(
+      context,
+      apiSettings.apiResourceEndpoints.users_with_staff_actions
+    );
     return {
       props: {
-        entity: entity,
         apiResourceObjects: apiResourceObjects,
-        stock: stock,
+        users: users,
       },
     };
   }
