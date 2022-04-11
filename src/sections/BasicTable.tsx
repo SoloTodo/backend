@@ -27,7 +27,12 @@ export default function BasicTable({
               rowsPerPageOptions={[100]}
             />
           ) : (
-            <DataGrid columns={columns} rows={data} rowsPerPageOptions={[100]} />
+            <DataGrid
+              columns={columns}
+              rows={data}
+              rowsPerPageOptions={[100]}
+              disableSelectionOnClick
+            />
           )}
         </Box>
       </CardContent>
