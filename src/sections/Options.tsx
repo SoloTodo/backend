@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { Option } from "src/frontend-utils/types/extras";
 
-
 export default function CustomizedTables({ options }: { options: Option[] }) {
   return (
     <Card>

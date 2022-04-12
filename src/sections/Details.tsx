@@ -32,7 +32,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function CustomizedTables({
   data,
   details,
-  title
+  title,
 }: {
   data: any;
   details: Detail[];
@@ -45,14 +45,16 @@ export default function CustomizedTables({
         <TableContainer component={Paper}>
           <Table aria-label="customized table">
             <TableBody>
-              {details.map(({ key, label, renderData }) => (
-                Object.keys(data).length !== 0 ? <StyledTableRow key={key}>
-                  <StyledTableCell scope="row">{label}</StyledTableCell>
-                  <StyledTableCell style={{ wordBreak: 'break-all'}}>
+              {details.map(({ key, label, renderData }) =>
+                Object.keys(data).length !== 0 ? (
+                  <StyledTableRow key={key}>
+                    <StyledTableCell scope="row">{label}</StyledTableCell>
+                    <StyledTableCell style={{ wordBreak: "break-all" }}>
                       {renderData ? renderData(data) : data[key]}
-                  </StyledTableCell>
-                </StyledTableRow>
-              : null ))}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ) : null
+              )}
             </TableBody>
           </Table>
         </TableContainer>
