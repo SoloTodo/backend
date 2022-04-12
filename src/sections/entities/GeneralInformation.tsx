@@ -13,19 +13,22 @@ import { fDateTimeSuffix } from "src/utils/formatTime";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 // types
 import { Detail } from "src/frontend-utils/types/extras";
-import { Category, Entity } from "src/frontend-utils/types/store";
+import { Category } from "src/frontend-utils/types/store";
 // path
 import { PATH_STORE } from "src/routes/paths";
 import { apiSettings } from "src/frontend-utils/settings";
 // section
 import Details from "../Details";
+import { Entity } from "src/frontend-utils/types/entity";
 
 export default function GeneralInformation({
   entity,
   apiResourceObjects,
+  hasStaffPermission,
 }: {
   entity: Entity;
   apiResourceObjects: ApiResourceObjectRecord;
+  hasStaffPermission: boolean;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [condition, setCondition] = useState(entity.condition);
@@ -127,7 +130,28 @@ export default function GeneralInformation({
     {
       key: "cateogry",
       label: "Categoría",
-      renderData: (entity: Entity) => apiResourceObjects[entity.category].name,
+      renderData: (_entity: Entity) => (
+        <FormControl sx={{ width: "100%" }}>
+          <Select
+            value={category}
+            onChange={(evt) => handleCategory(evt.target.value)}
+            disabled={entity.product || !hasStaffPermission ? true : false}
+            onClick={() => {
+              if (entity.product)
+                enqueueSnackbar(
+                  "Por favor disocie la entidad antes de cambiar su categoría",
+                  { variant: "warning" }
+                );
+            }}
+          >
+            {Object.values(categories).map((c) => (
+              <MenuItem key={c.id} value={c.url}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ),
     },
     {
       key: "condition",
@@ -137,6 +161,7 @@ export default function GeneralInformation({
           <Select
             value={condition}
             onChange={(evt) => handleCondition(evt.target.value)}
+            disabled={!hasStaffPermission}
           >
             {conditions.map(({ value, label }) => (
               <MenuItem key={value} value={value}>
@@ -150,23 +175,12 @@ export default function GeneralInformation({
     {
       key: "scraped_condition",
       label: "Condición Original",
-      renderData: (_entity: Entity) => (
+      renderData: (entity: Entity) => (
         <FormControl sx={{ width: "100%" }}>
-          <Select
-            value={category}
-            onChange={(evt) => handleCategory(evt.target.value)}
-            disabled={entity.product ? true : false}
-            onClick={() => {
-              if (entity.product)
-                enqueueSnackbar(
-                  "Por favor disocie la entidad antes de cambiar su categoría",
-                  { variant: "warning" }
-                );
-            }}
-          >
-            {Object.values(categories).map((c) => (
-              <MenuItem key={c.id} value={c.url}>
-                {c.name}
+          <Select value={entity.scraped_condition} disabled readOnly>
+            {conditions.map(({ value, label }) => (
+              <MenuItem key={value} value={value}>
+                {label}
               </MenuItem>
             ))}
           </Select>
@@ -201,6 +215,7 @@ export default function GeneralInformation({
         <Switch
           checked={isVisible}
           onChange={(evt) => handleVisible(evt.target.checked)}
+          disabled={!hasStaffPermission}
         />
       ),
     },

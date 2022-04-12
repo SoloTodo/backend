@@ -3,7 +3,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { wrapper } from "src/store/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { Entity, StaffInfo } from "src/frontend-utils/types/store";
+import { Entity, StaffInfo } from "src/frontend-utils/types/entity";
 import Page from "src/components/Page";
 import {
   Button,
@@ -54,9 +54,12 @@ export default function EntityPage(props: EntityProps) {
     name: "",
     picture_urls: [],
     description: "",
+    store: "",
+    category: "",
   });
   const [staffInfo, setStaffInfo] = useState({});
   const [positions, setPositions] = useState([]);
+  const [hasStaffPermission, setHasStaffPermission] = useState(false);
   const router = useRouter();
   const baseRoute = `${PATH_ENTITY.root}/${router.query.id}`;
 
@@ -79,11 +82,6 @@ export default function EntityPage(props: EntityProps) {
       text: "Historial pricing",
       path: `${baseRoute}/pricing_history`,
     },
-    {
-      key: 3,
-      text: "Asociar",
-      path: `${baseRoute}/associate`,
-    },
     // {
     //   key: 4,
     //   text: "Leads (listado)",
@@ -100,6 +98,13 @@ export default function EntityPage(props: EntityProps) {
     //   path: `${baseRoute}`,
     // },
   ];
+
+  if (hasStaffPermission)
+    options.push({
+      key: 3,
+      text: "Asociar",
+      path: `${baseRoute}/associate`,
+    });
 
   const staffDetails: Detail[] = [
     {
@@ -187,6 +192,11 @@ export default function EntityPage(props: EntityProps) {
       `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`
     ).then((data) => {
       setEntity(data);
+      setHasStaffPermission(
+        apiResourceObjects[data.category].permissions.includes(
+          "is_category_staff"
+        )
+      );
       setLoading(false);
     });
     jwtFetch(
@@ -253,7 +263,21 @@ export default function EntityPage(props: EntityProps) {
                         Obtiene la información actualizada de la entidad desde
                         el sitio de la tienda
                       </Typography>
-                      <Button variant="contained" onClick={handleUpdatePricing}>
+                      <Button
+                        variant="contained"
+                        onClick={handleUpdatePricing}
+                        disabled={
+                          hasStaffPermission ||
+                          apiResourceObjects[entity.store].permissions.includes(
+                            "update_store_pricing"
+                          ) ||
+                          apiResourceObjects[
+                            entity.category
+                          ].permissions.includes(
+                            "update_category_entities_pricing"
+                          )
+                        }
+                      >
                         Actualizar información
                       </Button>
                     </Stack>
@@ -265,6 +289,7 @@ export default function EntityPage(props: EntityProps) {
               <GeneralInformation
                 entity={entity as unknown as Entity}
                 apiResourceObjects={apiResourceObjects}
+                hasStaffPermission={hasStaffPermission}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -272,6 +297,7 @@ export default function EntityPage(props: EntityProps) {
                 entity={entity as unknown as Entity}
                 apiResourceObjects={apiResourceObjects}
                 setEntity={setEntity}
+                hasStaffPermission={hasStaffPermission}
               />
             </Grid>
             <Grid item xs={12} md={6}>

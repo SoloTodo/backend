@@ -86,7 +86,7 @@ class MyApp extends App<MyAppProps> {
         // Store in redux api resources
         try {
           // Add resources
-          const resources = ["countries", "store_types", "currencies", "categories", "stores"];
+          const resources = ["countries", "store_types", "currencies", "stores"];
           const resources_query = resources.reduce((acc, r) => {
             return (acc = `${acc}&names=${r}`);
           }, "");
@@ -96,6 +96,13 @@ class MyApp extends App<MyAppProps> {
           );
           store.dispatch(
             apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
+          );
+          const categories = await jwtFetch(
+            ctx as unknown as GetServerSidePropsContext,
+            `categories`
+          );
+          store.dispatch(
+            apiResourceObjectsSlice.actions.addApiResourceObjects(categories)
           );
         } catch (err) {
           console.log(err);
