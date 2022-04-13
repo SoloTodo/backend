@@ -10,9 +10,10 @@ import {
   ApiFormPagination,
 } from "./fields/pagination/ApiFormPagination";
 import { ApiFormText, ApiFormTextProps } from "./fields/text/ApiFormText";
+import { ApiFormDatePicker, ApiFormDatePickerProps } from "./fields/date_picker/ApiDatePicker";
 
-export type ApiFormFieldMetadata = ApiFormSelectProps | ApiFormPaginationProps | ApiFormTextProps;
-export type ApiFormField = ApiFormSelect | ApiFormPagination | ApiFormText;
+export type ApiFormFieldMetadata = ApiFormSelectProps | ApiFormPaginationProps | ApiFormTextProps | ApiFormDatePickerProps;
+export type ApiFormField = ApiFormSelect | ApiFormPagination | ApiFormText | ApiFormDatePicker;
 
 export class ApiForm {
   private fields: ApiFormField[] = [];
@@ -56,6 +57,15 @@ export class ApiForm {
               fieldMetadata.name,
               fieldMetadata.label,
               fieldMetadata.inputType,
+              initialData && initialData[fieldMetadata.name]
+            )
+          );
+          break;
+        case "date":
+          this.fields.push(
+            new ApiFormText(
+              fieldMetadata.name,
+              fieldMetadata.label,
               initialData && initialData[fieldMetadata.name]
             )
           );
