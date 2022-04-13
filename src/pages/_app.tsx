@@ -36,6 +36,7 @@ import userSlice from "src/frontend-utils/redux/user";
 import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiResources";
 // import { EnhancedStore } from "@reduxjs/toolkit";
 import { wrapper } from "../store/store";
+import { ChartStyle } from "src/components/chart";
 // ----------------------------------------------------------------------
 
 type NextPageWithLayout = NextPage & {
@@ -153,6 +154,7 @@ class MyApp extends App<MyAppProps> {
                     <ThemeColorPresets>
                       <RtlLayout>
                         {/* <Settings /> */}
+                        <ChartStyle />
                         <ProgressBar />
                         {getLayout(<Component {...pageProps} />)}
                       </RtlLayout>
