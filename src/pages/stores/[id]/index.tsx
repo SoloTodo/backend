@@ -13,6 +13,7 @@ import Options from "src/sections/Options";
 import { wrapper } from "src/store/store";
 import { Detail, Option } from "src/frontend-utils/types/extras";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import { apiResourceObjectsByIdOrUrl } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -23,16 +24,18 @@ StorePage.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 type StoreProps = {
-  store: Store;
   apiResourceObjects: any;
 };
 
 // ----------------------------------------------------------------------
 
 export default function StorePage(props: StoreProps) {
-  const { store, apiResourceObjects } = props;
+  const { apiResourceObjects } = props;
   const router = useRouter();
   const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
+
+  const stores: {[key: string]: Store} = apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "id")
+  const store = stores[router.query.id as string] ;
 
   const options: Option[] = [
     {
@@ -128,19 +131,11 @@ export default function StorePage(props: StoreProps) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (st) => async (context) => {
+  (st) => async (_context) => {
     const apiResourceObjects = st.getState().apiResourceObjects;
 
-    let store = {};
-    if (context.params) {
-      store = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.stores}${context.params.id}/`
-      );
-    }
     return {
       props: {
-        store: store,
         apiResourceObjects: apiResourceObjects,
       },
     };
