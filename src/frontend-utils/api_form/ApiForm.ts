@@ -63,7 +63,7 @@ export class ApiForm {
           break;
         case "date":
           this.fields.push(
-            new ApiFormText(
+            new ApiFormDatePicker(
               fieldMetadata.name,
               fieldMetadata.label,
               initialData && initialData[fieldMetadata.name]

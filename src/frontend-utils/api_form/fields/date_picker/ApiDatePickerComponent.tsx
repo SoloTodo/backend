@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { DesktopDatePicker } from "@mui/lab";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import { TextField } from "@mui/material";
 import ApiFormContext from "../../ApiFormContext";
@@ -16,28 +16,33 @@ export default function ApiFormDatePickerComponent({ name }: { name: string }) {
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
   }
-  
-  const handleChange = (newValue: Date | null) => {
-    setValue(newValue);
-    if (newValue?.toString() !== "Invalid Date") {
 
-      if (newValue === null) {
-        context.updateUrl({ [name]: [] });
-      } else {
-        context.updateUrl({ [name]: [newValue.toISOString()] });
+  const handleChange = (newValue: Date | null) => {
+    if (newValue !== value) {
+      setValue(newValue);
+      if (newValue?.toString() !== "Invalid Date") {
+        if (newValue === null) {
+          context.updateUrl({ [name]: [] });
+        } else {
+          context.updateUrl({ [name]: [newValue.toISOString()] });
+        }
       }
     }
   };
 
   useEffect(() => {
-    if (typeof field.cleanedData !== "undefined" && field.cleanedData !== null && first) {
+    if (
+      typeof field.cleanedData !== "undefined" &&
+      field.cleanedData !== null &&
+      first
+    ) {
       setValue(field.cleanedData);
       setFirst(false);
     }
   });
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} >
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
         label={field.label}
         inputFormat="dd/MM/yyyy"

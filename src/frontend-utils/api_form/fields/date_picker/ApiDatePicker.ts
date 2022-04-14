@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { ApiFormApiParams } from "../../types";
 
 export type ApiFormDatePickerProps = {
@@ -10,7 +9,7 @@ export type ApiFormDatePickerProps = {
 export class ApiFormDatePicker {
   readonly name: string;
   readonly label: string;
-  cleanedData?: Date;
+  cleanedData?: Date | null;
 
   constructor(name: string, label: string, cleanedData?: Date) {
     this.name = name;
@@ -20,20 +19,19 @@ export class ApiFormDatePicker {
 
   loadData(query: URLSearchParams) {
     const value = query.get(this.name);
-    this.cleanedData = value ? new Date(value) : undefined;
+    this.cleanedData = value ? new Date(value) : null;
   }
 
   isValid() {
-    return typeof this.cleanedData !== "undefined" && this.cleanedData !== null;
+    return typeof this.cleanedData !== "undefined";
   }
 
   getApiParams(): ApiFormApiParams {
     if (typeof this.cleanedData === "undefined") {
       throw new Error("Invalid call on invalid field");
     }
-
     const apiParams: ApiFormApiParams = {};
-    apiParams[this.name] = [this.cleanedData.toISOString()];
+    if (this.cleanedData !== null) apiParams[this.name] = [this.cleanedData.toISOString()];
     return apiParams;
   }
 }
