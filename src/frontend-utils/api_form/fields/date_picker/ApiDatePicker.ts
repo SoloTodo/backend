@@ -1,3 +1,4 @@
+import { subDays } from "date-fns";
 import { ApiFormApiParams } from "../../types";
 
 export type ApiFormDatePickerProps = {
@@ -19,7 +20,12 @@ export class ApiFormDatePicker {
 
   loadData(query: URLSearchParams) {
     const value = query.get(this.name);
-    this.cleanedData = value ? new Date(value) : null;
+    if (this.name === "timestamp_after") {
+      let past = subDays(new Date(), 30);
+      this.cleanedData = value ? new Date(value) : past;
+    } else {
+      this.cleanedData = value ? new Date(value) : null;
+    }
   }
 
   isValid() {

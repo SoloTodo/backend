@@ -72,16 +72,6 @@ export default function EntityPriceHistory() {
     });
   }, []);
 
-  let initialState = {
-    initialData: {} as { [key: string]: any },
-    initialResult: [],
-  };
-  let endpoint = `${apiSettings.apiResourceEndpoints.entities}${entity.id}/pricing_history/`;
-  if (!router.query.timestamp_after) {
-    let past = subDays(new Date(), 30);
-    initialState.initialData["timestamp_after"] = past;
-    endpoint = `${endpoint}?timestamp_after=${past.toISOString()}`;
-  }
   return (
     <Page title={entity.name}>
       <Container>
@@ -97,8 +87,7 @@ export default function EntityPriceHistory() {
         {!isLoading ? (
           <ApiFormComponent
             fieldsMetadata={fieldMetadata}
-            endpoint={endpoint}
-            initialState={initialState}
+            endpoint={`${apiSettings.apiResourceEndpoints.entities}${entity.id}/pricing_history/`}
           >
             <Stack spacing={3}>
               <Card>
