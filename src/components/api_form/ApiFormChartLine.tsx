@@ -24,25 +24,49 @@ export default function ApiFormChartLine() {
       data: pricing_history.map((p: { offer_price: string }) => p.offer_price),
       type: "line",
     },
-      // {
-      //   name: "Disponible",
-      //   data: pricing_history.map((p: { is_available: boolean }) =>
-      //     p.is_available ? NaN : 250000
-      //   ),
-      //   type: "column",
-      // },
+    {
+      name: "Stock",
+      data: pricing_history.map((p: { stock: number }) => p.stock > 0 ? p.stock : NaN),
+      type: "line",
+    },
+    {
+      name: "No disponible",
+      data: pricing_history.map((p: { is_available: boolean }) =>
+        p.is_available ? null : 1
+      ),
+      type: "area",
+    },
   ];
 
   const chartOptions = merge(BaseOptionChart(), {
-    // markers: {
-    //   size: 3
-    // },
+    markers: {
+      size: 3,
+    },
     xaxis: {
       type: "datetime",
       categories: pricing_history.map(
         (p: { timestamp: string }) => p.timestamp
       ),
     },
+    yaxis: [
+      {
+        title: {
+          text: "Precio",
+        },
+      },
+      {
+        show: false,
+      },
+      {
+        opposite: true,
+        title: {
+          text: "Stock",
+        },
+      },
+      {
+        show: false,
+      },
+    ],
     tooltip: { x: { format: "dd/MM/yy" }, marker: { show: false } },
   });
 
@@ -51,7 +75,7 @@ export default function ApiFormChartLine() {
       type="line"
       series={CHART_DATA}
       options={chartOptions}
-      height={400}
+      // height={400}
     />
   );
 }
