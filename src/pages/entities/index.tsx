@@ -241,7 +241,7 @@ export default function Entities() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={apiSettings.apiResourceEndpoints.entities}
+          endpoint={`${apiSettings.apiResourceEndpoints.entities}?ordering=name`}
         >
           <Stack spacing={3}>
             <Card>
