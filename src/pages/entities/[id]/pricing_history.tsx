@@ -13,16 +13,17 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
-import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
+// import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import {
-  selectApiResourceObjects,
-  useApiResourceObjects,
-} from "src/frontend-utils/redux/api_resources/apiResources";
+// import {
+//   selectApiResourceObjects,
+//   useApiResourceObjects,
+// } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { subDays } from 'date-fns';
+// import { useAppSelector } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -38,18 +39,17 @@ export default function EntityPriceHistory() {
     id: "",
     name: "",
   });
-  const [pricingHistory, setPricingHistory] = useState([]);
   const router = useRouter();
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  // const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const fieldMetadata = [
-    {
-      fieldType: "select" as "select",
-      name: "currency",
-      label: "Moneda",
-      multiple: false,
-      choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
-    },
+    // {
+    //   fieldType: "select" as "select",
+    //   name: "currency",
+    //   label: "Moneda",
+    //   multiple: false,
+    //   choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
+    // },
     {
       fieldType: "date" as "date",
       name: "timestamp_after",
@@ -72,6 +72,16 @@ export default function EntityPriceHistory() {
     });
   }, []);
 
+  let initialState = {
+    initialData: {} as { [key: string]: any },
+    initialResult: [],
+  };
+  let endpoint = `${apiSettings.apiResourceEndpoints.entities}${entity.id}/pricing_history/`;
+  if (!router.query.timestamp_after) {
+    let past = subDays(new Date(), 30);
+    initialState.initialData["timestamp_after"] = past;
+    endpoint = `${endpoint}?timestamp_after=${past.toISOString()}`;
+  }
   return (
     <Page title={entity.name}>
       <Container>
@@ -87,7 +97,8 @@ export default function EntityPriceHistory() {
         {!isLoading ? (
           <ApiFormComponent
             fieldsMetadata={fieldMetadata}
-            endpoint={`${apiSettings.apiResourceEndpoints.entities}${entity.id}/pricing_history/`}
+            endpoint={endpoint}
+            initialState={initialState}
           >
             <Stack spacing={3}>
               <Card>
@@ -104,9 +115,9 @@ export default function EntityPriceHistory() {
                         <ApiFormDatePickerComponent name="timestamp_before" />
                       </Stack>
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                       <ApiFormSelectComponent name="currency" />
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </CardContent>
               </Card>
