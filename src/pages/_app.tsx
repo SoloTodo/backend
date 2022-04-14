@@ -87,23 +87,16 @@ class MyApp extends App<MyAppProps> {
         // Store in redux api resources
         try {
           // Add resources
-          const resources = ["countries", "store_types", "currencies", "stores"];
+          const resources = ["categories", "countries", "store_types", "currencies", "stores"];
           const resources_query = resources.reduce((acc, r) => {
             return (acc = `${acc}&names=${r}`);
           }, "");
           const apiResources = await jwtFetch(
             ctx as unknown as GetServerSidePropsContext,
-            `resources/?${resources_query}`
+            `resources/with_permissions/?${resources_query}`
           );
           store.dispatch(
             apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
-          );
-          const categories = await jwtFetch(
-            ctx as unknown as GetServerSidePropsContext,
-            `categories`
-          );
-          store.dispatch(
-            apiResourceObjectsSlice.actions.addApiResourceObjects(categories)
           );
         } catch (err) {
           console.log(err);
@@ -133,10 +126,6 @@ class MyApp extends App<MyAppProps> {
     const { Component, pageProps, settings } = this.props;
 
     const getLayout = Component.getLayout ?? ((page) => page);
-
-    // const store = useMemo(() => {
-    //   return initializeStore(pageProps.initialReduxState);
-    // }, []);
 
     return (
       <>
@@ -172,82 +161,3 @@ class MyApp extends App<MyAppProps> {
 }
 
 export default wrapper.withRedux(MyApp);
-
-// ----------------------------------------------------------------------
-
-// MyApp.getInitialProps = async (context: any) => {
-//   console.log("AADFADSF");
-//   const cookies = cookie.parse(
-//     context.ctx.req ? context.ctx.req.headers.cookie || "" : document.cookie
-//   );
-
-//   const settings = getSettings(cookies);
-
-//   console.log(settings);
-
-//   const ctx = context.ctx;
-
-//   const exclude_urls = ["/login", "/reset/", "/reset_password"];
-//   if (exclude_urls.find((path) => ctx.pathname.includes(path))) {
-//     return { pageProps: {}, settings };
-//   }
-
-//   if (!ctx.req) {
-//     return { pageProps: {}, settings };
-//   }
-
-//   let user = null;
-
-//   try {
-//     user = await jwtFetch(
-//       ctx as unknown as GetServerSidePropsContext,
-//       "users/me/"
-//     );
-//   } catch (err) {
-//     // Invalid token or some other network error, invalidate the
-//     // possible auth cookie
-//     deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
-//   }
-
-//   const store = initializeStore();
-
-//   if (user) {
-//     // Store in redux api resources
-//     try {
-//       // Add resources
-//       const resources = ["countries", "store_types"];
-//       const resources_query = resources.reduce((acc, r) => {
-//         return (acc = `${acc}&names=${r}`);
-//       }, "");
-//       const apiResources = await jwtFetch(
-//         ctx as unknown as GetServerSidePropsContext,
-//         `resources/?${resources_query}`
-//       );
-//       store.dispatch(
-//         apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
-//       );
-//     } catch (err) {
-//       console.log(err);
-//     }
-
-//     store.dispatch(userSlice.actions.setUser(user));
-//     const resultProps = {
-//       user,
-//       initialReduxState: store.getState(),
-//     };
-
-//     // context.ctx.store = store;
-//     // console.log(context.ctx.store);
-
-//     return { pageProps: resultProps, settings };
-//   } else {
-//     ctx.res &&
-//       ctx.res.setHeader(
-//         "Location",
-//         `/login?next=${encodeURIComponent(ctx.asPath || "")}`
-//       );
-//     ctx.res && (ctx.res.statusCode = 302);
-//     ctx.res && ctx.res.end();
-//     return { pageProps: {}, settings };
-//   }
-// };
