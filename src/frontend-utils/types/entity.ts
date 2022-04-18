@@ -10,7 +10,7 @@ export type Entity = {
     offer_price: string;
     is_available: boolean;
   };
-  bundle: null;
+  bundle: { name: string };
   category: string;
   cell_plan?: InLineProduct;
   cell_plan_name?: string;
