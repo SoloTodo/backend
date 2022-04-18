@@ -1,25 +1,21 @@
-import { useState } from "react";
 import NextLink from "next/link";
-import { useSnackbar } from "notistack";
 // MUI
-import { FormControl, Link, MenuItem, Select, Switch } from "@mui/material";
+import { FormControl, Link, MenuItem, Select } from "@mui/material";
 // utils
-import {
-  ApiResourceObjectRecord,
-  apiResourceObjectsByIdOrUrl,
-} from "src/frontend-utils/redux/api_resources/apiResources";
+import { ApiResourceObjectRecord } from "src/frontend-utils/redux/api_resources/apiResources";
 import { conditions } from "src/frontend-utils/conditions";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 // types
 import { Detail } from "src/frontend-utils/types/extras";
-import { Category } from "src/frontend-utils/types/store";
 // path
 import { PATH_STORE } from "src/routes/paths";
-import { apiSettings } from "src/frontend-utils/settings";
 // section
 import Details from "../Details";
 import { Entity } from "src/frontend-utils/types/entity";
+// components
+import ConditionSelect from "src/components/my_components/ConditionSelect";
+import CategorySelect from "src/components/my_components/CategorySelect";
+import VisibilitySwitch from "src/components/my_components/VisibilitySwitch";
 
 export default function GeneralInformation({
   entity,
@@ -30,61 +26,6 @@ export default function GeneralInformation({
   apiResourceObjects: ApiResourceObjectRecord;
   hasStaffPermission: boolean;
 }) {
-  const { enqueueSnackbar } = useSnackbar();
-  const [condition, setCondition] = useState(entity.condition);
-  const [category, setCategory] = useState(entity.category);
-  const [isVisible, setIsVisible] = useState(entity.is_visible);
-
-  const categories: { [url: string]: Category } = apiResourceObjectsByIdOrUrl(
-    apiResourceObjects,
-    "categories",
-    "url"
-  );
-
-  const handleCondition = async (value: string) => {
-    await jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/set_condition/`,
-      {
-        method: "post",
-        body: JSON.stringify({ condition: value }),
-      }
-    )
-      .then((entity) => setCondition(entity.condition))
-      .catch((err) => console.log(err));
-  };
-
-  const handleCategory = async (value: string) => {
-    await jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/change_category/`,
-      {
-        method: "post",
-        body: JSON.stringify({ category: categories[value].id }),
-      }
-    )
-      .then((entity) => setCategory(entity.category))
-      .catch((err) => console.log(err));
-  };
-
-  const handleVisible = async (checked: boolean) => {
-    if (!entity.product) {
-      await jwtFetch(
-        null,
-        `${apiSettings.apiResourceEndpoints.entities}${entity.id}/toggle_visibility/`,
-        {
-          method: "post",
-          body: JSON.stringify({ is_visible: checked }),
-        }
-      )
-        .then(() => setIsVisible(checked))
-        .catch((err) => console.log(err));
-    } else {
-      enqueueSnackbar("Primero hay que disociar la entidad", {
-        variant: "warning",
-      });
-    }
-  };
 
   const generalDetails: Detail[] = [
     {
@@ -130,46 +71,21 @@ export default function GeneralInformation({
     {
       key: "cateogry",
       label: "Categoría",
-      renderData: (_entity: Entity) => (
-        <FormControl sx={{ width: "100%" }}>
-          <Select
-            value={category}
-            onChange={(evt) => handleCategory(evt.target.value)}
-            disabled={entity.product || !hasStaffPermission ? true : false}
-            onClick={() => {
-              if (entity.product)
-                enqueueSnackbar(
-                  "Por favor disocie la entidad antes de cambiar su categoría",
-                  { variant: "warning" }
-                );
-            }}
-          >
-            {Object.values(categories).map((c) => (
-              <MenuItem key={c.id} value={c.url}>
-                {c.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      renderData: (entity: Entity) => (
+        <CategorySelect
+          entity={entity}
+          hasStaffPermission={hasStaffPermission}
+        />
       ),
     },
     {
       key: "condition",
       label: "Condición",
-      renderData: (_entity: Entity) => (
-        <FormControl sx={{ width: "100%" }}>
-          <Select
-            value={condition}
-            onChange={(evt) => handleCondition(evt.target.value)}
-            disabled={!hasStaffPermission}
-          >
-            {conditions.map(({ value, label }) => (
-              <MenuItem key={value} value={value}>
-                {label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      renderData: (entity: Entity) => (
+        <ConditionSelect
+          entity={entity}
+          hasStaffPermission={hasStaffPermission}
+        />
       ),
     },
     {
@@ -211,11 +127,10 @@ export default function GeneralInformation({
     {
       key: "is_visible",
       label: "¿Visible?",
-      renderData: (_entity: Entity) => (
-        <Switch
-          checked={isVisible}
-          onChange={(evt) => handleVisible(evt.target.checked)}
-          disabled={!hasStaffPermission}
+      renderData: (entity: Entity) => (
+        <VisibilitySwitch
+          entity={entity}
+          hasStaffPermission={hasStaffPermission}
         />
       ),
     },
