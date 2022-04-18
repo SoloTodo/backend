@@ -26,7 +26,9 @@ export default function ApiFormChartLine() {
     },
     {
       name: "Stock",
-      data: pricing_history.map((p: { stock: number }) => p.stock > 0 ? p.stock : NaN),
+      data: pricing_history.map((p: { stock: number }) =>
+        p.stock > 0 ? p.stock : NaN
+      ),
       type: "line",
     },
     {
@@ -68,6 +70,9 @@ export default function ApiFormChartLine() {
       },
     ],
     tooltip: { x: { format: "dd/MM/yy" }, marker: { show: false } },
+    fill: {
+      opacity: [1, 1, 1, 0.5],
+    },
   });
 
   return (
