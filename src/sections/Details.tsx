@@ -49,7 +49,7 @@ export default function CustomizedTables({
                 Object.keys(data).length !== 0 ? (
                   <StyledTableRow key={key}>
                     <StyledTableCell scope="row">{label}</StyledTableCell>
-                    <StyledTableCell style={{ wordBreak: "break-all" }}>
+                    <StyledTableCell style={{ wordBreak: "break-word" }}>
                       {renderData ? renderData(data) : data[key]}
                     </StyledTableCell>
                   </StyledTableRow>
