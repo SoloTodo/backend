@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { apiSettings } from "src/frontend-utils/settings";
 import { Store } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
