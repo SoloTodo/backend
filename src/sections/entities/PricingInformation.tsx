@@ -105,12 +105,22 @@ export default function PricingInformation({
       key: "cell_plan",
       label: "Plan celular",
       renderData: (entity: Entity) =>
-        entity.cell_plan ? entity.cell_plan : "N/A",
+        entity.cell_plan ? (
+          <NextLink
+            href={`${PATH_PRODUCT.root}/${entity.cell_plan.id}`}
+            passHref
+          >
+            <Link>{entity.cell_plan.name}</Link>
+          </NextLink>
+        ) : (
+          "N/A"
+        ),
     },
     {
       key: "bundle",
       label: "Bundle",
-      renderData: (entity: Entity) => (entity.bundle ? entity.bundle : "N/A"),
+      renderData: (entity: Entity) =>
+        entity.bundle ? entity.bundle.name : "N/A",
     },
     {
       key: "normal_price",
@@ -131,6 +141,11 @@ export default function PricingInformation({
               precision: 0,
             }).format()
           : "N/A",
+    },
+    {
+      key: "currency",
+      label: "Moneda",
+      renderData: (entity: Entity) => apiResourceObjects[entity.currency].name,
     },
     {
       key: "normal_price_usd",
