@@ -10,12 +10,12 @@ import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 
 export default function ApiFormResultsTable({columns}: { columns: GridColDef[] }) {
   const context = useContext(ApiFormContext);
-  const stores = context.currentResult;  
+  const stores = context.currentResult;
 
   return (
     <Scrollbar>
       <Box sx={{ height: 500, width: "100%" }}>
-        <DataGrid columns={columns} rows={stores} rowsPerPageOptions={[100]} />
+        <DataGrid columns={columns} rows={stores ? stores : []} rowsPerPageOptions={[100]} />
       </Box>
     </Scrollbar>
   );

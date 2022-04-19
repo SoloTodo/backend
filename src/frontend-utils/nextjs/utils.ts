@@ -1,6 +1,9 @@
 import {GetServerSidePropsContext} from "next"
 import { destroyCookie, parseCookies, setCookie } from "nookies"
+import { AppStore } from "src/store/store"
 import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/utils"
+import { apiResourceObjectsByIdOrUrl } from "../redux/api_resources/apiResources"
+import { Store } from "../types/store"
 
 
 type GetServerSidePropsContextOrNull = GetServerSidePropsContext | null | undefined
@@ -121,4 +124,16 @@ export async function jwtFetch(context: GetServerSidePropsContextOrNull, input: 
     requestInit.headers.Authorization = `Bearer ${access}`;
 
     return await fetchJson(input, requestInit)
+}
+
+export const getStore = (st: AppStore, context: GetServerSidePropsContext) => {
+    const apiResourceObjects = st.getState().apiResourceObjects;
+    let store = {};
+    if (context.params)
+      store = (
+        apiResourceObjectsByIdOrUrl(apiResourceObjects, "store", "id") as {
+          [id: string]: Store;
+        }
+      )[context.params.id as string];
+    return store
 }

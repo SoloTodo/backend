@@ -1,5 +1,4 @@
 import { Container, Grid } from "@mui/material";
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -7,11 +6,15 @@ import { Store } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import Details from "src/sections/Details";
-import Options from "src/sections/Options";
-import { wrapper } from "src/store/store";
-import { Detail, Option } from "src/frontend-utils/types/extras";
+import { Detail } from "src/frontend-utils/types/extras";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import { apiResourceObjectsByIdOrUrl } from "src/frontend-utils/redux/api_resources/apiResources";
+import {
+  useApiResourceObjects,
+} from "src/frontend-utils/redux/api_resources/apiResources";
+import { useAppSelector } from "src/store/hooks";
+import { getStore } from "src/frontend-utils/nextjs/utils";
+import { wrapper } from "src/store/store";
+import OptionsMenu from "src/sections/stores/OptionsMenu";
 
 // ----------------------------------------------------------------------
 
@@ -21,62 +24,9 @@ StorePage.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-type StoreProps = {
-  apiResourceObjects: any;
-};
-
-// ----------------------------------------------------------------------
-
-export default function StorePage(props: StoreProps) {
-  const { apiResourceObjects } = props;
-  const router = useRouter();
-  const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
-
-  const stores: {[key: string]: Store} = apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "id")
-  const store = stores[router.query.id as string] ;
-
-  const options: Option[] = [
-    {
-      key: 1,
-      text: "Información general",
-      path: baseRoute,
-    },
-    {
-      key: 2,
-      text: "Actualizar pricing",
-      path: `${baseRoute}/update_pricing`,
-    },
-    {
-      key: 3,
-      text: "Registros de actualización",
-      path: `${baseRoute}/update_logs`,
-    },
-    // {
-    //   key: 4,
-    //   text: "Leads (listado)",
-    //   path: `${baseRoute}`,
-    // },
-    // {
-    //   key: 5,
-    //   text: "Leads (estadísticas)",
-    //   path: `${baseRoute}`,
-    // },
-    {
-      key: 6,
-      text: "Entidades en conflicto",
-      path: `${baseRoute}`,
-    },
-    {
-      key: 7,
-      text: "Ratings",
-      path: `${baseRoute}`,
-    },
-    {
-      key: 8,
-      text: "Descargar reporte de homologación",
-      path: `${baseRoute}/matching_report`,
-    },
-  ];
+export default function StorePage(props: { store: Store }) {
+  const { store } = props;
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const details: Detail[] = [
     {
@@ -120,7 +70,7 @@ export default function StorePage(props: StoreProps) {
             <Details title={store.name} data={store} details={details} />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <Options options={options} />
+            <OptionsMenu store={store} />
           </Grid>
         </Grid>
       </Container>
@@ -129,12 +79,10 @@ export default function StorePage(props: StoreProps) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (st) => async (_context) => {
-    const apiResourceObjects = st.getState().apiResourceObjects;
-
+  (st) => async (context) => {
     return {
       props: {
-        apiResourceObjects: apiResourceObjects,
+        store: getStore(st, context),
       },
     };
   }

@@ -20,16 +20,11 @@ import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 // endponts
 import { apiSettings } from "../../frontend-utils/settings";
-// class
-import { ApiForm } from "../../frontend-utils/api_form/ApiForm";
 // types
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
-import { ApiFormSelectProps } from "src/frontend-utils/api_form/fields/select/ApiFormSelect";
 // redux
 import { useAppSelector } from "src/store/hooks";
 import { selectApiResourceObjects, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { wrapper } from "src/store/store";
-import { ApiFormInitialState } from "src/frontend-utils/api_form/types";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 
@@ -41,20 +36,25 @@ Stores.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-type StoresProps = ApiFormInitialState & {
-  fieldsMetadata: ApiFormSelectProps[];
-};
-
-// ----------------------------------------------------------------------
-
-export default function Stores(props: StoresProps) {
-  const { initialResult, initialData, fieldsMetadata } = props;
+export default function Stores() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
-  const initialState = {
-    initialResult,
-    initialData,
-  };
+  const fieldsMetadata = [
+    {
+      fieldType: "select" as "select",
+      name: "countries",
+      label: "Países",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "countries"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "types",
+      label: "Tipos",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "types"),
+    },
+  ];
 
   const columns: GridColDef[] = [
     {
@@ -109,7 +109,6 @@ export default function Stores(props: StoresProps) {
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
           endpoint={apiSettings.apiResourceEndpoints.stores}
-          initialState={initialState}
         >
           <Stack spacing={3}>
             <Card>
@@ -133,41 +132,3 @@ export default function Stores(props: StoresProps) {
     </Page>
   );
 }
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-    const apiResourceObjects = store.getState().apiResourceObjects;
-
-    const fieldsMetadata = [
-      {
-        fieldType: "select" as "select",
-        name: "countries",
-        label: "Países",
-        multiple: true,
-        choices: selectApiResourceObjects(apiResourceObjects, "countries"),
-      },
-      {
-        fieldType: "select" as "select",
-        name: "types",
-        label: "Tipos",
-        multiple: true,
-        choices: selectApiResourceObjects(apiResourceObjects, "types"),
-      },
-    ];
-
-    const form = new ApiForm(
-      fieldsMetadata,
-      apiSettings.apiResourceEndpoints.stores
-    );
-    form.initialize(context);
-    const data = form.isValid() ? await form.submit() : null;
-
-    return {
-      props: {
-        initialResult: data,
-        initialData: form.getCleanedData(),
-        fieldsMetadata: fieldsMetadata,
-      },
-    };
-  }
-);

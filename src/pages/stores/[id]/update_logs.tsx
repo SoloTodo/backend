@@ -1,7 +1,5 @@
 import { ReactElement } from "react";
-import { useRouter } from "next/router";
 import { Container, Link } from "@mui/material";
-import { GetServerSideProps } from "next/types";
 // layout
 import Layout from "src/layouts";
 // components
@@ -14,11 +12,9 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import { Store, Update } from "src/frontend-utils/types/store";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import { ApiForm } from "src/frontend-utils/api_form/ApiForm";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
-// redux
-import { useAppSelector } from "src/store/hooks";
-import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import { getStore } from "src/frontend-utils/nextjs/utils";
+import { wrapper } from "src/store/store";
 
 // ----------------------------------------------------------------------
 
@@ -28,24 +24,14 @@ StoreUpdateLogs.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function StoreUpdateLogs(props: Record<string, any>) {
-  const { initialResult, initialData, fieldMetadata } = props;
-  const initialState = {
-    initialResult,
-    initialData,
-  };
-
-  const router = useRouter();
-  const { id } = router.query;
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const stores: {[key: string]: Store} = apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "id");
-  let store = {
-    name: "",
-    id: 0
-  }
-  if (typeof id === 'string' && stores.hasOwnProperty(id)) {
-    store = stores[id];
-  }
+export default function StoreUpdateLogs(props: { store: Store }) {
+  const { store } = props;
+  const fieldMetadata = [
+    {
+      fieldType: "pagination" as "pagination",
+      name: "udpate_logs",
+    },
+  ];
 
   const columns: any[] = [
     {
@@ -107,6 +93,7 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
       ),
     },
   ];
+
   return (
     <Page title="Registros de Actualización">
       <Container>
@@ -122,7 +109,6 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
           endpoint={`${apiSettings.apiResourceEndpoints.store_update_logs}?store=${store.id}`}
-          initialState={initialState}
         >
           <PaginationTable
             title="Registros de Actualización"
@@ -135,36 +121,12 @@ export default function StoreUpdateLogs(props: Record<string, any>) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (context.params) {
-    const fieldMetadata = [
-      {
-        fieldType: "pagination" as "pagination",
-        name: "udpate_logs",
-      },
-    ];
-    const form = new ApiForm(
-      fieldMetadata,
-      `${apiSettings.apiResourceEndpoints.store_update_logs}?store=${context.params.id}`
-    );
-    form.initialize(context);
-    const data = form.isValid()
-      ? await form.submit()
-      : null;
+export const getServerSideProps = wrapper.getServerSideProps(
+  (st) => async (context) => {
     return {
       props: {
-        initialResult: data,
-        initialData: form.getCleanedData(),
-        fieldMetadata: fieldMetadata,
-      },
-    };
-  } else {
-    return {
-      props: {
-        initialResult: [],
-        initialData: [],
-        fieldMetadata: [],
+        store: getStore(st, context),
       },
     };
   }
-};
+);
