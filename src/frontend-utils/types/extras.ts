@@ -1,7 +1,9 @@
 export type Option = {
-  key: number;
+  key?: number;
   text: string;
   path: string;
+  hasPermission?: boolean;
+  renderObject?: any
 };
 
 export type Detail = {
