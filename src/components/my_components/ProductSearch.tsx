@@ -1,19 +1,23 @@
-import { TextField } from "@mui/material";
+import { MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { Entity } from "src/frontend-utils/types/entity";
 
 export default function ProductSearch({
-  entity,
+  entityCategory,
+  selectedProduct,
   setSelectedProduct,
 }: {
-  entity: Entity;
+  entityCategory: string;
+  selectedProduct: any
   setSelectedProduct: Function;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState("");
-  const [productChoices, setProductChoices] = useState([]);
+  const [productChoices, setProductChoices] = useState(
+    [] as { id: number; name: string }[]
+  );
 
   const handleProductSearch = () => {
     const key = enqueueSnackbar("Buscando...", {
@@ -22,16 +26,20 @@ export default function ProductSearch({
     });
     jwtFetch(
       null,
-      `${entity.category}products/??page_size=200&search=${encodeURIComponent(
+      `${entityCategory}products/??page_size=200&search=${encodeURIComponent(
         value
       )}`
     ).then((data) => {
-      setProductChoices(data.results)
-      const selectedProduct = productChoices.length ? productChoices[0] : null;
-      setSelectedProduct(selectedProduct);
+      setProductChoices(data.results);
+      setSelectedProduct(data.results.length ? data.results[0] : null);
       closeSnackbar(key);
     });
   };
+
+  const handleSelectedProductChange = (value: number) => {
+    const newSelectedProduct = productChoices.find(p => p.id === value)
+    setSelectedProduct(newSelectedProduct)
+  }
 
   return (
     <>
@@ -44,8 +52,17 @@ export default function ProductSearch({
         onChange={(evt) => setValue(evt.target.value)}
         onKeyPress={(e) => e.key === "Enter" && handleProductSearch()}
       />
-      <br />
-      
+      <Typography>Producto</Typography>
+      <Select
+        value={selectedProduct ? selectedProduct.id : ""}
+        onChange={(evt) => handleSelectedProductChange(evt.target.value)}
+      >
+        {productChoices.map((product) => (
+          <MenuItem key={product.id} value={product.id}>
+            {product.name}
+          </MenuItem>
+        ))}
+      </Select>
     </>
   );
 }
