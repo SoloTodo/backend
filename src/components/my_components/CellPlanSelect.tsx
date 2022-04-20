@@ -27,7 +27,7 @@ export default function CellPlanSelect({
 
   const handleSelectedCellPlanChange = (value: number) => {
     const newSelectedCellPlan = planCellChoices.find((p) => p.id === value);
-    setSelectedCellPlan(newSelectedCellPlan);
+    setSelectedCellPlan(newSelectedCellPlan ? newSelectedCellPlan : null);
   };
 
   if (planCellChoices.length === 0) return null;
