@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import { useAppSelector } from "src/store/hooks";
 // layout
@@ -34,7 +34,7 @@ type EntityAssociateProps = {
 };
 
 export default function EntityAssociate(props: EntityAssociateProps) {
-  const { entity } = props;
+  const [entity, setEntity] = useState(props.entity);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   return (
@@ -57,7 +57,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
             />
           </Grid>
           <Grid item xs={12}>
-            <AssociateForm entity={entity} />
+            <AssociateForm entity={entity} setEntity={setEntity} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Card>
