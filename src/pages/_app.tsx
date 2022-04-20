@@ -7,11 +7,11 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import "react-lazy-load-image-component/src/effects/black-and-white.css";
 
 import cookie from "cookie";
-import { ReactElement, ReactNode, useMemo } from "react";
+import { ReactElement, ReactNode } from "react";
 // next
 import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
-import App, { AppProps, AppContext, AppInitialProps } from "next/app";
+import App, { AppProps } from "next/app";
 // utils
 import { getSettings } from "../utils/settings";
 import { SettingsValueProps } from "../components/settings/type";
@@ -29,14 +29,13 @@ import NotistackProvider from "../components/NotistackProvider";
 // auth
 import { AuthProvider } from "../frontend-utils/nextjs/JWTContext";
 // redux
-import { Provider } from "react-redux";
-import { initializeStore } from "src/store/store";
 import { deleteAuthTokens, jwtFetch } from "src/frontend-utils/nextjs/utils";
 import userSlice from "src/frontend-utils/redux/user";
 import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiResources";
 // import { EnhancedStore } from "@reduxjs/toolkit";
 import { wrapper } from "../store/store";
 import { ChartStyle } from "src/components/chart";
+import { resources_query } from "src/utils";
 // ----------------------------------------------------------------------
 
 type NextPageWithLayout = NextPage & {
@@ -86,11 +85,6 @@ class MyApp extends App<MyAppProps> {
       if (user) {
         // Store in redux api resources
         try {
-          // Add resources
-          const resources = ["categories", "countries", "store_types", "currencies", "stores"];
-          const resources_query = resources.reduce((acc, r) => {
-            return (acc = `${acc}&names=${r}`);
-          }, "");
           const apiResources = await jwtFetch(
             ctx as unknown as GetServerSidePropsContext,
             `resources/with_permissions/?${resources_query}`

@@ -33,7 +33,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // auth
 import { authenticate } from "src/frontend-utils/network/auth";
-import { saveAuthTokens } from "src/frontend-utils/nextjs/utils";
+import { jwtFetch, saveAuthTokens } from "src/frontend-utils/nextjs/utils";
 import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
 import userSlice from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
@@ -41,6 +41,8 @@ import { useAppDispatch } from "src/store/hooks";
 import useSettings from "src/hooks/useSettings";
 // routes
 import { PATH_AUTH, PATH_DASHBOARD } from "src/routes/paths";
+import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiResources";
+import { resources_query } from "src/utils";
 
 // ----------------------------------------------------------------------
 
@@ -130,6 +132,14 @@ export default function Login() {
           const nextPath =
             typeof router.query.next == "string" ? router.query.next : PATH_DASHBOARD.root;
           router.push(nextPath);
+        });
+        jwtFetch(
+          null,
+          `resources/with_permissions/?${resources_query}`
+        ).then((apiResources) => {
+          dispatch(
+            apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
+          );
         });
       })
       .catch(() => {
