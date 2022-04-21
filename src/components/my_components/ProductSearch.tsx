@@ -36,8 +36,8 @@ export default function ProductSearch({
     });
   };
 
-  const handleSelectedProductChange = (value: number) => {
-    const newSelectedProduct = productChoices.find(p => p.id === value)
+  const handleSelectedProductChange = (value: string | any[]) => {
+    const newSelectedProduct = productChoices.find(p => p.id.toString() === value)
     setSelectedProduct(newSelectedProduct)
   }
 
@@ -54,13 +54,16 @@ export default function ProductSearch({
       />
       <Typography>Producto</Typography>
       <Select
-        value={selectedProduct ? selectedProduct.id : ""}
+        value={selectedProduct ? [selectedProduct.id] : []}
         onChange={(evt) => handleSelectedProductChange(evt.target.value)}
+        native
+        multiple
+        inputProps={{ size: 14 }}
       >
         {productChoices.map((product) => (
-          <MenuItem key={product.id} value={product.id}>
+          <option key={product.id} value={product.id}>
             {product.name}
-          </MenuItem>
+          </option>
         ))}
       </Select>
     </>
