@@ -68,6 +68,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       form={form}
       updateUrl={updateUrl}
       currentResult={currentResult}
+      setCurrentResult={setCurrentResult}
     >
       {props.children}
     </ApiFormProvider>
