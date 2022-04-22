@@ -2,12 +2,12 @@ import { useState } from "react";
 // @mui
 import { Card } from "@mui/material";
 // components
-import Image from "../../components/Image";
+import Image, { ImageRato } from "../../components/Image";
 import { CarouselArrowIndex } from "../../components/carousel";
 
 // ----------------------------------------------------------------------
 
-export default function CarouselBasic({ images }: { images: string[] }) {
+export default function CarouselBasic({ images, ratio }: { images: string[], ratio?: ImageRato }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
@@ -27,7 +27,7 @@ export default function CarouselBasic({ images }: { images: string[] }) {
       <Image
         alt={images !== null ? images[currentIndex] : ""}
         src={images !== null ? images[currentIndex] : ""}
-        ratio="1/1"
+        ratio={ratio ? ratio : "1/1"}
       />
 
       {images !== null && (
