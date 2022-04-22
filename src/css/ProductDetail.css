@@ -1,0 +1,23 @@
+.product_specs dt {
+    display: inline;
+    color: rgb(76, 135, 175);
+}
+
+.product_specs dt:after {
+    content: ": "
+}
+
+.product_specs dd {
+    display: inline;
+}
+
+.product_specs dd:after {
+    display: block;
+    content: ''
+}
+
+.product_specs h3 {
+    font-size: 20px;
+    color: #1985ac;
+    margin-top: 1rem;
+}

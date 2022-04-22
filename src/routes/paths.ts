@@ -10,6 +10,8 @@ const ROOTS_CATEGORY = '/categories';
 const ROOTS_ENTITIY = '/entities';
 const ROOTS_USER = '/users';
 const ROOTS_PRODUCT = '/products';
+const ROOTS_VISIT = '/visits';
+const ROOTS_RATING = '/ratings';
 
 // ----------------------------------------------------------------------
 
@@ -48,4 +50,12 @@ export const PATH_USER = {
 
 export const PATH_PRODUCT = {
   root: ROOTS_PRODUCT,
+}
+
+export const PATH_VISIT = {
+  root: ROOTS_VISIT,
+}
+
+export const PATH_RATING = {
+  root: ROOTS_RATING,
 }

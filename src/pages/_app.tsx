@@ -36,6 +36,8 @@ import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiR
 import { wrapper } from "../store/store";
 import { ChartStyle } from "src/components/chart";
 import { resources_query } from "src/utils";
+
+import '../css/ProductDetail.css'
 // ----------------------------------------------------------------------
 
 type NextPageWithLayout = NextPage & {
