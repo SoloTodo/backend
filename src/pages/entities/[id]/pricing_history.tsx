@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
-import ApiFormChartLine from "src/components/api_form/ApiFormChartLine";
+import ApiFormChartLine from "src/sections/entities/ApiFormChartLine";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";

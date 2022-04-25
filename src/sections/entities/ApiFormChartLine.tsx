@@ -2,7 +2,7 @@ import merge from "lodash/merge";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 // components
-import ReactApexChart, { BaseOptionChart } from "../chart";
+import ReactApexChart, { BaseOptionChart } from "../../components/chart";
 
 // ----------------------------------------------------------------------
 
