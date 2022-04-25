@@ -8,7 +8,6 @@ import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Category } from "src/frontend-utils/types/store";
 import {
-  Box,
   Button,
   Dialog,
   DialogContent,
@@ -16,24 +15,10 @@ import {
   Link,
   Menu,
   MenuItem,
-  Modal,
-  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { JSONTree } from "react-json-tree";
 
-// const style = {
-//   position: "absolute" as "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: '80%',
-//   height: '80%',
-//   bgcolor: "background.paper",
-//   border: "2px solid #000",
-//   boxShadow: 24,
-//   p: 4,
-// };
 
 export default function OptionsMenu({
   product,
