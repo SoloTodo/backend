@@ -1,7 +1,7 @@
 import { ApiFormApiParams } from "../../types";
 
 export type ApiFormSelectChoice = {
-  value: number;
+  value: number | string;
   label: string;
 };
 
@@ -28,7 +28,7 @@ export class ApiFormSelect {
     choices: ApiFormSelectChoice[],
     multiple?: boolean,
     required?: boolean,
-    cleanedData?: ApiFormSelectChoice[],
+    cleanedData?: ApiFormSelectChoice[]
   ) {
     this.name = name;
     this.label = label;
@@ -46,7 +46,13 @@ export class ApiFormSelect {
     const normalizedData = typeof data === "string" ? [data] : data;
     const parsedData = normalizedData
       ? (normalizedData
-          .map((id) => this.choices.find((elem) => elem.value === parseInt(id)))
+          .map((id) =>
+            this.choices.find((elem) =>
+              typeof elem.value === "string"
+                ? elem.value === id
+                : elem.value === parseInt(id)
+            )
+          )
           .filter(
             (choice) => typeof choice !== "undefined"
           ) as ApiFormSelectChoice[])
