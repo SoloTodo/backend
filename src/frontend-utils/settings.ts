@@ -67,6 +67,7 @@ export const apiSettings = {
     detailPurposeUrl: endpoint + 'category_template_purposes/1/',
     usdCurrencyId: 4,
     clpCurrencyId: 1,
+    mobileNetworkOperatorId: 3,
     backendUrl: 'http://localhost:8000/',
     solotodoUrl: 'https://www.solotodo.cl/'
 };

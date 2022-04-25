@@ -19,6 +19,7 @@ import OptionsMenu from "src/sections/products/OptionsMenu";
 import CarouselBasic from "src/sections/mui/CarouselBasic";
 import ActualPricesCard from "src/sections/products/ActualPricesCard";
 import { Entity } from "src/frontend-utils/types/entity";
+import { wrapper } from "src/store/store";
 
 // ----------------------------------------------------------------------
 
@@ -95,40 +96,40 @@ export default function ProductPage(props: ProductProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let product = {} as Product;
-  let renderSpecs = "";
-  let entities = [];
-  if (context.params) {
-    product = await jwtFetch(
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps((st) => async (context) => {
+    const apiResourceObjects = st.getState().apiResourceObjects;
+    let product = {} as Product;
+    let renderSpecs = "";
+    let entities = [];
+    if (context.params) {
+      product = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+      );
+      const category_template = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.category_templates}?website=1&purpose=1&category=${apiResourceObjects[product.category].id}`
+      );
+      renderSpecs = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params.id}`
+      );
+      entities = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.products}${context.params.id}/entities/`
+      );
+    }
+    const websites = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+      `${apiSettings.apiResourceEndpoints.websites}`
     );
-    // const category_template = await jwtFetch(
-    //   context,
-    //   `${apiSettings.apiResourceEndpoints.category_templates}/?website=1&purpose=1&category=6`
-    // );
-    // console.log(category_template)
-    // TODO: usar apiResourceObjcts para el id de la categoría
-    renderSpecs = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.category_templates}1/render/?product=${context.params.id}`
-    );
-    entities = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}/entities/`
-    );
-  }
-  const websites = await jwtFetch(
-    context,
-    `${apiSettings.apiResourceEndpoints.websites}`
-  );
-  return {
-    props: {
-      product: product,
-      websites: websites,
-      renderSpecs: renderSpecs,
-      entities: entities,
-    },
-  };
-};
+    return {
+      props: {
+        product: product,
+        websites: websites,
+        renderSpecs: renderSpecs,
+        entities: entities,
+      },
+    };
+  });

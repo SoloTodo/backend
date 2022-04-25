@@ -5,9 +5,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { jwtFetch } from "../../nextjs/utils";
 import { RootState } from "src/store/store";
 import { HYDRATE } from "next-redux-wrapper";
-import { Category } from "src/frontend-utils/types/store";
+import { Category, Store } from "src/frontend-utils/types/store";
 
-export type ApiResourceObject = Currency | Country | StoreType | Category;
+export type ApiResourceObject = Currency | Country | StoreType | Category | Store;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
 
 const initialState = {} as ApiResourceObjectRecord;
