@@ -90,6 +90,7 @@ export default function ProductPricingHistory({
       name: "price_type",
       label: "Tipo de precio",
       multiple: false,
+      required: true,
       choices: [
         { label: "Precio normal", value: "normal" },
         { label: "Precio oferta", value: "offer" },
