@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { PATH_PRODUCT, PATH_RATING, PATH_VISIT } from "src/routes/paths";
+import { PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
 import { Product, Website } from "src/frontend-utils/types/product";
@@ -18,7 +18,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { JSONTree } from "react-json-tree";
-
+import { useSnackbar } from "notistack";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 export default function OptionsMenu({
   product,
@@ -27,6 +28,7 @@ export default function OptionsMenu({
   product: Product;
   websites: Website[];
 }) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openModal, setOpenModal] = useState(false);
   const openMenu = Boolean(anchorEl);
@@ -35,7 +37,20 @@ export default function OptionsMenu({
   const id = router.query.id;
   const baseRoute = `${PATH_PRODUCT.root}/${id}`;
 
-  const clone = () => {};
+  const clone = () => {
+    const key = enqueueSnackbar("Clonando, por favor espere!", {
+      persist: true,
+      variant: "info",
+    });
+    jwtFetch(null, product.url + "clone/", {
+      method: "POST",
+    }).then((data) => {
+      closeSnackbar(key);
+      const clonedInstanceId = data.instance_id;
+      const clonedInstanceUrl = `${apiSettings.endpoint}metamodel/instances/${clonedInstanceId}`;
+      window.open(clonedInstanceUrl, "_blank");
+    });
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -46,20 +61,6 @@ export default function OptionsMenu({
       text: "Historial pricing",
       path: `${baseRoute}/pricing_history`,
     },
-    // {
-    //   text: "Visitas (listado)",
-    //   path: `${PATH_VISIT.root}/?products=${id}`,
-    //   hasPermission: (
-    //     apiResourceObjects[product.category] as Category
-    //   ).permissions.includes("view_category_visits"),
-    // },
-    // {
-    //   text: "Visitas (estadísticas)",
-    //   path: `${PATH_VISIT.root}/stats?grouping=date&products=${id}`,
-    //   hasPermission: (
-    //     apiResourceObjects[product.category] as Category
-    //   ).permissions.includes("view_category_visits"),
-    // },
     {
       text: "Ratings",
       path: `${PATH_RATING.root}/products=${id}`,
