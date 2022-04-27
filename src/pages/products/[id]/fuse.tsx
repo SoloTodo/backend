@@ -1,15 +1,19 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
   Container,
   MenuItem,
   Select,
+  Stack,
   Typography,
 } from "@mui/material";
 import { GetServerSideProps } from "next/types";
+import { useSnackbar } from "notistack";
 import { ReactElement, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import ProductSearch from "src/components/my_components/ProductSearch";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import {
@@ -18,6 +22,7 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Product } from "src/frontend-utils/types/product";
+import { Category } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
@@ -31,13 +36,45 @@ ProductFuse.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function ProductFuse({ product }: { product: Product }) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [selectedCategory, setSelectedCategory] = useState(product.category);
+  const [selectedProduct, setSelectedProduct] = useState(
+    null as { id: number; instance_model_id: number } | null
+  );
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categories = apiResourceObjectsByIdOrUrl(
     apiResourceObjects,
     "categories",
     "url"
   );
+
+  const handleProductFusionSubmit = () => {
+    if (selectedProduct) {
+      if (selectedProduct.id === product.id)
+        enqueueSnackbar(
+          "Por favor seleccione un producto distinto al original.",
+          {
+            variant: "error",
+          }
+        );
+
+      const payload = { product: selectedProduct.id };
+
+      const key = enqueueSnackbar("Fusionando, por favor espere!", {
+        persist: true,
+        variant: "info",
+      });
+      jwtFetch(null, product.url + "fuse/", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }).then((data) => {
+        closeSnackbar(key);
+        window.location.href = "/products/" + selectedProduct.id;
+      });
+    }
+  };
+
   return (
     <Page title={product.name}>
       <Container>
@@ -53,29 +90,57 @@ export default function ProductFuse({ product }: { product: Product }) {
         <Card>
           <CardHeader title="Fusionar producto" />
           <CardContent>
-            <Typography>
-              Producto a ser eliminado:{" "}
-              <strong>
-                {product.name} (ID: {product.id})
-              </strong>
-            </Typography>
-            <Typography>
-              Por favor seleccione el producto al cual asociar todas las
-              entidades y otros objetos actualmente asociados al producto
-              original.
-            </Typography>
-            <br />
-            <Select
-              value={selectedCategory}
-              onChange={(evt) => setSelectedCategory(evt.target.value)}
-              style={{ width: "100%" }}
-            >
-              {Object.values(categories).map((c) => (
-                <MenuItem key={c.id} value={c.url}>
-                  {c.name}
-                </MenuItem>
-              ))}
-            </Select>
+            <Stack spacing={2}>
+              <Typography>
+                Producto a ser eliminado:{" "}
+                <strong>
+                  {product.name} (ID: {product.id})
+                </strong>
+              </Typography>
+              <Typography>
+                Por favor seleccione el producto al cual asociar todas las
+                entidades y otros objetos actualmente asociados al producto
+                original.
+              </Typography>
+              <br />
+              <Select
+                value={selectedCategory}
+                onChange={(evt) => setSelectedCategory(evt.target.value)}
+                style={{ width: "100%" }}
+              >
+                {(Object.values(categories) as unknown as Category[]).map(
+                  (c) => (
+                    <MenuItem key={c.id} value={c.url}>
+                      {c.name}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+              <ProductSearch
+                entityCategory={product.category}
+                selectedProduct={selectedProduct}
+                setSelectedProduct={setSelectedProduct}
+              />
+              <Stack spacing={1} direction="row">
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => {
+                    if (!selectedProduct) {
+                      enqueueSnackbar(
+                        "Por favor seleccione un producto a asociar.",
+                        { variant: "warning" }
+                      );
+                    } else {
+                      handleProductFusionSubmit();
+                    }
+                  }}
+                  disableElevation={!selectedProduct}
+                >
+                  Fusionar
+                </Button>
+              </Stack>
+            </Stack>
           </CardContent>
         </Card>
       </Container>
