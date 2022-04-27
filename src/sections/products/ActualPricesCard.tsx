@@ -9,19 +9,19 @@ import {
   Tabs,
 } from "@mui/material";
 import NextLink from "next/link";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Entity } from "src/frontend-utils/types/entity";
 import { PATH_ENTITY } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import LinkIcon from "@mui/icons-material/Link";
-import CustomTable from "../CustomTable";
 // currency
 import currency from "currency.js";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
 import { useState } from "react";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Store } from "src/frontend-utils/types/store";
+import SortingSelecting from "../sorting-selecting";
+import { TableHead } from "../sorting-selecting/SortingSelectingHead";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,24 +63,26 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     setValue(newValue);
   };
 
-  const columns: GridColumns<any> = [
+  const columns: TableHead[] = [
     {
-      headerName: "Tienda",
-      field: "store",
-      renderCell: (params) => (
+      label: "Tienda",
+      id: "store",
+      renderSort: (row: Entity) => apiResourceObjects[row.store].name,
+      renderCell: (row: {
+        store: string | number;
+        external_url: string | undefined;
+      }) => (
         <Stack alignItems={"center"}>
           <NextLink
-            href={`${PATH_ENTITY.root}/${
-              apiResourceObjects[params.row.store].id
-            }`}
+            href={`${PATH_ENTITY.root}/${apiResourceObjects[row.store].id}`}
             passHref
           >
-            <Link>{apiResourceObjects[params.row.store].name}</Link>
+            <Link>{apiResourceObjects[row.store].name}</Link>
           </NextLink>
           <Link
             target="_blank"
             rel="noopener noreferrer"
-            href={params.row.external_url}
+            href={row.external_url}
           >
             <LinkIcon />
           </Link>
@@ -88,39 +90,47 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       ),
     },
     {
-      headerName: "Precio normal",
-      field: "active_registry.normal_price",
-      renderCell: (params) =>
-        currency(params.row.active_registry.normal_price, {
+      label: "Precio normal",
+      id: "active_registry.normal_price",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.normal_price).value,
+      renderCell: (row: { active_registry: { normal_price: currency.Any } }) =>
+        currency(row.active_registry.normal_price, {
           precision: 0,
         }).format(),
     },
     {
-      headerName: "Precio oferta",
-      field: "active_registry.offer_price",
-      renderCell: (params) =>
-        currency(params.row.active_registry.offer_price, {
+      label: "Precio oferta",
+      id: "active_registry.offer_price",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.offer_price).value,
+      renderCell: (row: { active_registry: { offer_price: currency.Any } }) =>
+        currency(row.active_registry.offer_price, {
           precision: 0,
         }).format(),
     },
     {
-      headerName: "Precio normal (USD)",
-      field: "id",
-      renderCell: (params) =>
-        currency(params.row.active_registry.normal_price)
-          .divide(
-            (apiResourceObjects[params.row.currency] as Currency).exchange_rate
-          )
+      label: "Precio normal (USD)",
+      id: "normal_price_usd",
+      sortField: "active_registry.normal_price",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.normal_price).value,
+      renderCell: (row: {
+        active_registry: { normal_price: currency.Any };
+        currency: string | number;
+      }) =>
+        currency(row.active_registry.normal_price)
+          .divide((apiResourceObjects[row.currency] as Currency).exchange_rate)
           .format(),
     },
     {
-      headerName: "Precio oferta (USD)",
-      field: "key",
-      renderCell: (params) =>
-        currency(params.row.active_registry.offer_price)
-          .divide(
-            (apiResourceObjects[params.row.currency] as Currency).exchange_rate
-          )
+      label: "Precio oferta (USD)",
+      id: "offer_price_usd",
+      sortField: "active_registry.offer_price",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.offer_price).value,
+      renderCell: (row: {
+        active_registry: { offer_price: currency.Any };
+        currency: string | number;
+      }) =>
+        currency(row.active_registry.offer_price)
+          .divide((apiResourceObjects[row.currency] as Currency).exchange_rate)
           .format(),
     },
   ];
@@ -143,36 +153,43 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     }
   }
 
-  const columnsRetail: GridColumns<any> = [
+  const columnsRetail: TableHead[] = [
     ...columns.slice(0, 1),
     {
-      headerName: "Plan celular",
-      field: "cell_plan.name",
-      renderCell: (params) =>
-        params.row.cell_plan ? params.row.cell_plan.name : "N/A",
+      label: "Plan celular",
+      id: "cell_plan.name",
+      renderSort: (row: Entity) => row.cell_plan ? row.cell_plan.name : "N/A",
+      renderCell: (row: { cell_plan: { name: string | undefined } }) =>
+        row.cell_plan ? row.cell_plan.name : "N/A",
     },
     ...columns.slice(1),
   ];
 
-  const columnsStores: GridColumns<any> = [
+  const columnsStores: TableHead[] = [
     ...columnsRetail.slice(0, 4),
     {
-      headerName: "Cuota mensual",
-      field: "cell_monthly_payment",
-      renderCell: (params) =>
-        currency(params.row.active_registry.cell_monthly_payment, {
+      label: "Cuota mensual",
+      id: "active_registry.cell_monthly_payment",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.cell_monthly_payment).value,
+      renderCell: (row: {
+        active_registry: { cell_monthly_payment: currency.Any };
+      }) =>
+        currency(row.active_registry.cell_monthly_payment, {
           precision: 0,
         }).format(),
     },
     ...columnsRetail.slice(4),
     {
-      headerName: "Cuota mensual (USD)",
-      field: "cell_plan.id",
-      renderCell: (params) =>
-        currency(params.row.active_registry.cell_monthly_payment)
-          .divide(
-            (apiResourceObjects[params.row.currency] as Currency).exchange_rate
-          )
+      label: "Cuota mensual (USD)",
+      id: "cell_plan.id",
+      sortField: "active_registry.cell_monthly_payment",
+      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.cell_monthly_payment).value,
+      renderCell: (row: {
+        active_registry: { cell_monthly_payment: currency.Any };
+        currency: string | number;
+      }) =>
+        currency(row.active_registry.cell_monthly_payment)
+          .divide((apiResourceObjects[row.currency] as Currency).exchange_rate)
           .format(),
     },
   ];
@@ -203,24 +220,34 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
             </Box>
             <br />
             <TabPanel value={value} index={0}>
-              <CustomTable
-                columns={columnsRetail}
-                data={retail_and_wholesaler_entities}
+              <SortingSelecting
+                TABLE_HEAD={columnsRetail}
+                SORTING_SELECTING_TABLE={retail_and_wholesaler_entities}
+                initialOrder={"active_registry.offer_price"}
               />
             </TabPanel>
             {Object.keys(mobile_network_operators_entities).map(
               (storeUrl, index) => (
                 <TabPanel key={storeUrl} value={value} index={index + 1}>
-                  <CustomTable
-                    columns={columnsStores}
-                    data={mobile_network_operators_entities[storeUrl]}
+                  <SortingSelecting
+                    TABLE_HEAD={columnsStores}
+                    SORTING_SELECTING_TABLE={
+                      mobile_network_operators_entities[storeUrl]
+                    }
+                    initialOrder={"active_registry.offer_price"}
+                    initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
                   />
                 </TabPanel>
               )
             )}
           </Box>
         ) : (
-          <CustomTable columns={columns} data={active_entities} />
+          <SortingSelecting
+            TABLE_HEAD={columns}
+            SORTING_SELECTING_TABLE={active_entities}
+            initialOrder={"active_registry.offer_price"}
+            initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
+          />
         )}
       </CardContent>
     </Card>

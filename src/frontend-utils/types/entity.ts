@@ -9,6 +9,7 @@ export type Entity = {
     normal_price: string;
     offer_price: string;
     is_available: boolean;
+    cell_monthly_payment: string,
   };
   bundle: { name: string, id: number };
   category: string;
