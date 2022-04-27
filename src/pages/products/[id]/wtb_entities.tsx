@@ -64,7 +64,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
       ),
     },
     {
-      headerName: "Brand",
+      headerName: "Marca",
       field: "brand",
       flex: 1,
       // renderCell: (row: WtbEntity) => (
