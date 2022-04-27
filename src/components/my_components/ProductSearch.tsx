@@ -26,7 +26,7 @@ export default function ProductSearch({
     });
     jwtFetch(
       null,
-      `${entityCategory}products/??page_size=200&search=${encodeURIComponent(
+      `${entityCategory}products/?page_size=200&search=${encodeURIComponent(
         value
       )}`
     ).then((data) => {
