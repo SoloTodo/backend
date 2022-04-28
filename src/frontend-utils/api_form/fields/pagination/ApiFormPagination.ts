@@ -25,7 +25,7 @@ export class ApiFormPagination {
 
   cleanData(query?: URLSearchParams): ApiFormPaginationData {
     const newData: any = {
-      page_size: 5,
+      page_size: 20,
     };
     const arr = ["page", "page_size"];
     arr.forEach((a) => {

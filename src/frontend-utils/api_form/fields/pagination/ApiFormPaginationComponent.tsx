@@ -33,7 +33,7 @@ export default function ApiFormPaginationComponent(
 
   return (
     <TablePagination
-      rowsPerPageOptions={[5, 10, 25, 50, 100, 200]}
+      rowsPerPageOptions={[5, 10, 20, 50, 100, 200]}
       component="div"
       colSpan={3}
       count={data.count}
