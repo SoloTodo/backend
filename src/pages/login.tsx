@@ -108,7 +108,6 @@ export default function Login() {
   const defaultValues = {
     email: "",
     password: "",
-    remember: true,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -117,7 +116,6 @@ export default function Login() {
   });
 
   const {
-    reset,
     setError,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -143,7 +141,6 @@ export default function Login() {
         });
       })
       .catch(() => {
-        reset();
         if (isMountedRef.current) {
           setError('afterSubmit', { message: "Email y/o contraseña incorrectos" });
         }
