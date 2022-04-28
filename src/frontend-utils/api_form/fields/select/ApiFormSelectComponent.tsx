@@ -7,6 +7,11 @@ type ApiFormSelectComponentProps = {
   name: string;
 };
 
+export const choicesYesNo = [
+  { label: "Si", value: 1 },
+  { label: "No", value: 0 },
+];
+
 export default function ApiFormSelectComponent(
   props: ApiFormSelectComponentProps
 ) {
@@ -34,24 +39,25 @@ export default function ApiFormSelectComponent(
     }
   };
 
-  let cleanedData: any = field.cleanedData
-  if (typeof field.cleanedData === "undefined" || field.cleanedData.length === 0) {
+  let cleanedData: any = field.cleanedData;
+  if (
+    typeof field.cleanedData === "undefined" ||
+    field.cleanedData.length === 0
+  ) {
     if (field.multiple) {
       cleanedData = [];
     } else {
       cleanedData = null;
     }
   } else if (!field.multiple) {
-    cleanedData = field.cleanedData[0]
+    cleanedData = field.cleanedData[0];
   }
 
   return (
     <Autocomplete
       multiple={field.multiple}
       options={field.choices}
-      renderInput={(params) => (
-        <TextField {...params} label={field.label} />
-      )}
+      renderInput={(params) => <TextField {...params} label={field.label} />}
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={cleanedData}

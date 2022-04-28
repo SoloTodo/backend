@@ -32,8 +32,11 @@ import {
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
-import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
+import ApiFormSelectComponent, {
+  choicesYesNo,
+} from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
+import { Entity } from "src/frontend-utils/types/entity";
 
 // ----------------------------------------------------------------------
 
@@ -42,11 +45,6 @@ Entities.getLayout = function getLayout(page: ReactElement) {
 };
 
 // ----------------------------------------------------------------------
-
-const choicesYesNo = [
-  { label: "Si", value: 1 },
-  { label: "No", value: 0 },
-];
 
 export default function Entities() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
@@ -111,7 +109,7 @@ export default function Entities() {
       headerName: "Nombre",
       field: "name",
       flex: 1,
-      renderCell: (row: {id: string, name: string}) => (
+      renderCell: (row: { id: string; name: string }) => (
         <NextLink href={`${PATH_ENTITY.root}/${row.id}`} passHref>
           <Link>{row.name}</Link>
         </NextLink>
@@ -121,7 +119,7 @@ export default function Entities() {
       headerName: "Tienda",
       field: "store",
       flex: 1,
-      renderCell: (row: any) => (
+      renderCell: (row: Entity) => (
         <Stack alignItems={"center"} spacing={1}>
           <NextLink
             href={`${PATH_STORE.root}/${apiResourceObjects[row.store].id}`}
@@ -148,19 +146,19 @@ export default function Entities() {
       headerName: "Categoría",
       field: "category",
       flex: 1,
-      renderCell: (row: any) => apiResourceObjects[row.category].name,
+      renderCell: (row: Entity) => apiResourceObjects[row.category].name,
     },
     {
       headerName: "Producto",
       field: "product",
       flex: 1,
-      renderCell: (row: any) => (row.product ? row.product.name : "N/A"),
+      renderCell: (row: Entity) => (row.product ? row.product.name : "N/A"),
     },
     {
       headerName: "¿Disp?",
       field: "active_registry",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry && row.active_registry.is_available ? (
           <CheckIcon />
         ) : (
@@ -171,21 +169,27 @@ export default function Entities() {
       headerName: "Act?",
       field: "key",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry ? <CheckIcon /> : <ClearIcon />,
     },
     {
       headerName: "Vis?",
       field: "is_visible",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.is_visible ? <CheckIcon /> : <ClearIcon />,
+    },
+    {
+      headerName: "Moneda",
+      field: "currency",
+      flex: 1,
+      renderCell: (row: Entity) => (apiResourceObjects[row.currency] as Currency).iso_code
     },
     {
       headerName: "Normal (orig.)",
       field: "active_registry.normal_price",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry
           ? currency(row.active_registry.normal_price, {
               precision: 0,
@@ -196,7 +200,7 @@ export default function Entities() {
       headerName: "Oferta (orig.)",
       field: "active_registry.offer_price",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry
           ? currency(row.active_registry.offer_price, { precision: 0 }).format()
           : "$0",
@@ -205,7 +209,7 @@ export default function Entities() {
       headerName: "Normal (USD)",
       field: "active_registry.normal_price_usd",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry
           ? currency(row.active_registry.normal_price)
               .divide(
@@ -218,7 +222,7 @@ export default function Entities() {
       headerName: "Oferta (USD)",
       field: "active_registry.offer_price_usd",
       flex: 1,
-      renderCell: (row: any) =>
+      renderCell: (row: Entity) =>
         row.active_registry
           ? currency(row.active_registry.offer_price)
               .divide(
@@ -247,7 +251,11 @@ export default function Entities() {
             <Card>
               <CardHeader title="Filtros" />
               <CardContent>
-                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 6, md: 12 }}>
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 4, sm: 6, md: 12 }}
+                >
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="stores" />
                   </Grid>
