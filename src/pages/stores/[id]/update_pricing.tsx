@@ -1,10 +1,8 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
-import { useRouter } from "next/router";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { getStore, jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { apiSettings } from "src/frontend-utils/settings";
 import { Store, StoreScrapingOptions } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
@@ -21,20 +19,17 @@ UpdateStorePricing.getLayout = function getLayout(page: ReactElement) {
 export default function UpdateStorePricing(props: { store: Store }) {
   const { store } = props;
 
-  const [storeScrapingOptions, setStoreScrapingOptions] = useState({
+  const [storeScrapingOptions, setStoreScrapingOptions] = useState<StoreScrapingOptions>({
     categories: [],
     prefer_async: false,
-  } as unknown as StoreScrapingOptions);
+  });
   const [isLoading, setLoading] = useState(false);
-
-  const router = useRouter();
-  const { id } = router.query;
 
   useEffect(() => {
     setLoading(true);
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.stores}${id}/scraper/`
+      `${store.url}scraper/`
     ).then((data) => {
       setStoreScrapingOptions(data);
       setLoading(false);
@@ -59,8 +54,8 @@ export default function UpdateStorePricing(props: { store: Store }) {
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
               <UpdateStorePricingForm
-                store_scraping_options={storeScrapingOptions}
-                store_ids={[store.id]}
+                storeScrapingOptions={storeScrapingOptions}
+                storeIds={[store.id]}
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
