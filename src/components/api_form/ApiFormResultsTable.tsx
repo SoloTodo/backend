@@ -20,7 +20,7 @@ export default function ApiFormResultsTable({
 
   return (
     <Scrollbar>
-      <Box sx={{ height: 500, width: "100%" }}>
+      <Box sx={{ height: 700, width: "100%" }}>
         <StyledDataGrid
           columns={columns}
           rows={stores ? stores : []}

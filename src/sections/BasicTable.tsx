@@ -16,7 +16,7 @@ export default function BasicTable({
     <Card>
       <CardHeader title={title} />
       <CardContent>
-        <Box sx={{ height: 500, width: "100%" }}>
+        <Box sx={{ height: 700, width: "100%" }}>
           {setSelectedRows ? (
             <DataGrid
               columns={columns}
