@@ -13,13 +13,24 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
-import { Store } from "src/frontend-utils/types/store";
+import { Store, Update, STATUS } from "src/frontend-utils/types/store";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 // redux
 import { useAppSelector } from "src/store/hooks";
-import { apiResourceObjectsByIdOrUrl, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import {
+  apiResourceObjectsByIdOrUrl,
+  useApiResourceObjects,
+} from "src/frontend-utils/redux/api_resources/apiResources";
+
+// ----------------------------------------------------------------------
+
+interface ExtendedUpdate extends Update {
+  updateId: number;
+  statusText: string;
+  result: string;
+}
 
 // ----------------------------------------------------------------------
 
@@ -30,41 +41,53 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function UpdatePricing() {
-  const [latestActive, setLatestActive] = useState([] as any[]);
-  const [isLoading, setLoading] = useState(false)
+  const [latestActive, setLatestActive] = useState<ExtendedUpdate[]>([]);
+  const [isLoading, setLoading] = useState(false);
   const [selectedStores, setSelectedStores] = useState([]);
 
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categories = Object.keys(apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url")) as string[];
-  const stores = Object.values(apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "url")) as Store[];
+  const categories = Object.keys(
+    apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url")
+  ) as string[];
+  const stores = Object.values(
+    apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "url")
+  ) as Store[];
 
   useEffect(() => {
-    setLoading(true)
-    jwtFetch(null, apiSettings.apiResourceEndpoints.store_update_logs + "latest/")
-      .then((latest) => {
-        const latestActive = stores.reduce((acc: any[], a: Store) => {
-          if (a.last_activation) {
-            const l = latest[a.url];
-            const exito = l.status === 3 && l.available_products_count !== 0;
-            acc.push({
+    setLoading(true);
+    jwtFetch(
+      null,
+      apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
+    ).then((latest) => {
+      const latestActive = stores.reduce((acc: ExtendedUpdate[], a: Store) => {
+        if (a.last_activation) {
+          const l = latest[a.url];
+          const success =
+            l.status === STATUS.success && l.available_products_count !== 0;
+          return [
+            ...acc,
+            {
               ...l,
               id: a.id,
               store: a.name,
               updateId: l.id,
-              status: exito ? "Exitosa" : l.status === 2 ? "En proceso" : "Error",
-              resultado: exito
-              ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
-              : "N/A",
-            });
-          }
-          return acc;
-        }, []);
-        setLatestActive(latestActive)
-        setLoading(false)
-
-      })
-  }, [])
-
+              statusText: success
+                ? "Exitosa"
+                : l.status === STATUS.in_progress
+                ? "En proceso"
+                : "Error",
+              result: success
+                ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+                : "N/A",
+            },
+          ];
+        }
+        return acc;
+      }, []);
+      setLatestActive(latestActive);
+      setLoading(false);
+    });
+  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -79,12 +102,12 @@ export default function UpdatePricing() {
     },
     {
       headerName: "Estado",
-      field: "status",
+      field: "statusText",
       flex: 1,
     },
     {
       headerName: "Resultado",
-      field: "resultado",
+      field: "result",
       flex: 1,
     },
     {
@@ -115,7 +138,6 @@ export default function UpdatePricing() {
     },
   ];
 
-  if (isLoading) return <p>Loading...</p>
   return (
     <Page title="Actualizar Pricing">
       <Container>
@@ -127,22 +149,26 @@ export default function UpdatePricing() {
             { name: "Actualizar pricing" },
           ]}
         />
-        <Stack spacing={3}>
-          <UpdateStorePricingForm
-            store_scraping_options={{
-              categories: categories,
-              prefer_async: true,
-            }}
-            multi
-            store_ids={selectedStores}
-          />
-          <BasicTable
-            title="Tiendas"
-            columns={columns}
-            data={latestActive}
-            setSelectedRows={setSelectedStores}
-          />
-        </Stack>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <Stack spacing={3}>
+            <UpdateStorePricingForm
+              storeScrapingOptions={{
+                categories: categories,
+                prefer_async: true,
+              }}
+              multi
+              storeIds={selectedStores}
+            />
+            <BasicTable
+              title="Tiendas"
+              columns={columns}
+              data={latestActive}
+              setSelectedRows={setSelectedStores}
+            />
+          </Stack>
+        )}
       </Container>
     </Page>
   );

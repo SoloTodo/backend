@@ -10,6 +10,12 @@ export type Store = {
   permissions: string[];
 };
 
+export const STATUS = {
+  success: 1,
+  in_progress: 2,
+  error: 3
+}
+
 export type Update = {
   available_products_count: number | null;
   categories?: any;
