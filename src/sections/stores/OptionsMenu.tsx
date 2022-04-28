@@ -1,24 +1,30 @@
 import { useRouter } from "next/router";
-import { PATH_STORE } from "src/routes/paths";
+import { PATH_ENTITY, PATH_STORE } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
 import { Store } from "src/frontend-utils/types/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { apiSettings } from "src/frontend-utils/settings";
 import { Link } from "@mui/material";
 import { useAppSelector } from "src/store/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
+import { useSnackbar } from "notistack";
 
 export default function OptionsMenu({ store }: { store: Store }) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const user = useAppSelector(useUser);
   const router = useRouter();
   const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
 
   const downloadMatchReport = () => {
+    const key = enqueueSnackbar("Generando reporte de homologación, por favor espere!", {
+      persist: true,
+      variant: "info",
+    });
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.stores}${store.id}/matching_report/`
+      `${store.url}matching_report/`
     ).then((res) => {
+      closeSnackbar(key);
       window.location = res.url;
     });
   };
@@ -41,7 +47,7 @@ export default function OptionsMenu({ store }: { store: Store }) {
     },
     {
       text: "Entidades en conflicto",
-      path: `${baseRoute}`,
+      path: `${PATH_ENTITY.conflicts}/?stores=${store.id}`,
       hasPermission: user?.is_superuser
     },
     {
