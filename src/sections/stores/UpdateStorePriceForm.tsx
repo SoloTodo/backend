@@ -32,12 +32,12 @@ import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 export default function UpdateStorePricingForm({
-  store_scraping_options,
-  store_ids,
+  storeScrapingOptions,
+  storeIds,
   multi,
 }: {
-  store_scraping_options: FormValuesProps;
-  store_ids: number[];
+  storeScrapingOptions: FormValuesProps;
+  storeIds: number[];
   multi?: boolean;
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -48,7 +48,7 @@ export default function UpdateStorePricingForm({
   const UpdateSchema = Yup.object().shape({});
 
   const defaultValues = {
-    ...store_scraping_options,
+    ...storeScrapingOptions,
     categories: [],
   };
 
@@ -70,7 +70,7 @@ export default function UpdateStorePricingForm({
       categories: data.categories.map((c) => apiResourceObjects[c].id.toString()),
     };
 
-    for (const id of store_ids) {
+    for (const id of storeIds) {
       await jwtFetch(
         null,
         `${apiSettings.apiResourceEndpoints.stores}${id}/update_pricing/`,
@@ -123,7 +123,7 @@ export default function UpdateStorePricingForm({
                   multiple
                   getOptionLabel={(option) => apiResourceObjects[option].name}
                   onChange={(_event, newValue) => field.onChange(newValue)}
-                  options={store_scraping_options.categories}
+                  options={storeScrapingOptions.categories}
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
@@ -152,9 +152,9 @@ export default function UpdateStorePricingForm({
               type="submit"
               variant="contained"
               loading={isSubmitting}
-              disabled={multi && store_ids.length == 0 ? true : false}
+              disabled={multi && storeIds.length == 0 ? true : false}
             >
-              Actualizar {multi ? `(${store_ids.length})` : ""}
+              Actualizar {multi ? `(${storeIds.length})` : ""}
             </LoadingButton>
           </Stack>
         </FormProvider>
