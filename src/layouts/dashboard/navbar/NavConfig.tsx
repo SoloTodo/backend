@@ -2,11 +2,13 @@
 import SvgIconStyle from "../../../components/SvgIconStyle";
 import StoreIcon from "@mui/icons-material/Store";
 import InboxIcon from "@mui/icons-material/Inbox";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 // routes
 import {
   PATH_CATEGORY,
   PATH_ENTITY,
   PATH_PRODUCT,
+  PATH_RATING,
   PATH_STORE,
   PATH_USER,
 } from "src/routes/paths";
@@ -25,6 +27,7 @@ const ICONS = {
   cart: getIcon("ic_cart"),
   store: <StoreIcon />,
   inbox: <InboxIcon />,
+  thumbUp: <ThumbUpIcon />,
 };
 
 const sidebarConfig = [
@@ -61,10 +64,19 @@ const sidebarConfig = [
       },
       {
         title: "Productos",
-        path: "/dashboard/four",
+        path: "-",
         icon: ICONS.ecommerce,
         children: [
           { title: "Todos", path: PATH_PRODUCT.root },
+        ],
+      },
+      {
+        title: "Ratings",
+        path: "-",
+        icon: ICONS.thumbUp,
+        children: [
+          { title: "Todos", path: PATH_RATING.root },
+          { title: "Pendientes", path: PATH_RATING.pending },
         ],
       },
     ],

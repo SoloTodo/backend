@@ -58,4 +58,5 @@ export const PATH_VISIT = {
 
 export const PATH_RATING = {
   root: ROOTS_RATING,
+  pending: path(ROOTS_RATING, '/pending'),
 }
