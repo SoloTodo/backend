@@ -4,7 +4,6 @@ import {
   CardHeader,
   Container,
   Grid,
-  Stack,
 } from "@mui/material";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -20,7 +19,6 @@ import {
 import { useAppSelector } from "src/store/hooks";
 import { useRouter } from "next/router";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import { Masonry } from "@mui/lab";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { GetServerSideProps } from "next/types";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -118,12 +116,22 @@ export default function CategoryBrowse({
     fieldset.filters.forEach((filter) => {
       console.log(filter.name);
 
-      const filterChoices = filter.choices.map((c) => ({
+      let filterChoices = filter.choices.map((c) => ({
         label: c.name,
         value: c.id,
       }));
 
+      if (filter.type === "exact") {
+        filterChoices = filterChoices || [
+          { value: 0, label: "No" },
+          { value: 1, label: "Sí" },
+        ];
+      } else {
+        filterChoices = filterChoices || [];
+      }
+
       // TODO: sub filter choices according to selected ones
+      // esto se encuentra en los currentResults ...
 
       if (filter.type === "exact") {
         fieldsMetadata.push({
@@ -151,7 +159,7 @@ export default function CategoryBrowse({
             <ApiFormSelectComponent name={filter.name} />
           </Grid>
         );
-      } // TODO: range and else
+      } // TODO: range and else cases
     });
   });
 
