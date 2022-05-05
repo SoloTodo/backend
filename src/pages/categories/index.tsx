@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, Container, Link } from "@mui/material";
 import Layout from "src/layouts";
 // components
 import Page from "src/components/Page";
-import BasicTable from "src/sections/BasicTable";
 // redux
 import { useAppSelector } from "src/store/hooks";
 import {
@@ -13,7 +12,6 @@ import {
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import CustomTable from "src/sections/CustomTable";
-import { Category } from "src/frontend-utils/types/store";
 import { PATH_CATEGORY } from "src/routes/paths";
 import { GridColDef } from "@mui/x-data-grid";
 
