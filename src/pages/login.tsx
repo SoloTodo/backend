@@ -83,7 +83,6 @@ const ContentStyle = styled("div")(({ theme }) => ({
 type FormValuesProps = {
   email: string;
   password: string;
-  remember: boolean;
   afterSubmit?: string;
 };
 
@@ -208,7 +207,6 @@ export default function Login() {
                 justifyContent="space-between"
                 sx={{ my: 2 }}
               >
-                {/* <RHFCheckbox name="remember" label="Recordarme" /> */}
                 <NextLink href={PATH_AUTH.reset_password} passHref>
                   <Link variant="subtitle2">Olvidaste tu contraseña?</Link>
                 </NextLink>
