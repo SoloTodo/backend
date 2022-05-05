@@ -139,7 +139,7 @@ export default function Ratings() {
 
   return (
     <Page title="Ratings">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -125,7 +125,7 @@ export default function Products() {
 
   return (
     <Page title="Productos">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -39,7 +39,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
 
   return (
     <Page title={entity.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -233,7 +233,7 @@ export default function EntityPage(props: EntityProps) {
 
   return (
     <Page title={entity.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

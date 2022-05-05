@@ -51,7 +51,7 @@ export default function Categories() {
 
   return (
     <Page title="Categorías">
-      <Container>
+      <Container maxWidth={false}>
         <Card>
           <CardHeader title="Categorías" />
           <CardContent>

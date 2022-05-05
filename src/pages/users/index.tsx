@@ -37,10 +37,10 @@ export default function Users(props: Record<string, any>) {
   ];
 
   return (
-    <Page title="Categorías">
-      <Container>
+    <Page title="Usuarios">
+      <Container maxWidth={false}>
         <BasicTable
-          title="Categorías"
+          title="Usuarios"
           columns={columns}
           data={users}
         />

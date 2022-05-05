@@ -140,7 +140,7 @@ export default function UpdatePricing() {
 
   return (
     <Page title="Actualizar Pricing">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

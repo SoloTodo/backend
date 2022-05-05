@@ -42,7 +42,7 @@ export default function ProductPage(props: ProductProps) {
   const { product, websites, renderSpecs, entities } = props;
   return (
     <Page title={product.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

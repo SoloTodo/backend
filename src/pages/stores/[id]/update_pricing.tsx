@@ -38,7 +38,7 @@ export default function UpdateStorePricing(props: { store: Store }) {
 
   return (
     <Page title={`${store.name}`}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

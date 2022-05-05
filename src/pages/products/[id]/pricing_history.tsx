@@ -161,7 +161,7 @@ export default function ProductPricingHistory({
 
   return (
     <Page title={product.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -69,7 +69,7 @@ export default function PendingEntities() {
 
   return (
     <Page title="Pendientes">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -58,7 +58,7 @@ export default function CategoryPage() {
 
   return (
     <Page title={`${category.name}`}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

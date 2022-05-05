@@ -123,7 +123,7 @@ export default function EntityEventPage() {
 
   return (
     <Page title={entity.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

@@ -73,7 +73,7 @@ export default function ProductFuse({ product }: { product: Product }) {
 
   return (
     <Page title={product.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

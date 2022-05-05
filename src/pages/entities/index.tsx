@@ -235,7 +235,7 @@ export default function Entities() {
 
   return (
     <Page title="Entidades">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

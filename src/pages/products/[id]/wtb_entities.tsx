@@ -99,7 +99,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
 
   return (
     <Page title={product.name}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

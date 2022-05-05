@@ -160,7 +160,7 @@ export default function CategoryBrowse({
 
   return (
     <Page title={`${category.name}`}>
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[

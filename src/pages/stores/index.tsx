@@ -7,8 +7,8 @@ import {
   Container,
   Stack,
   Link,
+  Grid,
 } from "@mui/material";
-import { Masonry } from "@mui/lab";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // layouts
@@ -24,7 +24,10 @@ import { apiSettings } from "../../frontend-utils/settings";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 // redux
 import { useAppSelector } from "src/store/hooks";
-import { selectApiResourceObjects, useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import {
+  selectApiResourceObjects,
+  useApiResourceObjects,
+} from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 
@@ -97,7 +100,7 @@ export default function Stores() {
 
   return (
     <Page title="Tiendas">
-      <Container>
+      <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[
@@ -114,10 +117,18 @@ export default function Stores() {
             <Card>
               <CardHeader title="Filtros" />
               <CardContent>
-                <Masonry columns={2} spacing={3}>
-                  <ApiFormSelectComponent name="countries" />
-                  <ApiFormSelectComponent name="types" />
-                </Masonry>
+                <Grid
+                  container
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 6, md: 12 }}
+                >
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="countries" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="types" />
+                  </Grid>
+                </Grid>
               </CardContent>
             </Card>
             <Card>
