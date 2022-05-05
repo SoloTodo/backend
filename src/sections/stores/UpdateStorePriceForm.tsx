@@ -162,6 +162,3 @@ export default function UpdateStorePricingForm({
     </Card>
   );
 }
-function enqueueSnackbar(arg0: string) {
-  throw new Error("Function not implemented.");
-}
