@@ -43,7 +43,7 @@ UpdatePricing.getLayout = function getLayout(page: ReactElement) {
 export default function UpdatePricing() {
   const [latestActive, setLatestActive] = useState<ExtendedUpdate[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const [selectedStores, setSelectedStores] = useState([]);
+  const [selectedStoresIds, setSelectedStoresIds] = useState<number[]>([]);
 
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categories = Object.keys(
@@ -159,13 +159,13 @@ export default function UpdatePricing() {
                 prefer_async: true,
               }}
               multi
-              storeIds={selectedStores}
+              storeIds={selectedStoresIds}
             />
             <BasicTable
               title="Tiendas"
               columns={columns}
               data={latestActive}
-              setSelectedRows={setSelectedStores}
+              setSelectedRows={setSelectedStoresIds}
             />
           </Stack>
         )}
