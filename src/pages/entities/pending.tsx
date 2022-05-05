@@ -21,6 +21,8 @@ import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY, PATH_STORE } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import PendingEntitiesTable from "src/sections/entities/PendingEntitiesTable";
+import { GetServerSideProps } from "next/types";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
 
@@ -30,8 +32,17 @@ PendingEntities.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function PendingEntities() {
+export default function PendingEntities({
+  categoryStats,
+}: {
+  categoryStats: { [id: number]: number };
+}) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+
+  const categoriasChoices = selectApiResourceObjects(
+    apiResourceObjects,
+    "categories"
+  ).map((c) => ({label: `${c.label} (${categoryStats[c.value] ? categoryStats[c.value] : 0})`, value: c.value}));
 
   const fieldMetadata = [
     {
@@ -50,7 +61,7 @@ export default function PendingEntities() {
       name: "categories",
       label: "Categorías",
       multiple: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "categories"),
+      choices: categoriasChoices,
     },
     {
       fieldType: "select" as "select",
@@ -113,3 +124,15 @@ export default function PendingEntities() {
     </Page>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const categoryStats = await jwtFetch(
+    context,
+    `${apiSettings.apiResourceEndpoints.entities}pending_stats/`
+  );
+  return {
+    props: {
+      categoryStats: categoryStats,
+    },
+  };
+};
