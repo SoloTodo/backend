@@ -22,7 +22,6 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { Store } from "src/frontend-utils/types/store";
 import SortingSelecting from "../sorting-selecting";
 import { TableHead } from "../sorting-selecting/SortingSelectingHead";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -203,21 +202,6 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     },
   ];
 
-  // const columns2: GridColumns = [
-  //   {
-  //     headerName: "Normal price",
-  //     field: "active_registry.normal_price",
-  //     flex: 1,
-  //     renderCell: (params) =>
-  //       currency(params.row.active_registry.normal_price, {
-  //         precision: 0,
-  //       }).format(),
-  //     sortComparator: (value1, value2) => {
-
-  //     }
-  //   },
-  // ];
-
   return (
     <Card>
       <CardHeader title="Precios actuales" />
@@ -274,10 +258,6 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
             initialOrder={"active_registry.offer_price"}
             initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
           />
-          // <Box height={800}>
-
-          //   <DataGrid columns={columns2} rows={active_entities} />
-          // </Box>
         )}
       </CardContent>
     </Card>
