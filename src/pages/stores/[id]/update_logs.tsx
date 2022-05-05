@@ -95,7 +95,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
   ];
 
   return (
-    <Page title="Registros de Actualización">
+    <Page title={`${store.name}`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
