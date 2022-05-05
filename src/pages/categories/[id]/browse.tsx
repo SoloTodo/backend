@@ -8,11 +8,10 @@ import {
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
-import { Category } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObject,
   selectApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
@@ -72,11 +71,7 @@ export default function CategoryBrowse({
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
   const categoryId = router.query.id as string;
-  const category = (
-    apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "id") as {
-      [id: string]: Category;
-    }
-  )[categoryId];
+  const category = getApiResourceObject(apiResourceObjects, "categories", categoryId);
 
   console.log(categorySpecsFormLayout);
 

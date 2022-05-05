@@ -6,7 +6,7 @@ import { Category } from "src/frontend-utils/types/store";
 import { Entity } from "src/frontend-utils/types/entity";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -22,10 +22,9 @@ export default function CategorySelect({
   const [category, setCategory] = useState(entity.category);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
-  const categories: { [url: string]: Category } = apiResourceObjectsByIdOrUrl(
+  const categories: { [url: string]: Category } = getApiResourceObjects(
     apiResourceObjects,
-    "categories",
-    "url"
+    "categories"
   );
 
   const handleCategory = async (value: string) => {

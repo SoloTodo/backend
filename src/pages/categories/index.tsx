@@ -9,7 +9,7 @@ import BasicTable from "src/sections/BasicTable";
 // redux
 import { useAppSelector } from "src/store/hooks";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import CustomTable from "src/sections/CustomTable";
@@ -28,7 +28,7 @@ Categories.getLayout = function getLayout(page: ReactElement) {
 export default function Categories() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categoriesData = Object.values(
-    apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url")
+    getApiResourceObjects(apiResourceObjects, "categories")
   );
 
   const columns: GridColDef[] = [

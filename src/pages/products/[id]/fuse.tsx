@@ -17,7 +17,7 @@ import ProductSearch from "src/components/my_components/ProductSearch";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -43,11 +43,7 @@ export default function ProductFuse({ product }: { product: Product }) {
     null as { id: number; instance_model_id: number } | null
   );
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categories = apiResourceObjectsByIdOrUrl(
-    apiResourceObjects,
-    "categories",
-    "url"
-  );
+  const categories = getApiResourceObjects(apiResourceObjects, "categories");
 
   const handleProductFusionSubmit = () => {
     if (selectedProduct) {

@@ -13,7 +13,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import apiResourceObjectsSlice, {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 
@@ -54,7 +54,7 @@ export default function BundleSelect({
 
   useEffect(() => {
     const bundles = Object.values(
-      apiResourceObjectsByIdOrUrl(apiResourceObjects, "bundles", "url")
+      getApiResourceObjects(apiResourceObjects, "bundles")
     );
     if (bundles.length === 0) {
       jwtFetch(null, apiSettings.apiResourceEndpoints.bundles).then((data) => {

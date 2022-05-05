@@ -6,6 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "src/store/store";
 import { HYDRATE } from "next-redux-wrapper";
 import { Category, Store } from "src/frontend-utils/types/store";
+import { apiSettings } from "src/frontend-utils/settings";
 
 export type ApiResourceObject = Currency | Country | StoreType | Category | Store;
 export type ApiResourceObjectRecord = Record<string, ApiResourceObject>;
@@ -56,14 +57,22 @@ export function selectApiResourceObjects(
   );
 }
 
-export function apiResourceObjectsByIdOrUrl(
+export function getApiResourceObject(
   apiResourceObjects: ApiResourceObjectRecord,
   resourceName: string,
-  param: "id" | "url"
+  resourceId: string
+) {
+  const resourceUrl = `${apiSettings.endpoint}${resourceName}/${resourceId}/`;
+  return apiResourceObjects[resourceUrl];
+}
+
+export function getApiResourceObjects(
+  apiResourceObjects: ApiResourceObjectRecord,
+  resourceName: string,
 ) {
   return Object.values(apiResourceObjects).reduce((acc, r) => {
     if (r.url.includes(resourceName)) {
-      return { ...acc, [r[param]]: r };
+      return { ...acc, [r.url]: r };
     }
     return acc;
   }, {});

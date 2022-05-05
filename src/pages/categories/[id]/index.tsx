@@ -8,7 +8,7 @@ import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { Detail } from "src/frontend-utils/types/extras";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObject,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { useAppSelector } from "src/store/hooks";
@@ -29,11 +29,7 @@ export default function CategoryPage() {
   const router = useRouter();
   const categoryId = router.query.id as string;
   const baseRoute = `${PATH_CATEGORY.root}/${categoryId}`;
-  const category = (apiResourceObjectsByIdOrUrl(
-    apiResourceObjects,
-    "categories",
-    "id"
-  ) as {[id: string]: Category})[categoryId];
+  const category = getApiResourceObject(apiResourceObjects, "categories", categoryId) as Category;
 
   const details: Detail[] = [
     {

@@ -22,6 +22,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { Store } from "src/frontend-utils/types/store";
 import SortingSelecting from "../sorting-selecting";
 import { TableHead } from "../sorting-selecting/SortingSelectingHead";
+import { DataGrid, GridColumns } from "@mui/x-data-grid";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -92,7 +93,8 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     {
       label: "Precio normal",
       id: "active_registry.normal_price",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.normal_price).value,
+      renderSort: (row: Entity) =>
+        row.active_registry && currency(row.active_registry.normal_price).value,
       renderCell: (row: { active_registry: { normal_price: currency.Any } }) =>
         currency(row.active_registry.normal_price, {
           precision: 0,
@@ -101,7 +103,8 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     {
       label: "Precio oferta",
       id: "active_registry.offer_price",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.offer_price).value,
+      renderSort: (row: Entity) =>
+        row.active_registry && currency(row.active_registry.offer_price).value,
       renderCell: (row: { active_registry: { offer_price: currency.Any } }) =>
         currency(row.active_registry.offer_price, {
           precision: 0,
@@ -111,7 +114,8 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       label: "Precio normal (USD)",
       id: "normal_price_usd",
       sortField: "active_registry.normal_price",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.normal_price).value,
+      renderSort: (row: Entity) =>
+        row.active_registry && currency(row.active_registry.normal_price).value,
       renderCell: (row: {
         active_registry: { normal_price: currency.Any };
         currency: string | number;
@@ -124,7 +128,8 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       label: "Precio oferta (USD)",
       id: "offer_price_usd",
       sortField: "active_registry.offer_price",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.offer_price).value,
+      renderSort: (row: Entity) =>
+        row.active_registry && currency(row.active_registry.offer_price).value,
       renderCell: (row: {
         active_registry: { offer_price: currency.Any };
         currency: string | number;
@@ -158,7 +163,7 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     {
       label: "Plan celular",
       id: "cell_plan.name",
-      renderSort: (row: Entity) => row.cell_plan ? row.cell_plan.name : "N/A",
+      renderSort: (row: Entity) => (row.cell_plan ? row.cell_plan.name : "N/A"),
       renderCell: (row: { cell_plan: { name: string | undefined } }) =>
         row.cell_plan ? row.cell_plan.name : "N/A",
     },
@@ -170,7 +175,9 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
     {
       label: "Cuota mensual",
       id: "active_registry.cell_monthly_payment",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.cell_monthly_payment).value,
+      renderSort: (row: Entity) =>
+        row.active_registry &&
+        currency(row.active_registry.cell_monthly_payment).value,
       renderCell: (row: {
         active_registry: { cell_monthly_payment: currency.Any };
       }) =>
@@ -183,7 +190,9 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       label: "Cuota mensual (USD)",
       id: "cell_plan.id",
       sortField: "active_registry.cell_monthly_payment",
-      renderSort: (row: Entity) => row.active_registry && currency(row.active_registry.cell_monthly_payment).value,
+      renderSort: (row: Entity) =>
+        row.active_registry &&
+        currency(row.active_registry.cell_monthly_payment).value,
       renderCell: (row: {
         active_registry: { cell_monthly_payment: currency.Any };
         currency: string | number;
@@ -193,6 +202,21 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
           .format(),
     },
   ];
+
+  // const columns2: GridColumns = [
+  //   {
+  //     headerName: "Normal price",
+  //     field: "active_registry.normal_price",
+  //     flex: 1,
+  //     renderCell: (params) =>
+  //       currency(params.row.active_registry.normal_price, {
+  //         precision: 0,
+  //       }).format(),
+  //     sortComparator: (value1, value2) => {
+
+  //     }
+  //   },
+  // ];
 
   return (
     <Card>
@@ -235,7 +259,9 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
                       mobile_network_operators_entities[storeUrl]
                     }
                     initialOrder={"active_registry.offer_price"}
-                    initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
+                    initialRenderSort={() => (row: Entity) =>
+                      row.active_registry &&
+                      parseInt(row.active_registry.offer_price)}
                   />
                 </TabPanel>
               )
@@ -248,6 +274,10 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
             initialOrder={"active_registry.offer_price"}
             initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
           />
+          // <Box height={800}>
+
+          //   <DataGrid columns={columns2} rows={active_entities} />
+          // </Box>
         )}
       </CardContent>
     </Card>

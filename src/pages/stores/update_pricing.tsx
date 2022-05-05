@@ -20,7 +20,7 @@ import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 // redux
 import { useAppSelector } from "src/store/hooks";
 import {
-  apiResourceObjectsByIdOrUrl,
+  getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 
@@ -47,10 +47,10 @@ export default function UpdatePricing() {
 
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categories = Object.keys(
-    apiResourceObjectsByIdOrUrl(apiResourceObjects, "categories", "url")
+    getApiResourceObjects(apiResourceObjects, "categories")
   ) as string[];
   const stores = Object.values(
-    apiResourceObjectsByIdOrUrl(apiResourceObjects, "stores", "url")
+    getApiResourceObjects(apiResourceObjects, "stores")
   ) as Store[];
 
   useEffect(() => {
