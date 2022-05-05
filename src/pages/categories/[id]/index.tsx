@@ -15,6 +15,7 @@ import { useAppSelector } from "src/store/hooks";
 import { useRouter } from "next/router";
 import { Option } from "src/frontend-utils/types/extras";
 import Options from "../../../sections/Options";
+import { wrapper } from "src/store/store";
 
 // ----------------------------------------------------------------------
 
@@ -24,12 +25,8 @@ CategoryPage.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function CategoryPage() {
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const router = useRouter();
-  const categoryId = router.query.id as string;
-  const baseRoute = `${PATH_CATEGORY.root}/${categoryId}`;
-  const category = getApiResourceObject(apiResourceObjects, "categories", categoryId) as Category;
+export default function CategoryPage({ category }: { category: Category }) {
+  const baseRoute = `${PATH_CATEGORY.root}/${category.id}`;
 
   const details: Detail[] = [
     {
@@ -79,3 +76,22 @@ export default function CategoryPage() {
     </Page>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (st) => async (context) => {
+    let category = {};
+    if (context.params) {
+      const apiResourceObjects = st.getState().apiResourceObjects;
+      category = getApiResourceObject(
+        apiResourceObjects,
+        "categories",
+        context.params.id as string
+      );
+    }
+    return {
+      props: {
+        category: category,
+      },
+    };
+  }
+);
