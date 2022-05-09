@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
@@ -33,9 +32,7 @@ export default function OptionsMenu({
   const [openModal, setOpenModal] = useState(false);
   const openMenu = Boolean(anchorEl);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const router = useRouter();
-  const id = router.query.id;
-  const baseRoute = `${PATH_PRODUCT.root}/${id}`;
+  const baseRoute = `${PATH_PRODUCT.root}/${product.id}`;
 
   const clone = () => {
     const key = enqueueSnackbar("Clonando, por favor espere!", {
@@ -63,7 +60,7 @@ export default function OptionsMenu({
     },
     {
       text: "Ratings",
-      path: `${PATH_RATING.root}/products=${id}`,
+      path: `${PATH_RATING.root}/products=${product.id}`,
       hasPermission: (
         apiResourceObjects[product.category] as Category
       ).permissions.includes("solotodo.backend_list_ratings"),
