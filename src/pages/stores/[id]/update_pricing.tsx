@@ -37,7 +37,7 @@ export default function UpdateStorePricing(props: { store: Store }) {
   }, []);
 
   return (
-    <Page title={`${store.name}`}>
+    <Page title={`${store.name} | Actualizar pricing`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -45,7 +45,7 @@ export default function UpdateStorePricing(props: { store: Store }) {
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Tiendas", href: PATH_STORE.root },
             { name: `${store.name}`, href: `${PATH_STORE.root}/${store.id}` },
-            { name: "Actualizar Pricing" },
+            { name: "Actualizar pricing" },
           ]}
         />
         {isLoading ? (

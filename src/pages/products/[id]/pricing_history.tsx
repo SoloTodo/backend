@@ -160,7 +160,7 @@ export default function ProductPricingHistory({
   ];
 
   return (
-    <Page title={product.name}>
+    <Page title={`${product.name} | Historial pricing`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

@@ -35,7 +35,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
   const [entity, setEntity] = useState(props.entity);
 
   return (
-    <Page title={entity.name}>
+    <Page title={`${entity.name} | Asociar`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

@@ -98,7 +98,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
   ];
 
   return (
-    <Page title={product.name}>
+    <Page title={`${product.name} | Enitidades WTB`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

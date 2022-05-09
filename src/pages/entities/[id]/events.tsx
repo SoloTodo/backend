@@ -99,7 +99,7 @@ export default function EntityEventPage({ entity, events }: { entity: Entity, ev
   };
 
   return (
-    <Page title={entity.name}>
+    <Page title={`${entity.name} | Eventos`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

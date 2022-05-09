@@ -95,7 +95,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
   ];
 
   return (
-    <Page title={`${store.name}`}>
+    <Page title={`${store.name} | Registros de actualización`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -103,7 +103,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Tiendas", href: PATH_STORE.root },
             { name: `${store.name}`, href: `${PATH_STORE.root}/${store.id}` },
-            { name: "Registros de Actualización" },
+            { name: "Registros de actualización" },
           ]}
         />
         <ApiFormComponent
@@ -111,7 +111,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
           endpoint={`${apiSettings.apiResourceEndpoints.store_update_logs}?store=${store.id}`}
         >
           <PaginationTable
-            title="Registros de Actualización"
+            title="Registros de actualización"
             paginationName="udpate_logs"
             columns={columns}
           />
