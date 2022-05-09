@@ -13,7 +13,8 @@ import {
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 // utils
-import { ApiResourceObjectRecord } from "src/frontend-utils/redux/api_resources/apiResources";
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import currency from "currency.js";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -21,6 +22,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { Detail } from "src/frontend-utils/types/extras";
 import { Entity } from "src/frontend-utils/types/entity";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
+import { Category } from "src/frontend-utils/types/store";
 // paths
 import { PATH_PRODUCT } from "src/routes/paths";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -41,15 +43,16 @@ const style = {
 
 export default function PricingInformation({
   entity,
-  apiResourceObjects,
   setEntity,
-  hasStaffPermission,
 }: {
   entity: Entity;
-  apiResourceObjects: ApiResourceObjectRecord;
   setEntity: Function;
-  hasStaffPermission: boolean;
 }) {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const hasStaffPermission = (
+    apiResourceObjects[entity.category] as Category
+  ).permissions.includes("is_category_staff");
+  
   const [stock, setStock] = useState(0);
 
   const [reason, setReason] = useState("");

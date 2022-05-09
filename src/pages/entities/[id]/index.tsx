@@ -161,18 +161,12 @@ export default function EntityPage(props: EntityProps) {
             </Stack>
           </Grid>
           <Grid item xs={12} md={6}>
-            <GeneralInformation
-              entity={entity as unknown as Entity}
-              apiResourceObjects={apiResourceObjects}
-              hasStaffPermission={hasStaffPermission}
-            />
+            <GeneralInformation entity={entity as unknown as Entity} />
           </Grid>
           <Grid item xs={12} md={6}>
             <PricingInformation
               entity={entity as unknown as Entity}
-              apiResourceObjects={apiResourceObjects}
               setEntity={setEntity}
-              hasStaffPermission={hasStaffPermission}
             />
           </Grid>
           <Grid item xs={12} md={6}>
