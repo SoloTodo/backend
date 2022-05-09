@@ -91,7 +91,10 @@ const sidebarConfig = [
         title: "users",
         path: "-",
         icon: ICONS.user,
-        children: [{ title: "Todos", path: PATH_USER.root }],
+        children: [
+          { title: "Todos", path: PATH_USER.root },
+          { title: "Mi usuario", path: `${PATH_USER.root}/me` },
+        ],
       },
     ],
   },
