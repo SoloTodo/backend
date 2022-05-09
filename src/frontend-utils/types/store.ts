@@ -11,9 +11,10 @@ export type Store = {
 };
 
 export const STATUS = {
-  success: 1,
-  in_progress: 2,
-  error: 3
+  1: "Pendiente",
+  2: "En proceso",
+  3: "Exitosa",
+  4: "Error",
 }
 
 export type Update = {
