@@ -3,6 +3,7 @@ import SvgIconStyle from "../../../components/SvgIconStyle";
 import StoreIcon from "@mui/icons-material/Store";
 import InboxIcon from "@mui/icons-material/Inbox";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ExploreIcon from '@mui/icons-material/Explore';
 // routes
 import {
   PATH_CATEGORY,
@@ -11,6 +12,7 @@ import {
   PATH_RATING,
   PATH_STORE,
   PATH_USER,
+  PATH_WTB,
 } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
@@ -28,6 +30,7 @@ const ICONS = {
   store: <StoreIcon />,
   inbox: <InboxIcon />,
   thumbUp: <ThumbUpIcon />,
+  explore: <ExploreIcon />,
 };
 
 const sidebarConfig = [
@@ -77,6 +80,16 @@ const sidebarConfig = [
         children: [
           { title: "Todos", path: PATH_RATING.root },
           { title: "Pendientes", path: PATH_RATING.pending },
+        ],
+      },
+      {
+        title: "Donde Comprar",
+        path: "-",
+        icon: ICONS.explore,
+        children: [
+          { title: "Marcas", path: PATH_WTB.brands },
+          { title: "Entidades", path: PATH_WTB.entities },
+          { title: "Entidades pendientes", path: PATH_WTB.pending },
         ],
       },
     ],

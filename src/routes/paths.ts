@@ -12,6 +12,7 @@ const ROOTS_USER = '/users';
 const ROOTS_PRODUCT = '/products';
 const ROOTS_VISIT = '/visits';
 const ROOTS_RATING = '/ratings';
+const ROOTS_WTB = '/wtb';
 
 // ----------------------------------------------------------------------
 
@@ -59,4 +60,11 @@ export const PATH_VISIT = {
 export const PATH_RATING = {
   root: ROOTS_RATING,
   pending: path(ROOTS_RATING, '/pending'),
+}
+
+export const PATH_WTB = {
+  root: ROOTS_WTB,
+  brands: path(ROOTS_WTB, '/brands'),
+  entities: path(ROOTS_WTB, '/entities'),
+  pending: path(ROOTS_WTB, '/entities/pending'),
 }
