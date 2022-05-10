@@ -15,7 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 // layouts
 import Layout from "src/layouts";
 // routes
-import { PATH_DASHBOARD, PATH_ENTITY, PATH_STORE } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_ENTITY, PATH_PRODUCT, PATH_STORE } from "src/routes/paths";
 // components
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -152,7 +152,14 @@ export default function Entities() {
       headerName: "Producto",
       field: "product",
       flex: 1,
-      renderCell: (row: Entity) => (row.product ? row.product.name : "N/A"),
+      renderCell: (row: Entity) =>
+        row.product ? (
+          <NextLink href={`${PATH_PRODUCT.root}/${row.product.id}`} passHref>
+            <Link>{row.product.name}</Link>
+          </NextLink>
+        ) : (
+          "N/A"
+        ),
     },
     {
       headerName: "¿Disp?",
@@ -183,7 +190,8 @@ export default function Entities() {
       headerName: "Moneda",
       field: "currency",
       flex: 1,
-      renderCell: (row: Entity) => (apiResourceObjects[row.currency] as Currency).iso_code
+      renderCell: (row: Entity) =>
+        (apiResourceObjects[row.currency] as Currency).iso_code,
     },
     {
       headerName: "Normal (orig.)",
