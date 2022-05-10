@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import {
   Card,
   CardContent,
@@ -6,20 +7,23 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
-import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import { GridColDef } from "@mui/x-data-grid";
+import Layout from "src/layouts";
+// components
 import Page from "src/components/Page";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { apiSettings } from "src/frontend-utils/settings";
-import { User } from "src/frontend-utils/types/user";
-import Layout from "src/layouts";
-import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
 import ApiFormStaffSummaryTable from "src/sections/users/ApiFormStaffSummaryTable";
+// utils
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import currency from "currency.js";
+// paths
+import { apiSettings } from "src/frontend-utils/settings";
+import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
+// types
+import { User } from "src/frontend-utils/types/user";
 
 // ----------------------------------------------------------------------
 

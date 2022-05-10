@@ -1,18 +1,22 @@
-import { Container, Grid } from "@mui/material";
-import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
+import { GetServerSideProps } from "next/types";
+import { Container, Grid } from "@mui/material";
+import Layout from "src/layouts";
+// components
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { useUser } from "src/frontend-utils/redux/user";
-import { apiSettings } from "src/frontend-utils/settings";
-import { Detail, Option } from "src/frontend-utils/types/extras";
-import { User } from "src/frontend-utils/types/user";
-import Layout from "src/layouts";
-import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
 import Details from "src/sections/Details";
 import Options from "src/sections/Options";
+// utils
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { useUser } from "src/frontend-utils/redux/user";
 import { useAppSelector } from "src/store/hooks";
+// paths
+import { apiSettings } from "src/frontend-utils/settings";
+import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
+// types
+import { Detail, Option } from "src/frontend-utils/types/extras";
+import { User } from "src/frontend-utils/types/user";
 
 // ----------------------------------------------------------------------
 

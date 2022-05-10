@@ -7,11 +7,12 @@ import { GridColDef } from "@mui/x-data-grid";
 import Layout from "src/layouts";
 // components
 import Page from "src/components/Page";
-// settings
-import { apiSettings } from "src/frontend-utils/settings";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import BasicTable from "src/sections/BasicTable";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import BasicTable from "src/sections/BasicTable";
+// utils
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+// paths
+import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
