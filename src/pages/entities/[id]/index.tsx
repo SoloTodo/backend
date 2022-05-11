@@ -161,13 +161,10 @@ export default function EntityPage(props: EntityProps) {
             </Stack>
           </Grid>
           <Grid item xs={12} md={6}>
-            <GeneralInformation entity={entity as unknown as Entity} />
+            <GeneralInformation entity={entity} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <PricingInformation
-              entity={entity as unknown as Entity}
-              setEntity={setEntity}
-            />
+            <PricingInformation entity={entity} setEntity={setEntity} />
           </Grid>
           <Grid item xs={12} md={6}>
             <PositionInformation entityId={entity.id} />
