@@ -69,7 +69,7 @@ export default function PendingWtbEntities({ brands }: { brands: Brand[] }) {
   ];
 
   return (
-    <Page title="Pendientes">
+    <Page title="Entidades | Pendientes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

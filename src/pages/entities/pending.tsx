@@ -79,7 +79,7 @@ export default function PendingEntities({
   ];
 
   return (
-    <Page title="Pendientes">
+    <Page title="Entidades | Pendientes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
