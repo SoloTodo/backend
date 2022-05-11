@@ -4,12 +4,14 @@ import StoreIcon from "@mui/icons-material/Store";
 import InboxIcon from "@mui/icons-material/Inbox";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ExploreIcon from '@mui/icons-material/Explore';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 // routes
 import {
   PATH_CATEGORY,
   PATH_ENTITY,
   PATH_PRODUCT,
   PATH_RATING,
+  PATH_REPORTS,
   PATH_STORE,
   PATH_USER,
   PATH_WTB,
@@ -31,6 +33,7 @@ const ICONS = {
   inbox: <InboxIcon />,
   thumbUp: <ThumbUpIcon />,
   explore: <ExploreIcon />,
+  fileDownload: <FileDownloadIcon />,
 };
 
 const sidebarConfig = [
@@ -90,6 +93,14 @@ const sidebarConfig = [
           { title: "Marcas", path: PATH_WTB.brands },
           { title: "Entidades", path: PATH_WTB.entities },
           { title: "Entidades pendientes", path: PATH_WTB.pending },
+        ],
+      },
+      {
+        title: "Reportes",
+        path: "-",
+        icon: ICONS.fileDownload,
+        children: [
+          { title: "Todos", path: PATH_REPORTS.root },
         ],
       },
     ],
