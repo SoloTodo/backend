@@ -1,9 +1,7 @@
 import NextLink from "next/link";
 import LinkIcon from "@mui/icons-material/Link";
 import { Button, Link, Stack } from "@mui/material";
-import ApiFormPaginationTable, {
-  PagintationData,
-} from "src/components/api_form/ApiFormPaginationTable";
+import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_ENTITY, PATH_STORE } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
@@ -18,7 +16,6 @@ export default function PendingEntitiesTable() {
 
   const handleEntityHide = (entityUrl: string) => {
     jwtFetch(null, `${entityUrl}toggle_visibility/`, { method: "POST" });
-    // context.updateUrl({});
     context.setCurrentResult({
       ...context.currentResult,
       count: context.currentResult.count - 1,
