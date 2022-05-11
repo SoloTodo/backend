@@ -17,9 +17,7 @@ import Layout from "src/layouts";
 // routes
 import {
   PATH_DASHBOARD,
-  PATH_ENTITY,
   PATH_PRODUCT,
-  PATH_STORE,
   PATH_WTB,
 } from "src/routes/paths";
 // components
@@ -29,15 +27,12 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 // api
 import { apiSettings } from "src/frontend-utils/settings";
-// currency
-import currency from "currency.js";
 // redux
 import { useAppSelector } from "src/store/hooks";
 import {
   selectApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
-import { Currency } from "src/frontend-utils/redux/api_resources/types";
 import ApiFormSelectComponent, {
   choicesYesNo,
 } from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
@@ -116,7 +111,7 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
       field: "name",
       flex: 1,
       renderCell: (row: { id: string; name: string }) => (
-        <NextLink href={`${PATH_ENTITY.root}/${row.id}`} passHref>
+        <NextLink href={`${PATH_WTB.entities}/${row.id}`} passHref>
           <Link>{row.name}</Link>
         </NextLink>
       ),
@@ -190,7 +185,8 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
-            { name: "Entidades", href: PATH_ENTITY.root },
+            { name: "Donde Comprar", href: PATH_WTB.entities },
+            { name: "Entidades" },
           ]}
         />
         <ApiFormComponent
