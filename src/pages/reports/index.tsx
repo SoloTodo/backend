@@ -34,6 +34,9 @@ export default function Reports({ reports }: { reports: Report[] }) {
     },
   ];
 
+  const whitelist = ['soicos_conversions', 'pc_factory_sku_analysis']
+  const activeReports = reports.filter((r) => !whitelist.includes(r.slug) )
+
   return (
     <Page title="Reportes">
       <Container maxWidth={false}>
@@ -47,7 +50,7 @@ export default function Reports({ reports }: { reports: Report[] }) {
         <Card>
           <CardHeader title="Reportes" />
           <CardContent>
-            <CustomTable data={reports} columns={columns} />
+            <CustomTable data={activeReports} columns={columns} />
           </CardContent>
         </Card>
       </Container>
