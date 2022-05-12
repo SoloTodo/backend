@@ -17,74 +17,31 @@ import { useAppSelector } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
-StoreAnalysis.getLayout = function getLayout(page: ReactElement) {
+SecPrices.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function StoreAnalysis() {
+export default function SecPrices() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
       fieldType: "select" as "select",
-      name: "store",
-      label: "Tienda",
+      name: "category",
+      label: "Categoría",
       multiple: false,
       required: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "competing_stores",
-      label: "Tiendas para comparar",
-      multiple: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "categories",
-      label: "Categorías",
-      multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
-      name: "countries",
-      label: "Países",
+      name: "stores",
+      label: "Tiendas",
       multiple: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "countries"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "store_types",
-      label: "Tipos",
-      multiple: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "types"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "price_type",
-      label: "Tipo de precio",
-      multiple: false,
-      required: true,
-      choices: [
-        { label: "Precio normal", value: "normal_price" },
-        { label: "Precio oferta", value: "offer_price" },
-      ],
-    },
-    {
-      fieldType: "select" as "select",
-      name: "layout",
-      label: "Layout",
-      multiple: false,
-      required: true,
-      choices: [
-        { label: "Layout 1", value: "layout_1" },
-        { label: "Layout 2", value: "layout_2" },
-      ],
+      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "submit" as "submit",
@@ -93,19 +50,19 @@ export default function StoreAnalysis() {
   ];
 
   return (
-    <Page title="Análisis de tienda | Reportes">
+    <Page title="Precios SEC | Reportes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Reportes", href: PATH_REPORTS.root },
-            { name: "Análisis de tienda" },
+            { name: "Precios SEC" },
           ]}
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}store_analysis?price_type=offer_price&layout=layout_1`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
           requiresSubmit={true}
           onResultsChange={() =>
             enqueueSnackbar(
@@ -122,27 +79,11 @@ export default function StoreAnalysis() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store" />
+                  <ApiFormSelectComponent name="category" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="competing_stores" />
+                  <ApiFormSelectComponent name="stores" />
                 </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="categories" />
-                </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="countries" />
-                </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store_types" />
-                </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="price_type" />
-                </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="layout" />
-                </Grid>
-                <Grid item xs={6} />
                 <Grid item xs={6}>
                   <ApiFormSubmitComponent name="submit" />
                 </Grid>

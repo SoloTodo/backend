@@ -6,6 +6,7 @@ import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormSubmitComponent from "src/frontend-utils/api_form/fields/submit/ApiFormSubmitComponent";
+import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import {
   selectApiResourceObjects,
   useApiResourceObjects,
@@ -17,38 +18,38 @@ import { useAppSelector } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
-StoreAnalysis.getLayout = function getLayout(page: ReactElement) {
+CurrentPrices.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function StoreAnalysis() {
+export default function CurrentPrices() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
       fieldType: "select" as "select",
-      name: "store",
-      label: "Tienda",
+      name: "category",
+      label: "Categoría",
       multiple: false,
       required: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "competing_stores",
-      label: "Tiendas para comparar",
-      multiple: true,
-      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "categories",
-      label: "Categorías",
-      multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "currency",
+      label: "Moneda",
+      multiple: false,
+      choices: selectApiResourceObjects(apiResourceObjects, "currency"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "stores",
+      label: "Tiendas",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
@@ -65,26 +66,10 @@ export default function StoreAnalysis() {
       choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
     {
-      fieldType: "select" as "select",
-      name: "price_type",
-      label: "Tipo de precio",
-      multiple: false,
-      required: true,
-      choices: [
-        { label: "Precio normal", value: "normal_price" },
-        { label: "Precio oferta", value: "offer_price" },
-      ],
-    },
-    {
-      fieldType: "select" as "select",
-      name: "layout",
-      label: "Layout",
-      multiple: false,
-      required: true,
-      choices: [
-        { label: "Layout 1", value: "layout_1" },
-        { label: "Layout 2", value: "layout_2" },
-      ],
+      fieldType: "text" as "text",
+      name: "filename_optional",
+      label: "Nombre de archivo (opcional)",
+      inputType: "text" as "text",
     },
     {
       fieldType: "submit" as "submit",
@@ -93,19 +78,19 @@ export default function StoreAnalysis() {
   ];
 
   return (
-    <Page title="Análisis de tienda | Reportes">
+    <Page title="Precios actuales | Reportes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Reportes", href: PATH_REPORTS.root },
-            { name: "Análisis de tienda" },
+            { name: "Precios actuales" },
           ]}
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}store_analysis?price_type=offer_price&layout=layout_1`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
           requiresSubmit={true}
           onResultsChange={() =>
             enqueueSnackbar(
@@ -122,13 +107,13 @@ export default function StoreAnalysis() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store" />
+                  <ApiFormSelectComponent name="category" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="competing_stores" />
+                  <ApiFormSelectComponent name="currency" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="categories" />
+                  <ApiFormSelectComponent name="stores" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="countries" />
@@ -137,12 +122,8 @@ export default function StoreAnalysis() {
                   <ApiFormSelectComponent name="store_types" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="price_type" />
+                  <ApiFormTextComponent name="filename_optional" />
                 </Grid>
-                <Grid item xs={6}>
-                  <ApiFormSelectComponent name="layout" />
-                </Grid>
-                <Grid item xs={6} />
                 <Grid item xs={6}>
                   <ApiFormSubmitComponent name="submit" />
                 </Grid>
