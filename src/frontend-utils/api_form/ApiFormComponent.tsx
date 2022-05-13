@@ -41,6 +41,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
         if (isMounted) setCurrentResult(results);
       });
     } else {
+      updateUrl({ submit: [] });
       setCurrentResult([]);
     }
 
