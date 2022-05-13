@@ -105,7 +105,7 @@ export default function StoreAnalysis() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}store_analysis?price_type=offer_price&layout=layout_1`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}store_analysis/`}
           requiresSubmit={true}
           onResultsChange={() =>
             enqueueSnackbar(
