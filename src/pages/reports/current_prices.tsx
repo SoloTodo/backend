@@ -42,7 +42,7 @@ export default function CurrentPrices() {
       name: "currency",
       label: "Moneda",
       multiple: false,
-      choices: selectApiResourceObjects(apiResourceObjects, "currency"),
+      choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
     },
     {
       fieldType: "select" as "select",

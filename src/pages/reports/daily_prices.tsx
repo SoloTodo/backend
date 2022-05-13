@@ -53,7 +53,7 @@ export default function DailyPrices() {
       name: "currency",
       label: "Moneda",
       multiple: false,
-      choices: selectApiResourceObjects(apiResourceObjects, "currency"),
+      choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
     },
     {
       fieldType: "select" as "select",
