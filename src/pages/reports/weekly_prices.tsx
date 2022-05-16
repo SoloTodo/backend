@@ -49,9 +49,10 @@ export default function WeeklyPrices() {
     },
     {
       fieldType: "select" as "select",
-      name: "categories",
-      label: "Categorías",
-      multiple: true,
+      name: "category",
+      label: "Categoría",
+      multiple: false,
+      required: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
@@ -107,13 +108,11 @@ export default function WeeklyPrices() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}weekly_prices/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />
@@ -130,7 +129,7 @@ export default function WeeklyPrices() {
                   </Stack>
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="categories" />
+                  <ApiFormSelectComponent name="category" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="currency" />

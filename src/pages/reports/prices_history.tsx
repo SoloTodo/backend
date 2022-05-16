@@ -6,7 +6,6 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -36,7 +35,6 @@ PricesHistory.getLayout = function getLayout(page: ReactElement) {
 
 export default function PricesHistory() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
@@ -89,6 +87,7 @@ export default function PricesHistory() {
       name: "timezone",
       label: "Zona horaria",
       multiple: false,
+      required: true,
       choices: [
         { label: "Chile Continental", value: "America/Santiago" },
         { label: "UTC", value: "UTC" },
@@ -99,6 +98,7 @@ export default function PricesHistory() {
       name: "exclude_unavailable",
       label: "¿Excluir no disponibles?",
       multiple: false,
+      required: true,
       choices: choicesYesNo,
     },
     {
@@ -126,13 +126,11 @@ export default function PricesHistory() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}prices_history/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />

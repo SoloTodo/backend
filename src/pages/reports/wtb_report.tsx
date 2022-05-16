@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Grid,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import { GetServerSideProps } from "next/types";
 import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
@@ -41,7 +35,7 @@ export default function ReportWtb({ brands }: { brands: Brand[] }) {
   const fieldsMetadata = [
     {
       fieldType: "select" as "select",
-      name: "brands",
+      name: "wtb_brand",
       label: "Marcas",
       multiple: false,
       choices: brandChoices,
@@ -100,13 +94,11 @@ export default function ReportWtb({ brands }: { brands: Brand[] }) {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}wtb_report/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />
@@ -117,7 +109,7 @@ export default function ReportWtb({ brands }: { brands: Brand[] }) {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="brands" />
+                  <ApiFormSelectComponent name="wtb_brand" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="categories" />

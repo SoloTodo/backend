@@ -62,13 +62,11 @@ export default function SecPrices() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}sec_prices/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />

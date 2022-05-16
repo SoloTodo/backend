@@ -87,6 +87,7 @@ export default function DailyPrices() {
       name: "exclude_unavailable",
       label: "¿Excluir no disponibles?",
       multiple: false,
+      required: true,
       choices: choicesYesNo,
     },
     {
@@ -114,7 +115,7 @@ export default function DailyPrices() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}daily_prices/`}
           requiresSubmit={true}
           onResultsChange={() =>
             enqueueSnackbar(

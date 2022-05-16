@@ -35,9 +35,10 @@ export default function ReportWtbPrices({ brands }: { brands: Brand[] }) {
   const fieldsMetadata = [
     {
       fieldType: "select" as "select",
-      name: "brands",
+      name: "wtb_brand",
       label: "Marcas",
       multiple: false,
+      required: true,
       choices: brandChoices,
     },
     {
@@ -77,13 +78,11 @@ export default function ReportWtbPrices({ brands }: { brands: Brand[] }) {
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}wtb_prices_report/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />
@@ -94,7 +93,7 @@ export default function ReportWtbPrices({ brands }: { brands: Brand[] }) {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="brands" />
+                  <ApiFormSelectComponent name="wtb_brand" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="stores" />
