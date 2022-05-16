@@ -5,8 +5,10 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ExploreIcon from '@mui/icons-material/Explore';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 // routes
 import {
+  PATH_BANNERS,
   PATH_CATEGORY,
   PATH_ENTITY,
   PATH_PRODUCT,
@@ -34,6 +36,7 @@ const ICONS = {
   thumbUp: <ThumbUpIcon />,
   explore: <ExploreIcon />,
   fileDownload: <FileDownloadIcon />,
+  visibility: <VisibilityIcon />,
 };
 
 const sidebarConfig = [
@@ -101,6 +104,18 @@ const sidebarConfig = [
         icon: ICONS.fileDownload,
         children: [
           { title: "Todos", path: PATH_REPORTS.root },
+        ],
+      },
+      {
+        title: "Banner Visibility",
+        path: "-",
+        icon: ICONS.visibility,
+        children: [
+          { title: "Banners", path: PATH_BANNERS.banners },
+          { title: "Assets", path: PATH_BANNERS.assets },
+          { title: "Assets pendientes", path: PATH_BANNERS.assetsPending },
+          { title: "Actualizaciones", path: PATH_BANNERS.updates },
+          { title: "Últimas actualizaciones", path: PATH_BANNERS.updatesLatest },
         ],
       },
     ],
