@@ -79,6 +79,7 @@ class MyApp extends App<MyAppProps> {
       } catch (err) {
         // Invalid token or some other network error, invalidate the
         // possible auth cookie
+          ctx.res?.setHeader('error', err.message)
         deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
       }
 
@@ -95,7 +96,7 @@ class MyApp extends App<MyAppProps> {
             apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
           );
         } catch (err) {
-          console.log(err);
+            ctx.res?.setHeader('error', err.message)
         }
 
         store.dispatch(userSlice.actions.setUser(user));

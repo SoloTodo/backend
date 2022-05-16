@@ -38,3 +38,7 @@ yarn-error.log*
 
 _static
 .idea
+
+# Serverless deploy
+.serverless
+.serverless_nextjs

@@ -3,7 +3,7 @@ import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { AppStore } from "src/store/store";
 import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/utils";
 import { getApiResourceObject } from "../redux/api_resources/apiResources";
-import { Store } from "../types/store";
+import atob from 'atob'
 
 type GetServerSidePropsContextOrNull =
   | GetServerSidePropsContext
