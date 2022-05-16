@@ -77,7 +77,7 @@ export default function AccountPopover() {
       <MenuPopover
         open={Boolean(open)}
         anchorEl={open}
-        onClose={handleClose}
+        onClose={() => setOpen(null)}
         sx={{
           p: 0,
           mt: 1.5,
