@@ -18,7 +18,7 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
-import { PATH_DASHBOARD, PATH_ENTITY, PATH_STORE } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import PendingEntitiesTable from "src/sections/entities/PendingEntitiesTable";
 import { GetServerSideProps } from "next/types";
@@ -79,7 +79,7 @@ export default function PendingEntities({
   ];
 
   return (
-    <Page title="Pendientes">
+    <Page title="Entidades | Pendientes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

@@ -1,6 +1,5 @@
 import { ReactElement, useState } from "react";
 import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
-import { useAppSelector } from "src/store/hooks";
 // layout
 import Layout from "src/layouts";
 // components
@@ -9,7 +8,7 @@ import Page from "src/components/Page";
 import ReactMarkdown from "react-markdown";
 // sections
 import CarouselBasic from "src/sections/mui/CarouselBasic";
-import AssociateIntoformation from "src/sections/entities/AssociateInformation";
+import AssociateInformation from "src/sections/entities/AssociateInformation";
 import AssociateForm from "src/sections/entities/AssociateForm";
 // types
 import { Entity } from "src/frontend-utils/types/entity";
@@ -18,7 +17,6 @@ import { GetServerSideProps } from "next/types";
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
 // utils
-import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
@@ -35,10 +33,9 @@ type EntityAssociateProps = {
 
 export default function EntityAssociate(props: EntityAssociateProps) {
   const [entity, setEntity] = useState(props.entity);
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   return (
-    <Page title={entity.name}>
+    <Page title={`${entity.name} | Asociar`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -51,10 +48,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
         />
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <AssociateIntoformation
-              entity={entity}
-              apiResourceObjects={apiResourceObjects}
-            />
+            <AssociateInformation entity={entity} />
           </Grid>
           <Grid item xs={12}>
             <AssociateForm entity={entity} setEntity={setEntity} />

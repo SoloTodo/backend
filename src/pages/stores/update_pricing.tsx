@@ -62,8 +62,7 @@ export default function UpdatePricing() {
       const latestActive = stores.reduce((acc: ExtendedUpdate[], a: Store) => {
         if (a.last_activation) {
           const l = latest[a.url];
-          const success =
-            l.status === STATUS.success && l.available_products_count !== 0;
+          const success = l.status === 3 && l.available_products_count !== 0;
           return [
             ...acc,
             {
@@ -71,12 +70,11 @@ export default function UpdatePricing() {
               id: a.id,
               store: a.name,
               updateId: l.id,
-              statusText: success
-                ? "Exitosa"
-                : l.status === STATUS.in_progress
-                ? "En proceso"
-                : "Error",
-              result: success
+              statusText:
+                l.status === 3 && !l.available_products_count
+                  ? "Error"
+                  : STATUS[l.status as 1 | 2 | 3 | 4],
+              result: l.available_products_count
                 ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
                 : "N/A",
             },

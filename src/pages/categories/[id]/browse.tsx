@@ -159,14 +159,15 @@ export default function CategoryBrowse({
   });
 
   return (
-    <Page title={`${category.name}`}>
+    <Page title={`${category.name} | Navegar`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Tiendas", href: PATH_CATEGORY.root },
-            { name: `${category.name}` },
+            { name: `${category.name}`, href: `${PATH_CATEGORY.root}/${category.id}` },
+            { name: "Navegar" },
           ]}
         />
         <ApiFormComponent

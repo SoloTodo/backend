@@ -9,13 +9,13 @@ import {
   getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
-import { apiSettings } from "src/frontend-utils/settings";
+import { WtbEntity } from "src/frontend-utils/types/wtb";
 
 export default function CategorySelect({
   entity,
   hasStaffPermission,
 }: {
-  entity: Entity;
+  entity: Entity | WtbEntity;
   hasStaffPermission: boolean;
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -30,7 +30,7 @@ export default function CategorySelect({
   const handleCategory = async (value: string) => {
     await jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/change_category/`,
+      `${entity.url}/change_category/`,
       {
         method: "post",
         body: JSON.stringify({ category: categories[value].id }),

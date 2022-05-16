@@ -23,6 +23,8 @@ export class ApiFormDatePicker {
     if (this.name === "timestamp_after") {
       let past = subDays(new Date(), 30);
       this.cleanedData = value ? new Date(value) : past;
+    } else if (this.name === "timestamp_before") {
+      this.cleanedData = value ? new Date(value) : new Date();
     } else {
       this.cleanedData = value ? new Date(value) : null;
     }

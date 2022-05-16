@@ -6,7 +6,7 @@ import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Product, WtbEntity } from "src/frontend-utils/types/product";
+import { Product } from "src/frontend-utils/types/product";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import PaginationTable from "src/components/api_form/ApiFormPaginationTable";
@@ -15,6 +15,7 @@ import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/ap
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import { WtbEntity } from "src/frontend-utils/types/wtb";
 
 // ----------------------------------------------------------------------
 
@@ -98,7 +99,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
   ];
 
   return (
-    <Page title={product.name}>
+    <Page title={`${product.name} | Enitidades WTB`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { PATH_ENTITY, PATH_STORE } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
@@ -12,8 +11,7 @@ import { useSnackbar } from "notistack";
 export default function OptionsMenu({ store }: { store: Store }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const user = useAppSelector(useUser);
-  const router = useRouter();
-  const baseRoute = `${PATH_STORE.root}/${router.query.id}`;
+  const baseRoute = `${PATH_STORE.root}/${store.id}`;
 
   const downloadMatchReport = () => {
     const key = enqueueSnackbar("Generando reporte de homologación, por favor espere!", {

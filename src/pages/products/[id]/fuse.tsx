@@ -72,7 +72,7 @@ export default function ProductFuse({ product }: { product: Product }) {
   };
 
   return (
-    <Page title={product.name}>
+    <Page title={`${product.name} | Fusionar`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

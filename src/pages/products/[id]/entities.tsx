@@ -197,7 +197,7 @@ export default function ProductEntities({
   ];
 
   return (
-    <Page title={product.name}>
+    <Page title={`${product.name} | Enitidades`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

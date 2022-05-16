@@ -73,7 +73,7 @@ export default function EntityPriceHistory() {
   }, []);
 
   return (
-    <Page title={entity.name}>
+    <Page title={`${entity.name} | Historial pricing`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

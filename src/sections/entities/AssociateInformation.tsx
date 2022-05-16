@@ -8,30 +8,35 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { ApiResourceObjectRecord } from "src/frontend-utils/redux/api_resources/apiResources";
-import { Entity } from "src/frontend-utils/types/entity";
 import Layout from "src/layouts";
+// hooks
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+// types
+import { Entity } from "src/frontend-utils/types/entity";
 import { Category } from "src/frontend-utils/types/store";
+// components
 import CategorySelect from "src/components/my_components/CategorySelect";
 import ConditionSelect from "src/components/my_components/ConditionSelect";
 import VisibilitySwitch from "src/components/my_components/VisibilitySwitch";
+// paths
 import { PATH_PRODUCT } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
-AssociateIntoformation.getLayout = function getLayout(page: ReactElement) {
+AssociateInformation.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function AssociateIntoformation({
+export default function AssociateInformation({
   entity,
-  apiResourceObjects,
 }: {
   entity: Entity;
-  apiResourceObjects: ApiResourceObjectRecord;
 }) {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
   ).permissions.includes("is_category_staff");

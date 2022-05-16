@@ -1,6 +1,6 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
+import { GetServerSideProps } from "next/types";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import Layout from "src/layouts";
 import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 // types
-import { EntityEvent } from "src/frontend-utils/types/entity";
+import { Entity, EntityEvent } from "src/frontend-utils/types/entity";
 // paths
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
@@ -34,30 +34,7 @@ EntityEventPage.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function EntityEventPage() {
-  const [isLoading, setLoading] = useState(true);
-  const [entity, setEntity] = useState({
-    id: "",
-    name: "",
-  });
-  const [events, setEvents] = useState([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/events`
-    ).then((data) => {
-      setEvents(data);
-    });
-    jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`
-    ).then((data) => {
-      setEntity(data);
-      setLoading(false);
-    });
-  }, []);
+export default function EntityEventPage({ entity, events }: { entity: Entity, events: any[] }) {
 
   const fieldValueToComponent = (
     field: string,
@@ -122,7 +99,7 @@ export default function EntityEventPage() {
   };
 
   return (
-    <Page title={entity.name}>
+    <Page title={`${entity.name} | Eventos`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -133,56 +110,73 @@ export default function EntityEventPage() {
             { name: "Eventos" },
           ]}
         />
-        {!isLoading ? (
-          <Stack spacing={2}>
-            {events.map((event: EntityEvent) => (
-              <Card key={event.timestamp}>
-                <CardHeader title={fDateTimeSuffix(event.timestamp)} />
-                <CardContent>
-                  <Typography>
-                    <strong>Usuario:</strong> {event.user.full_name}
-                  </Typography>
-                  <br />
-                  {event.changes.map((change, index) => (
-                    <Grid container key={index} spacing={2}>
-                      <Grid item xs={24} md={12}>
-                        <strong>
-                          {change.field.charAt(0).toUpperCase() +
-                            change.field.slice(1)}
-                        </strong>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Stack spacing={2} style={{ wordBreak: "break-all" }}>
-                          <Typography variant="subtitle1">
-                            <i>Valor antiguo</i>
-                          </Typography>
-                          {fieldValueToComponent(
-                            change.field,
-                            change.old_value
-                          )}
-                        </Stack>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Stack spacing={2} style={{ wordBreak: "break-all" }}>
-                          <Typography variant="subtitle1">
-                            <i>Valor nuevo</i>
-                          </Typography>
-                          {fieldValueToComponent(
-                            change.field,
-                            change.new_value
-                          )}
-                        </Stack>
-                      </Grid>
+        <Stack spacing={2}>
+          {events.map((event: EntityEvent) => (
+            <Card key={event.timestamp}>
+              <CardHeader title={fDateTimeSuffix(event.timestamp)} />
+              <CardContent>
+                <Typography>
+                  <strong>Usuario:</strong> {event.user.full_name}
+                </Typography>
+                <br />
+                {event.changes.map((change, index) => (
+                  <Grid container key={index} spacing={2}>
+                    <Grid item xs={24} md={12}>
+                      <strong>
+                        {change.field.charAt(0).toUpperCase() +
+                          change.field.slice(1)}
+                      </strong>
                     </Grid>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-          </Stack>
-        ) : (
-          <p>Loading...</p>
-        )}
+                    <Grid item xs={12} md={6}>
+                      <Stack spacing={2} style={{ wordBreak: "break-all" }}>
+                        <Typography variant="subtitle1">
+                          <i>Valor antiguo</i>
+                        </Typography>
+                        {fieldValueToComponent(change.field, change.old_value)}
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Stack spacing={2} style={{ wordBreak: "break-all" }}>
+                        <Typography variant="subtitle1">
+                          <i>Valor nuevo</i>
+                        </Typography>
+                        {fieldValueToComponent(change.field, change.new_value)}
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
       </Container>
     </Page>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let entity = {};
+  let events = [];
+  if (context.params) {
+    try {
+      entity = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/`
+      );
+      events = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/events`
+      )
+    } catch {
+      return {
+        notFound: true,
+      };
+    }
+  }
+  return {
+    props: {
+      entity: entity,
+      events: events
+    },
+  };
+};

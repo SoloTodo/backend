@@ -1,4 +1,3 @@
-import { InLineProduct } from "./entity";
 import { User } from "./user";
 
 export type Product = {
@@ -24,24 +23,5 @@ export type Website = {
   id: number;
   name: string;
   permissions: string[];
-  url: string;
-};
-
-export type WtbEntity = {
-  brand: string;
-  category: string;
-  creation_date: string;
-  external_url: string;
-  id: number;
-  is_active: boolean;
-  is_visible: boolean;
-  key: string;
-  last_updated: string;
-  model_name: string;
-  name: string;
-  picture_url: string;
-  price: number | null;
-  product: InLineProduct;
-  section: string;
   url: string;
 };

@@ -4,6 +4,7 @@ import { ApiFormProvider } from "./ApiFormContext";
 import { useRouter } from "next/router";
 import * as queryString from "query-string";
 import { ApiFormInitialState } from "./types";
+// import { useSnackbar } from "notistack";
 
 type ApiFormComponentProps = {
   fieldsMetadata: ApiFormFieldMetadata[];
@@ -11,10 +12,13 @@ type ApiFormComponentProps = {
   live?: boolean;
   initialState?: ApiFormInitialState;
   children?: ReactNode;
+  requiresSubmit?: boolean;
+  onResultsChange?: Function;
 };
 
 export default function ApiFormComponent(props: ApiFormComponentProps) {
   const router = useRouter();
+  // const { enqueueSnackbar } = useSnackbar();
 
   const form = useMemo(
     () =>
@@ -32,15 +36,40 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   useEffect(() => {
     let isMounted = true;
     form.initialize();
-    form.submit().then((results) => {
-      if (isMounted) setCurrentResult(results);
-    });
-
-    const handleRouteChange = async (_url: any) => {
-      form.initialize();
-      await form.submit().then((results) => {
+    if (!props.requiresSubmit) {
+      form.submit().then((results) => {
         if (isMounted) setCurrentResult(results);
       });
+    } else {
+      updateUrl({ submit: [] });
+      setCurrentResult([]);
+    }
+
+    const handleRouteChange = async (url: string) => {
+      const parseUrl = queryString.parseUrl(url);
+
+      form.initialize();
+      if (!props.requiresSubmit || parseUrl.query.submit === "true") {
+        await form.submit().then((results) => {
+          if (isMounted) setCurrentResult(results);
+          if (props.requiresSubmit) updateUrl({ submit: [] });
+          props.onResultsChange && props.onResultsChange();
+        });
+        //   .catch((err) =>
+        //     err.json().then((res: { errors: { [key: string]: string[] } }) => {
+        //       const errMsg = Object.keys(res.errors).reduce(
+        //         (acc: string, a: string) => {
+        //           return acc + a + " - " + res.errors[a][0] + " ";
+        //         },
+        //         ""
+        //       );
+        //       enqueueSnackbar(errMsg, { variant: "error" });
+        //     })
+        //   );
+        // if (props.requiresSubmit) updateUrl({ submit: [] });
+      } else {
+        setCurrentResult([]);
+      }
     };
 
     router.events.on("routeChangeComplete", handleRouteChange);

@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Switch } from "@mui/material";
 import { Entity } from "src/frontend-utils/types/entity";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { apiSettings } from "src/frontend-utils/settings";
 import { useSnackbar } from "notistack";
+import { WtbEntity } from "src/frontend-utils/types/wtb";
 
 export default function VisibilitySwitch({
   entity,
   hasStaffPermission,
 }: {
-  entity: Entity;
+  entity: Entity | WtbEntity;
   hasStaffPermission: boolean;
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -19,7 +19,7 @@ export default function VisibilitySwitch({
     if (!entity.product) {
       await jwtFetch(
         null,
-        `${apiSettings.apiResourceEndpoints.entities}${entity.id}/toggle_visibility/`,
+        `${entity.url}/toggle_visibility/`,
         {
           method: "post",
           body: JSON.stringify({ is_visible: checked }),

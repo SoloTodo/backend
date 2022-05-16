@@ -2,11 +2,13 @@ import NextLink from "next/link";
 // MUI
 import { FormControl, Link, MenuItem, Select } from "@mui/material";
 // utils
-import { ApiResourceObjectRecord } from "src/frontend-utils/redux/api_resources/apiResources";
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { conditions } from "src/frontend-utils/conditions";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // types
 import { Detail } from "src/frontend-utils/types/extras";
+import { Category } from "src/frontend-utils/types/store";
 // path
 import { PATH_STORE } from "src/routes/paths";
 // section
@@ -19,13 +21,13 @@ import VisibilitySwitch from "src/components/my_components/VisibilitySwitch";
 
 export default function GeneralInformation({
   entity,
-  apiResourceObjects,
-  hasStaffPermission,
 }: {
   entity: Entity;
-  apiResourceObjects: ApiResourceObjectRecord;
-  hasStaffPermission: boolean;
 }) {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const hasStaffPermission = (
+    apiResourceObjects[entity.category] as Category
+  ).permissions.includes("is_category_staff");
 
   const generalDetails: Detail[] = [
     {

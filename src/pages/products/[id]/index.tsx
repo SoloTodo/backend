@@ -74,17 +74,18 @@ export default function ProductPage(props: ProductProps) {
                   <b>Creador/a:</b> {product.creator.first_name}{" "}
                   {product.creator.last_name}
                 </Typography>
+                <br />
                 <Container>
-                  {renderSpecs.body === null ? (
-                    <Typography>
-                      Las especificaciones técnicas de este producto no están
-                      disponibles por ahora.
-                    </Typography>
-                  ) : (
+                  {renderSpecs.body ? (
                     <div
                       className="product_specs"
                       dangerouslySetInnerHTML={{ __html: renderSpecs.body }}
                     />
+                  ) : (
+                    <Typography>
+                      Las especificaciones técnicas de este producto no están
+                      disponibles por ahora.
+                    </Typography>
                   )}
                 </Container>
               </CardContent>
@@ -100,7 +101,7 @@ export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((st) => async (context) => {
     const apiResourceObjects = st.getState().apiResourceObjects;
     let product = {} as Product;
-    let renderSpecs = "";
+    let renderSpecs = {};
     let entities = [];
     if (context.params) {
       product = await jwtFetch(
@@ -109,12 +110,18 @@ export const getServerSideProps: GetServerSideProps =
       );
       const category_template = await jwtFetch(
         context,
-        `${apiSettings.apiResourceEndpoints.category_templates}?website=1&purpose=1&category=${apiResourceObjects[product.category].id}`
+        `${
+          apiSettings.apiResourceEndpoints.category_templates
+        }?website=1&purpose=1&category=${
+          apiResourceObjects[product.category].id
+        }`
       );
-      renderSpecs = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params.id}`
-      );
+      renderSpecs =
+        category_template.length !== 0 &&
+        (await jwtFetch(
+          context,
+          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params.id}`
+        ));
       entities = await jwtFetch(
         context,
         `${apiSettings.apiResourceEndpoints.products}${context.params.id}/entities/`
