@@ -72,22 +72,22 @@ export default function Products() {
     {
       fieldType: "date" as "date",
       name: "creation_date_after",
-      label: "Desde",
+      label: "Desde (Fecha creación)",
     },
     {
       fieldType: "date" as "date",
       name: "creation_date_before",
-      label: "Hasta",
+      label: "Hasta (Fecha creación)",
     },
     {
       fieldType: "date" as "date",
       name: "last_updated_after",
-      label: "Desde",
+      label: "Desde (Última act.)",
     },
     {
       fieldType: "date" as "date",
       name: "last_updated_before",
-      label: "Hasta",
+      label: "Hasta (Última act.)",
     },
   ];
 
