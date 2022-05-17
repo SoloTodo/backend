@@ -53,9 +53,7 @@ export default function BundleSelect({
   };
 
   useEffect(() => {
-    const bundles = Object.values(
-      getApiResourceObjects(apiResourceObjects, "bundles")
-    );
+    const bundles = getApiResourceObjects(apiResourceObjects, "bundles");
     if (bundles.length === 0) {
       jwtFetch(null, apiSettings.apiResourceEndpoints.bundles).then((data) => {
         dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(data));
