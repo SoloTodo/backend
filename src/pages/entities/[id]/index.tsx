@@ -193,23 +193,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context,
     apiSettings.apiResourceEndpoints.users_with_staff_actions
   );
-  let entity = {};
-  if (context.params) {
-    try {
-      entity = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const entity = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.entities}${context.params?.id}/`
+    );
+    return {
+      props: {
+        entity: entity,
+        users: users,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      entity: entity,
-      users: users,
-    },
-  };
 };

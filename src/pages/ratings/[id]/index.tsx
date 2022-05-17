@@ -136,22 +136,19 @@ export default function RatingPage({ rating }: { rating: Rating }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let rating = {};
-  if (context.params) {
-    try {
-      rating = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.ratings}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const rating = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.ratings}${context.params?.id}/`
+    );
+    return {
+      props: {
+        rating: rating,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      rating: rating,
-    },
-  };
 };

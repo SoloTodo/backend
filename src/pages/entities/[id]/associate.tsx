@@ -80,16 +80,19 @@ export default function EntityAssociate(props: EntityAssociateProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let entity = {};
-  if (context.params) {
-    entity = await jwtFetch(
+  try {
+    const entity = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/`
+      `${apiSettings.apiResourceEndpoints.entities}${context.params?.id}/`
     );
+    return {
+      props: {
+        entity: entity,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      entity: entity,
-    },
-  };
 };

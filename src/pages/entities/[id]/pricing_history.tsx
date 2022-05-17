@@ -13,17 +13,10 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
-// import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-// import {
-//   selectApiResourceObjects,
-//   useApiResourceObjects,
-// } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
-import { subDays } from 'date-fns';
-// import { useAppSelector } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -40,16 +33,8 @@ export default function EntityPriceHistory() {
     name: "",
   });
   const router = useRouter();
-  // const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const fieldMetadata = [
-    // {
-    //   fieldType: "select" as "select",
-    //   name: "currency",
-    //   label: "Moneda",
-    //   multiple: false,
-    //   choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
-    // },
     {
       fieldType: "date" as "date",
       name: "timestamp_after",
@@ -104,9 +89,6 @@ export default function EntityPriceHistory() {
                         <ApiFormDatePickerComponent name="timestamp_before" />
                       </Stack>
                     </Grid>
-                    {/* <Grid item xs={6}>
-                      <ApiFormSelectComponent name="currency" />
-                    </Grid> */}
                   </Grid>
                 </CardContent>
               </Card>

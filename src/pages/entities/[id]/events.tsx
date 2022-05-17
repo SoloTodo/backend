@@ -34,8 +34,13 @@ EntityEventPage.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function EntityEventPage({ entity, events }: { entity: Entity, events: any[] }) {
-
+export default function EntityEventPage({
+  entity,
+  events,
+}: {
+  entity: Entity;
+  events: any[];
+}) {
   const fieldValueToComponent = (
     field: string,
     value: { id: number; name: string } | null | string
@@ -155,28 +160,24 @@ export default function EntityEventPage({ entity, events }: { entity: Entity, ev
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let entity = {};
-  let events = [];
-  if (context.params) {
-    try {
-      entity = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/`
-      );
-      events = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.entities}${context.params.id}/events`
-      )
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const entity = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.entities}${context.params?.id}/`
+    );
+    const events = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.entities}${context.params?.id}/events`
+    );
+    return {
+      props: {
+        entity: entity,
+        events: events,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      entity: entity,
-      events: events
-    },
-  };
 };

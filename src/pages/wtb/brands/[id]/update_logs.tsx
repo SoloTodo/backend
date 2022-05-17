@@ -102,22 +102,19 @@ export default function BrandUpdateLogs({ brand }: { brand: Brand }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    let brand = {};
-    if (context.params) {
-      try {
-        brand = await jwtFetch(
-          context,
-          `${apiSettings.apiResourceEndpoints.wtb_brands}${context.params.id}/`
-        );
-      } catch {
-        return {
-          notFound: true,
-        };
-      }
-    }
+  try {
+    const brand = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.wtb_brands}${context.params?.id}/`
+    );
     return {
       props: {
         brand: brand,
       },
     };
-  };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+};
