@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
-import ApiFormChartLine from "src/sections/entities/ApiFormChartLine";
+import EntityPriceHistoryChart from "src/sections/entities/EntityPriceHistoryChart";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
@@ -95,7 +95,7 @@ export default function EntityPriceHistory() {
               <Card>
                 <CardHeader title="Resultado" />
                 <CardContent>
-                  <ApiFormChartLine />
+                  <EntityPriceHistoryChart />
                 </CardContent>
               </Card>
             </Stack>
