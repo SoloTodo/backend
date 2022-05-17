@@ -1,22 +1,15 @@
 import { ReactElement, useState } from "react";
 import { GetServerSideProps } from "next/types";
 import {
-  Button,
   Card,
   CardContent,
   CardHeader,
   Container,
   Grid,
-  Stack,
-  Typography,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
 import Layout from "src/layouts";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-// hooks
-import { useAppSelector } from "src/store/hooks";
-import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 // paths
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
@@ -24,7 +17,6 @@ import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
 import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import CarouselBasic from "src/sections/mui/CarouselBasic";
-import Options from "src/sections/Options";
 import GeneralInformation from "src/sections/entities/GeneralInformation";
 import PricingInformation from "src/sections/entities/PricingInformation";
 import PositionInformation from "src/sections/entities/PositionInformation";
@@ -32,9 +24,8 @@ import StaffInformation from "src/sections/entities/StaffInformation";
 import ReactMarkdown from "react-markdown";
 // types
 import { Entity } from "src/frontend-utils/types/entity";
-import { Option } from "src/frontend-utils/types/extras";
 import { User } from "src/frontend-utils/types/user";
-import { Category, Store } from "src/frontend-utils/types/store";
+import UpdatePricingInformation from "src/sections/entities/UpdatePricingInformation";
 
 // ----------------------------------------------------------------------
 
@@ -54,56 +45,6 @@ type EntityProps = {
 export default function EntityPage(props: EntityProps) {
   const { users } = props;
   const [entity, setEntity] = useState<Entity>(props.entity);
-  const { enqueueSnackbar } = useSnackbar();
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const hasStaffPermission = (
-    apiResourceObjects[entity.category] as Category
-  ).permissions.includes("is_category_staff");
-  const baseRoute = `${PATH_ENTITY.root}/${entity.id}`;
-
-  const options: Option[] = [
-    {
-      key: 1,
-      text: "Eventos",
-      path: `${baseRoute}/events`,
-    },
-    {
-      key: 2,
-      text: "Historial pricing",
-      path: `${baseRoute}/pricing_history`,
-    },
-  ];
-
-  if (hasStaffPermission)
-    options.push({
-      key: 3,
-      text: "Asociar",
-      path: `${baseRoute}/associate`,
-    });
-
-  const handleUpdatePricing = () => {
-    jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/update_pricing/`,
-      {
-        method: "POST",
-      }
-    )
-      .then((data) => {
-        setEntity(data);
-        enqueueSnackbar(
-          "La información de pricing ha sido actualizada y debiera mostrarse en los paneles inferiores. Si está incorrecta por favor contacte a nuestro staff",
-          { persist: true }
-        );
-      })
-      .catch((err) => {
-        enqueueSnackbar(
-          "Error al ejecutar la petición, por favor intente de nuevo",
-          { variant: "error" }
-        );
-        console.log(err);
-      });
-  };
 
   return (
     <Page title={entity.name}>
@@ -126,39 +67,7 @@ export default function EntityPage(props: EntityProps) {
             </Card>
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <Stack spacing={2}>
-              <Options options={options} />
-              <Card>
-                <CardHeader title="Actualizar información" />
-                <CardContent>
-                  <Stack spacing={2}>
-                    <Typography>
-                      Obtiene la información actualizada de la entidad desde el
-                      sitio de la tienda
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      onClick={handleUpdatePricing}
-                      disabled={
-                        !(
-                          hasStaffPermission ||
-                          (
-                            apiResourceObjects[entity.store] as Store
-                          ).permissions.includes("update_store_pricing") ||
-                          (
-                            apiResourceObjects[entity.category] as Category
-                          ).permissions.includes(
-                            "update_category_entities_pricing"
-                          )
-                        )
-                      }
-                    >
-                      Actualizar información
-                    </Button>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Stack>
+            <UpdatePricingInformation entity={entity} setEntity={setEntity} />
           </Grid>
           <Grid item xs={12} md={6}>
             <GeneralInformation entity={entity} />
