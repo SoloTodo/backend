@@ -1,4 +1,4 @@
-import { PATH_ENTITY, PATH_STORE } from "src/routes/paths";
+import { PATH_ENTITY, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
 import { Store } from "src/frontend-utils/types/store";
@@ -50,7 +50,7 @@ export default function OptionsMenu({ store }: { store: Store }) {
     },
     {
       text: "Ratings",
-      path: `${baseRoute}`,
+      path: `${PATH_RATING.root}/?stores=${store.id}`,
       hasPermission: user?.permissions.includes('solotodo.backend_list_ratings')
     },
     {
