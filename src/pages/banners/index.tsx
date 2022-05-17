@@ -6,9 +6,12 @@ import {
   Grid,
   Link,
   Stack,
+  Typography,
 } from "@mui/material";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
 import { ReactElement } from "react";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -30,6 +33,7 @@ import { InLineProduct } from "src/frontend-utils/types/entity";
 import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
+import { fDateTimeSuffix } from "src/utils/formatTime";
 
 // ----------------------------------------------------------------------
 
@@ -145,16 +149,83 @@ export default function Banners({
       flex: 1,
       renderCell: (row: Banner) =>
         row.destination_url_list.length !== 0 ? (
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            href={row.external_url}
-          >
-            {`${row.subsection.section.name} > ${row.subsection.name}`}
-          </Link>
+          <Stack spacing={1}>
+            {row.destination_url_list.map((l) => (
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={l}
+              >
+                Link
+              </Link>
+            ))}
+          </Stack>
         ) : (
           "Sin link"
         ),
+    },
+    {
+      headerName: "Act?",
+      field: "update",
+      flex: 1,
+      renderCell: (row: Banner) =>
+        row.update.is_active ? <CheckIcon /> : <ClearIcon />,
+    },
+    {
+      headerName: "Marca",
+      field: "brand",
+      flex: 1,
+      renderCell: (row: Banner) =>
+        row.asset.total_percentage ? (
+          <Stack spacing={1}>
+            {row.asset.contents.map((c) => (
+              <Typography>{c.brand.name}</Typography>
+            ))}
+          </Stack>
+        ) : (
+          "Sin contenido"
+        ),
+    },
+    {
+      headerName: "Categoría",
+      field: "category",
+      flex: 1,
+      renderCell: (row: Banner) =>
+        row.asset.total_percentage ? (
+          <Stack spacing={1}>
+            {row.asset.contents.map((c) => (
+              <Typography>{c.category.name}</Typography>
+            ))}
+          </Stack>
+        ) : (
+          "Sin contenido"
+        ),
+    },
+    {
+      headerName: "%",
+      field: "porcentaje",
+      flex: 1,
+      renderCell: (row: Banner) =>
+        row.asset.total_percentage ? (
+          <Stack spacing={1}>
+            {row.asset.contents.map((c) => (
+              <Typography>{c.percentage} %</Typography>
+            ))}
+          </Stack>
+        ) : (
+          "Sin contenido"
+        ),
+    },
+    {
+      headerName: "Posición",
+      field: "position",
+      flex: 1,
+    },
+    {
+      headerName: "Fecha creación",
+      field: "last_updated",
+      renderCell: (row: Banner) => fDateTimeSuffix(row.update.timestamp),
+      flex: 1,
     },
   ];
 
