@@ -15,18 +15,20 @@ export type Subsection = {
   type: InLineProduct;
 }
 
+export type BannerAsset = {
+  contents: Content[];
+  creation_date: string;
+  id: number;
+  is_active: boolean;
+  is_complete: boolean;
+  key: string;
+  picture_url: string;
+  total_percentage?: number;
+  url: string;
+}
+
 export type Banner = {  
-  asset: {
-    contents: Content[];
-    creation_date: string;
-    id: number;
-    is_active: boolean;
-    is_complete: boolean;
-    key: string;
-    picture_url: string;
-    total_percentage: number;
-    url: string;
-  };
+  asset: BannerAsset;
   destination_url_list: string[];
   external_url: string;
   id: number;
@@ -43,3 +45,19 @@ export type Banner = {
   }
   url: string;
 }
+
+export type BannerUpdate = {
+  id: number;
+  is_active: boolean;
+  status: 1 | 2 | 3;
+  status_message: string | null;
+  store: string;
+  timestamp: string;
+  url: string;
+}
+
+export const statusCodes = {
+  1: "En proceso",
+  2: "Exitoso",
+  3: "Error",
+};
