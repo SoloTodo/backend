@@ -155,6 +155,7 @@ export default function Banners({
                 target="_blank"
                 rel="noopener noreferrer"
                 href={l}
+                key={l}
               >
                 Link
               </Link>
@@ -178,8 +179,8 @@ export default function Banners({
       renderCell: (row: Banner) =>
         row.asset.total_percentage ? (
           <Stack spacing={1}>
-            {row.asset.contents.map((c) => (
-              <Typography>{c.brand.name}</Typography>
+            {row.asset.contents.map((c, index) => (
+              <Typography key={index}>{c.brand.name}</Typography>
             ))}
           </Stack>
         ) : (
@@ -193,8 +194,8 @@ export default function Banners({
       renderCell: (row: Banner) =>
         row.asset.total_percentage ? (
           <Stack spacing={1}>
-            {row.asset.contents.map((c) => (
-              <Typography>{c.category.name}</Typography>
+            {row.asset.contents.map((c, index) => (
+              <Typography key={index}>{c.category.name}</Typography>
             ))}
           </Stack>
         ) : (
@@ -208,8 +209,8 @@ export default function Banners({
       renderCell: (row: Banner) =>
         row.asset.total_percentage ? (
           <Stack spacing={1}>
-            {row.asset.contents.map((c) => (
-              <Typography>{c.percentage} %</Typography>
+            {row.asset.contents.map((c, index) => (
+              <Typography key={index}>{c.percentage}%</Typography>
             ))}
           </Stack>
         ) : (
