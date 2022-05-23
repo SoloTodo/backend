@@ -145,12 +145,14 @@ export async function jwtFetch(
 
 export const getStore = (st: AppStore, context: GetServerSidePropsContext) => {
   const apiResourceObjects = st.getState().apiResourceObjects;
-  let store = {};
-  if (context.params)
-    store = getApiResourceObject(
-      apiResourceObjects,
-      "stores",
-      context.params.id as string
-    );
-  return store;
+  const store = getApiResourceObject(
+    apiResourceObjects,
+    "stores",
+    context.params?.id as string
+  );
+  if (typeof store === "undefined") {
+    return null;
+  } else {
+    return store;
+  }
 };

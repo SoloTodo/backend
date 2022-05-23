@@ -145,16 +145,19 @@ export default function ProductFuse({ product }: { product: Product }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let product = {};
-  if (context.params) {
-    product = await jwtFetch(
+  try {
+    const product = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
+    return {
+      props: {
+        product: product,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      product: product,
-    },
-  };
 };

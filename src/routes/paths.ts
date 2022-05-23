@@ -14,6 +14,7 @@ const ROOTS_VISIT = '/visits';
 const ROOTS_RATING = '/ratings';
 const ROOTS_WTB = '/wtb';
 const ROOTS_REPORTS = '/reports';
+const ROOTS_BANNERS = '/banners';
 
 // ----------------------------------------------------------------------
 
@@ -72,4 +73,12 @@ export const PATH_WTB = {
 
 export const PATH_REPORTS = {
   root: ROOTS_REPORTS,
+}
+
+export const PATH_BANNERS = {
+  banners: ROOTS_BANNERS,
+  assets: path(ROOTS_BANNERS, '/assets'),
+  assetsPending: path(ROOTS_BANNERS, '/assets/pending'),
+  updates: path(ROOTS_BANNERS, '/updates'),
+  updatesLatest: path(ROOTS_BANNERS, '/updates/latest'),
 }

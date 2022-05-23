@@ -110,26 +110,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context,
     apiSettings.apiResourceEndpoints.users_with_staff_actions
   );
-  let entity = {};
-  let brand = "";
-  if (context.params) {
-    try {
-      entity = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.wtb_entities}${context.params.id}/`
-      );
-      brand = await jwtFetch(context, (entity as WtbEntity).brand);
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const entity = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.wtb_entities}${context.params?.id}/`
+    );
+    const brand = await jwtFetch(context, (entity as WtbEntity).brand);
+    return {
+      props: {
+        entity: entity,
+        brand: brand,
+        users: users,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      entity: entity,
-      brand: brand,
-      users: users,
-    },
-  };
 };

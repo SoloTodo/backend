@@ -6,7 +6,7 @@ import ReactApexChart, { BaseOptionChart } from "../../components/chart";
 
 // ----------------------------------------------------------------------
 
-export default function ApiFormChartLine() {
+export default function EntityPriceHistoryChart() {
   const context = useContext(ApiFormContext);
   let pricing_history = context.currentResult;
   if (pricing_history === null) pricing_history = [];

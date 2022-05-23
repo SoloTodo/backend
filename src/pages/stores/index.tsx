@@ -134,7 +134,7 @@ export default function Stores() {
             <Card>
               <CardHeader title="Listado de Tiendas" />
               <CardContent>
-                <ApiFormResultsTable columns={columns} />
+                <ApiFormResultsTable columns={columns} withPagination={false} />
               </CardContent>
             </Card>
           </Stack>

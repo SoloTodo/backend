@@ -13,7 +13,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
-import ApiFormChartLine from "src/sections/products/ApiFormChartLine";
+import ProductPriceHistoryChart from "src/sections/products/ProductPriceHistoryChart";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
@@ -35,7 +35,7 @@ import {
   PATH_STORE,
 } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
-import ApiFormResultsTable from "src/sections/products/ApiFormResultsTable";
+import ProductEntitiesTable from "src/sections/products/ProductEntitiesTable";
 import { GridColDef } from "@mui/x-data-grid";
 
 // ----------------------------------------------------------------------
@@ -208,13 +208,13 @@ export default function ProductPricingHistory({
             <Card>
               <CardHeader title="Gráfico" />
               <CardContent>
-                <ApiFormChartLine name="price_type" />
+                <ProductPriceHistoryChart name="price_type" />
               </CardContent>
             </Card>
             <Card>
               <CardHeader title="Entidades encontradas" />
               <CardContent>
-                <ApiFormResultsTable columns={columns} />
+                <ProductEntitiesTable columns={columns} />
               </CardContent>
             </Card>
           </Stack>
@@ -225,16 +225,19 @@ export default function ProductPricingHistory({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let product = {};
-  if (context.params) {
-    product = await jwtFetch(
+  try {
+    const product = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
+    return {
+      props: {
+        product: product,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      product: product,
-    },
-  };
 };

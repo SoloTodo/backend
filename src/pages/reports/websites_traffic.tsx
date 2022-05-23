@@ -57,6 +57,7 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
       name: "categories",
       label: "Categorías",
       multiple: true,
+      required: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
@@ -107,25 +108,23 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
   ];
 
   return (
-    <Page title="Precios semanales | Reportes">
+    <Page title="Tráfico en sitios | Reportes">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Reportes", href: PATH_REPORTS.root },
-            { name: "Precios semanales" },
+            { name: "Tráfico en sitios" },
           ]}
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.reports}current_prices/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.reports}websites_traffic/`}
           requiresSubmit={true}
-          onResultsChange={() =>
-            enqueueSnackbar(
-              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
-            )
-          }
+          onResultsChange={(json: { url: string }) => {
+            if (json) window.location.href = json.url;
+          }}
         >
           <Card>
             <CardHeader title="Filtros" />

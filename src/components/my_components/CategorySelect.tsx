@@ -22,7 +22,7 @@ export default function CategorySelect({
   const [category, setCategory] = useState(entity.category);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
-  const categories: { [url: string]: Category } = getApiResourceObjects(
+  const categories = getApiResourceObjects(
     apiResourceObjects,
     "categories"
   );
@@ -33,7 +33,7 @@ export default function CategorySelect({
       `${entity.url}/change_category/`,
       {
         method: "post",
-        body: JSON.stringify({ category: categories[value].id }),
+        body: JSON.stringify({ category: apiResourceObjects[value].id }),
       }
     )
       .then((entity) => setCategory(entity.category))
@@ -54,7 +54,7 @@ export default function CategorySelect({
             );
         }}
       >
-        {Object.values(categories).map((c) => (
+        {categories.map((c) => (
           <MenuItem key={c.id} value={c.url}>
             {c.name}
           </MenuItem>

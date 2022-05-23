@@ -131,22 +131,19 @@ export default function StaffSummary(props: { userDetail: User }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let userDetail = {};
-  if (context.params) {
-    try {
-      userDetail = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.users}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const userDetail = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.users}${context.params?.id}/`
+    );
+    return {
+      props: {
+        userDetail: userDetail,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      userDetail: userDetail,
-    },
-  };
 };

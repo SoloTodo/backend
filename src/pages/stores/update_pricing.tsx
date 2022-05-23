@@ -49,9 +49,7 @@ export default function UpdatePricing() {
   const categories = Object.keys(
     getApiResourceObjects(apiResourceObjects, "categories")
   ) as string[];
-  const stores = Object.values(
-    getApiResourceObjects(apiResourceObjects, "stores")
-  ) as Store[];
+  const stores = getApiResourceObjects(apiResourceObjects, "stores") as Store[];
 
   useEffect(() => {
     setLoading(true);
@@ -124,13 +122,13 @@ export default function UpdatePricing() {
       field: "registry_file",
       flex: 1,
       renderCell: (params) => (
-        <Link
+        params.row.registry_file ? <Link
           target="_blank"
           rel="noopener noreferrer"
           href={params.row.registry_file}
         >
-          {params.row.registry_file ? "Descargar" : "No disponible"}
-        </Link>
+          Descargar 
+        </Link> : "No disponible"
       ),
     },
   ];

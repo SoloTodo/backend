@@ -7,12 +7,7 @@ import Layout from "src/layouts";
 import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { Detail } from "src/frontend-utils/types/extras";
-import {
-  getApiResourceObject,
-  useApiResourceObjects,
-} from "src/frontend-utils/redux/api_resources/apiResources";
-import { useAppSelector } from "src/store/hooks";
-import { useRouter } from "next/router";
+import { getApiResourceObject } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Option } from "src/frontend-utils/types/extras";
 import Options from "../../../sections/Options";
 import { wrapper } from "src/store/store";
@@ -79,19 +74,22 @@ export default function CategoryPage({ category }: { category: Category }) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (st) => async (context) => {
-    let category = {};
-    if (context.params) {
-      const apiResourceObjects = st.getState().apiResourceObjects;
-      category = getApiResourceObject(
-        apiResourceObjects,
-        "categories",
-        context.params.id as string
-      );
+    const apiResourceObjects = st.getState().apiResourceObjects;
+    const category = getApiResourceObject(
+      apiResourceObjects,
+      "categories",
+      context.params?.id as string
+    );
+    if (typeof category === "undefined") {
+      return {
+        notFound: true,
+      };
+    } else {
+      return {
+        props: {
+          category: category,
+        },
+      };
     }
-    return {
-      props: {
-        category: category,
-      },
-    };
   }
 );

@@ -69,25 +69,21 @@ export default function EntityAssociate(props: EntityAssociateProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let entity = {};
-  let brand = "";
-  if (context.params) {
-    try {
-      entity = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.wtb_entities}${context.params.id}/`
-      );
-      brand = await jwtFetch(context, (entity as WtbEntity).brand);
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const entity = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.wtb_entities}${context.params?.id}/`
+    );
+    const brand = await jwtFetch(context, (entity as WtbEntity).brand);
+    return {
+      props: {
+        entity: entity,
+        brand: brand,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      entity: entity,
-      brand: brand,
-    },
-  };
 };

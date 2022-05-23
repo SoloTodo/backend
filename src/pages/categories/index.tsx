@@ -25,9 +25,7 @@ Categories.getLayout = function getLayout(page: ReactElement) {
 
 export default function Categories() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categoriesData = Object.values(
-    getApiResourceObjects(apiResourceObjects, "categories")
-  );
+  const categoriesData = getApiResourceObjects(apiResourceObjects, "categories");
 
   const columns: GridColDef[] = [
     {

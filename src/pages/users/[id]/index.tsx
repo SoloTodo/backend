@@ -42,10 +42,10 @@ export default function UserPage(props: { userDetail: User }) {
       key: "full_name",
       label: "Nombre completo",
       renderData: (user: User) => `${user.first_name} ${user.last_name}`,
-    }
-  ]
+    },
+  ];
 
-  const options: Option[] = []
+  const options: Option[] = [];
   if (displaySidebar) {
     options.push(
       {
@@ -55,8 +55,8 @@ export default function UserPage(props: { userDetail: User }) {
       {
         text: "Acciones staff",
         path: `${baseRoute}/staff_actions`,
-      },
-    )
+      }
+    );
   }
 
   return (
@@ -84,22 +84,19 @@ export default function UserPage(props: { userDetail: User }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let userDetail = {};
-  if (context.params) {
-    try {
-      userDetail = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.users}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const userDetail = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.users}${context.params?.id}/`
+    );
+    return {
+      props: {
+        userDetail: userDetail,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      userDetail: userDetail,
-    },
-  };
 };

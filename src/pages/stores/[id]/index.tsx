@@ -80,10 +80,17 @@ export default function StorePage(props: { store: Store }) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (st) => async (context) => {
-    return {
-      props: {
-        store: getStore(st, context),
-      },
-    };
+    const store = getStore(st, context);
+    if (store === null) {
+      return {
+        notFound: true,
+      };
+    } else {
+      return {
+        props: {
+          store: store,
+        },
+      };
+    }
   }
 );

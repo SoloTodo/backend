@@ -23,7 +23,12 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // paths
 import { apiSettings } from "src/frontend-utils/settings";
-import { PATH_DASHBOARD, PATH_ENTITY, PATH_PRODUCT, PATH_USER } from "src/routes/paths";
+import {
+  PATH_DASHBOARD,
+  PATH_ENTITY,
+  PATH_PRODUCT,
+  PATH_USER,
+} from "src/routes/paths";
 // types
 import { User } from "src/frontend-utils/types/user";
 
@@ -57,10 +62,7 @@ export default function ActionsSummary(props: { userDetail: User }) {
       field: "id",
       flex: 1,
       renderCell: (params) => (
-        <NextLink
-          href={`${PATH_ENTITY.root}/${params.row.entity_id}`}
-          passHref
-        >
+        <NextLink href={`${PATH_ENTITY.root}/${params.row.entity_id}`} passHref>
           <Link>{params.row.name}</Link>
         </NextLink>
       ),
@@ -79,10 +81,7 @@ export default function ActionsSummary(props: { userDetail: User }) {
       field: "id",
       flex: 1,
       renderCell: (params) => (
-        <NextLink
-          href={`${PATH_PRODUCT.root}/${params.row.id}`}
-          passHref
-        >
+        <NextLink href={`${PATH_PRODUCT.root}/${params.row.id}`} passHref>
           <Link>{params.row.name}</Link>
         </NextLink>
       ),
@@ -101,10 +100,7 @@ export default function ActionsSummary(props: { userDetail: User }) {
       field: "id",
       flex: 1,
       renderCell: (params) => (
-        <NextLink
-          href={`${PATH_ENTITY.root}/${params.row.id}`}
-          passHref
-        >
+        <NextLink href={`${PATH_ENTITY.root}/${params.row.id}`} passHref>
           <Link>{params.row.name}</Link>
         </NextLink>
       ),
@@ -189,22 +185,19 @@ export default function ActionsSummary(props: { userDetail: User }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let userDetail = {};
-  if (context.params) {
-    try {
-      userDetail = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.users}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const userDetail = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.users}${context.params?.id}/`
+    );
+    return {
+      props: {
+        userDetail: userDetail,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      userDetail: userDetail,
-    },
-  };
 };

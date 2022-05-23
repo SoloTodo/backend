@@ -100,13 +100,10 @@ export default function ProductPage(props: ProductProps) {
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((st) => async (context) => {
     const apiResourceObjects = st.getState().apiResourceObjects;
-    let product = {} as Product;
-    let renderSpecs = {};
-    let entities = [];
-    if (context.params) {
-      product = await jwtFetch(
+    try {
+      const product = await jwtFetch(
         context,
-        `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+        `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
       );
       const category_template = await jwtFetch(
         context,
@@ -116,27 +113,31 @@ export const getServerSideProps: GetServerSideProps =
           apiResourceObjects[product.category].id
         }`
       );
-      renderSpecs =
+      const renderSpecs =
         category_template.length !== 0 &&
         (await jwtFetch(
           context,
-          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params.id}`
+          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params?.id}`
         ));
-      entities = await jwtFetch(
+      const entities = await jwtFetch(
         context,
-        `${apiSettings.apiResourceEndpoints.products}${context.params.id}/entities/`
+        `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
       );
+      const websites = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.websites}`
+      );
+      return {
+        props: {
+          product: product,
+          websites: websites,
+          renderSpecs: renderSpecs,
+          entities: entities,
+        },
+      };
+    } catch {
+      return {
+        notFound: true,
+      };
     }
-    const websites = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.websites}`
-    );
-    return {
-      props: {
-        product: product,
-        websites: websites,
-        renderSpecs: renderSpecs,
-        entities: entities,
-      },
-    };
   });

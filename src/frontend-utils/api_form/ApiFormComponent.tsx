@@ -4,7 +4,7 @@ import { ApiFormProvider } from "./ApiFormContext";
 import { useRouter } from "next/router";
 import * as queryString from "query-string";
 import { ApiFormInitialState } from "./types";
-// import { useSnackbar } from "notistack";
+import { submitReady } from "./fields/submit/ApiFormSubmit";
 
 type ApiFormComponentProps = {
   fieldsMetadata: ApiFormFieldMetadata[];
@@ -18,7 +18,6 @@ type ApiFormComponentProps = {
 
 export default function ApiFormComponent(props: ApiFormComponentProps) {
   const router = useRouter();
-  // const { enqueueSnackbar } = useSnackbar();
 
   const form = useMemo(
     () =>
@@ -49,24 +48,13 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       const parseUrl = queryString.parseUrl(url);
 
       form.initialize();
-      if (!props.requiresSubmit || parseUrl.query.submit === "true") {
+      if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
         await form.submit().then((results) => {
           if (isMounted) setCurrentResult(results);
-          if (props.requiresSubmit) updateUrl({ submit: [] });
-          props.onResultsChange && props.onResultsChange();
+          if (props.requiresSubmit)
+            updateUrl({ ...parseUrl.query, submit: [] });
+          props.onResultsChange && props.onResultsChange(results);
         });
-        //   .catch((err) =>
-        //     err.json().then((res: { errors: { [key: string]: string[] } }) => {
-        //       const errMsg = Object.keys(res.errors).reduce(
-        //         (acc: string, a: string) => {
-        //           return acc + a + " - " + res.errors[a][0] + " ";
-        //         },
-        //         ""
-        //       );
-        //       enqueueSnackbar(errMsg, { variant: "error" });
-        //     })
-        //   );
-        // if (props.requiresSubmit) updateUrl({ submit: [] });
       } else {
         setCurrentResult([]);
       }
@@ -91,7 +79,6 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     const newPath = newSearch ? `${router.route}?${newSearch}` : router.route;
     router.push(newPath, undefined, { shallow: true });
   };
-
   return (
     <ApiFormProvider
       form={form}

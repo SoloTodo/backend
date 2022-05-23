@@ -19,18 +19,16 @@ UpdateStorePricing.getLayout = function getLayout(page: ReactElement) {
 export default function UpdateStorePricing(props: { store: Store }) {
   const { store } = props;
 
-  const [storeScrapingOptions, setStoreScrapingOptions] = useState<StoreScrapingOptions>({
-    categories: [],
-    prefer_async: false,
-  });
+  const [storeScrapingOptions, setStoreScrapingOptions] =
+    useState<StoreScrapingOptions>({
+      categories: [],
+      prefer_async: false,
+    });
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    jwtFetch(
-      null,
-      `${store.url}scraper/`
-    ).then((data) => {
+    jwtFetch(null, `${store.url}scraper/`).then((data) => {
       setStoreScrapingOptions(data);
       setLoading(false);
     });
@@ -70,10 +68,17 @@ export default function UpdateStorePricing(props: { store: Store }) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (st) => async (context) => {
-    return {
-      props: {
-        store: getStore(st, context),
-      },
-    };
+    const store = getStore(st, context);
+    if (store === null) {
+      return {
+        notFound: true,
+      };
+    } else {
+      return {
+        props: {
+          store: store,
+        },
+      };
+    }
   }
 );

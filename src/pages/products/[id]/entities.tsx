@@ -220,22 +220,24 @@ export default function ProductEntities({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let product = {};
-  let entities = [];
-  if (context.params) {
-    product = await jwtFetch(
+  try {
+    const product = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}`
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
-    entities = await jwtFetch(
+    const entities = await jwtFetch(
       context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params.id}/entities/`
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
     );
+    return {
+      props: {
+        product: product,
+        entities: entities,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      product: product,
-      entities: entities,
-    },
-  };
 };

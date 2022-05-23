@@ -46,7 +46,8 @@ export default function BrandPage({
     {
       key: "country",
       label: "Sitio",
-      renderData: (brand: Brand) => websites.filter(w => w.url === brand.website)[0].name
+      renderData: (brand: Brand) =>
+        websites.filter((w) => w.url === brand.website)[0].name,
     },
     {
       key: "storescraper_class",
@@ -74,7 +75,7 @@ export default function BrandPage({
       text: "Entidades",
       path: `${PATH_WTB.entities}/?brands=${brand.id}`,
     },
-  ]
+  ];
 
   return (
     <Page title={`${brand.name} | Marcas`}>
@@ -102,27 +103,24 @@ export default function BrandPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let brand = {};
-  if (context.params) {
-    try {
-      brand = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.wtb_brands}${context.params.id}/`
-      );
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
-  }
   const websites = await jwtFetch(
     context,
     `${apiSettings.apiResourceEndpoints.websites}`
   );
-  return {
-    props: {
-      brand: brand,
-      websites: websites,
-    },
-  };
+  try {
+    const brand = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.wtb_brands}${context.params?.id}/`
+    );
+    return {
+      props: {
+        brand: brand,
+        websites: websites,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
 };

@@ -1,8 +1,5 @@
 import { Country, Currency, StoreType } from "./types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import { apiSettings } from "../../settings";
-// import { NextPageContext } from "next";
-// import { jwtFetch } from "../../nextjs/utils";
 import { RootState } from "src/store/store";
 import { HYDRATE } from "next-redux-wrapper";
 import { Category, Store } from "src/frontend-utils/types/store";
@@ -70,25 +67,12 @@ export function getApiResourceObjects(
   apiResourceObjects: ApiResourceObjectRecord,
   resourceName: string,
 ) {
-  return Object.values(apiResourceObjects).reduce((acc, r) => {
+  return Object.values(apiResourceObjects).reduce((acc: ApiResourceObject[], r) => {
     if (r.url.includes(resourceName)) {
-      return { ...acc, [r.url]: r };
+      return [ ...acc, r ];
     }
     return acc;
-  }, {});
+  }, []);
 }
-
-// export function updateApiResourceObjects(
-//   resourceName: keyof typeof apiSettings.apiResourceEndpoints,
-//   context?: NextPageContext
-// ) {
-//   return async function fetchResourceObjectsThunk(
-//     dispatch: ReactUtilsDispatch
-//   ) {
-//     const endpoint = apiSettings.apiResourceEndpoints[resourceName];
-//     const res = await jwtFetch(context, endpoint);
-//     dispatch(apiResourceObjectsSlice.actions.addApiResourceObjects(res));
-//   };
-// }
 
 export default apiResourceObjectsSlice;

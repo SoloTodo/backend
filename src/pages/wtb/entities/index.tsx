@@ -64,7 +64,7 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
     },
     {
       fieldType: "select" as "select",
-      name: "stores",
+      name: "brands",
       label: "Marcas",
       multiple: true,
       choices: brandChoices,

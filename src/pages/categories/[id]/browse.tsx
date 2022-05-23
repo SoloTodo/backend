@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Grid,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -71,7 +65,11 @@ export default function CategoryBrowse({
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
   const categoryId = router.query.id as string;
-  const category = getApiResourceObject(apiResourceObjects, "categories", categoryId);
+  const category = getApiResourceObject(
+    apiResourceObjects,
+    "categories",
+    categoryId
+  );
 
   console.log(categorySpecsFormLayout);
 
@@ -166,7 +164,10 @@ export default function CategoryBrowse({
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Tiendas", href: PATH_CATEGORY.root },
-            { name: `${category.name}`, href: `${PATH_CATEGORY.root}/${category.id}` },
+            {
+              name: `${category.name}`,
+              href: `${PATH_CATEGORY.root}/${category.id}`,
+            },
             { name: "Navegar" },
           ]}
         />
@@ -219,25 +220,23 @@ export default function CategoryBrowse({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let categorySpecsFormLayout = {};
-  if (context.params) {
-    try {
-      const response = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=${context.params.id}`
-      );
-      response.forEach((res: { website: string }) => {
-        if (res.website == "http://localhost:8000/websites/1/")
-          categorySpecsFormLayout = res;
-      });
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
+  try {
+    const response = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=${context.params?.id}`
+    );
+    response.forEach((res: { website: string }) => {
+      if (res.website == "http://localhost:8000/websites/1/")
+        categorySpecsFormLayout = res;
+    });
+    return {
+      props: {
+        categorySpecsFormLayout: categorySpecsFormLayout,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
-  return {
-    props: {
-      categorySpecsFormLayout: categorySpecsFormLayout,
-    },
-  };
 };
