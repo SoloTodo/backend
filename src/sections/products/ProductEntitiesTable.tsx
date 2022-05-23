@@ -6,7 +6,7 @@ import Scrollbar from "src/components/Scrollbar";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { Entity } from "src/frontend-utils/types/entity";
 
-export default function ApiFormResultsTable({
+export default function ProductEntitiesTable({
   columns,
   getRowId,
 }: {

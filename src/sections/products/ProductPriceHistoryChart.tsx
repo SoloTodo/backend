@@ -10,7 +10,7 @@ import ReactApexChart, { BaseOptionChart } from "../../components/chart";
 
 // ----------------------------------------------------------------------
 
-export default function ApiFormChartLine({name}: {name:string}) {
+export default function ProductPriceHistoryChart({name}: {name:string}) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const context = useContext(ApiFormContext);
   let currentResult = context.currentResult;
