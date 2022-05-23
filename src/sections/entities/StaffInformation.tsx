@@ -22,11 +22,22 @@ export default function StaffInformation({
   entity: Entity;
   users: User[];
 }) {
-  const [staffInfo, setStaffInfo] = useState({});
+  const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
+  useEffect(() => {
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/staff_info/`
+    )
+      .then((data) => {
+        setStaffInfo(data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const userDict = users.reduce(
-    (acc: { [x: string]: any }, a: { url: string }) => {
+    (acc: Record<string, User>, a: User) => {
       acc[a.url] = a;
       return acc;
     },
@@ -91,25 +102,14 @@ export default function StaffInformation({
     },
   ];
 
-  useEffect(() => {
-    jwtFetch(
-      null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/staff_info/`
-    )
-      .then((data) => {
-        setStaffInfo(data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  if (!staffInfo) {
+    return null
+  }
 
   return (
     <Details
       title="Información staff"
-      data={
-        Object.keys(staffInfo).length !== 0 && Object.keys(entity).length !== 0
-          ? { ...entity, ...staffInfo }
-          : {}
-      }
+      data={{ ...entity, ...staffInfo }}
       details={staffDetails}
     />
   );

@@ -62,7 +62,6 @@ export default function UpdatePricing() {
       const latestActive = stores.reduce((acc: ExtendedUpdate[], a: Store) => {
         if (a.last_activation) {
           const l = latest[a.url];
-          const success = l.status === 3 && l.available_products_count !== 0;
           return [
             ...acc,
             {

@@ -25,6 +25,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 // section
 import Details from "../Details";
 import { WtbEntity } from "src/frontend-utils/types/wtb";
+import currency from "currency.js";
 
 const style = {
   position: "absolute" as "absolute",
@@ -106,6 +107,12 @@ export default function PricingInformation({
       label: "¿Activa?",
       renderData: (entity: WtbEntity) =>
         entity.is_active ? <CheckIcon /> : <ClearIcon />,
+    },
+    {
+      key: "price",
+      label: "Precio",
+      renderData: (entity: WtbEntity) =>
+          entity.price ? currency(entity.price, { precision: 0 }).format() : <em>N/A</em>,
     },
   ];
 
