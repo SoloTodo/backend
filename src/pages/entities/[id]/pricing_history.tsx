@@ -12,11 +12,11 @@ import EntityPriceHistoryChart from "src/sections/entities/EntityPriceHistoryCha
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -36,14 +36,8 @@ export default function EntityPriceHistory() {
 
   const fieldMetadata = [
     {
-      fieldType: "date" as "date",
-      name: "timestamp_after",
-      label: "Desde",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "timestamp_before",
-      label: "Hasta",
+      fieldType: "date_range" as "date_range",
+      name: "timestamp",
     },
   ];
 
@@ -84,10 +78,7 @@ export default function EntityPriceHistory() {
                     columns={{ xs: 4, sm: 6, md: 12 }}
                   >
                     <Grid item xs={6}>
-                      <Stack spacing={2} direction="row">
-                        <ApiFormDatePickerComponent name="timestamp_after" />
-                        <ApiFormDatePickerComponent name="timestamp_before" />
-                      </Stack>
+                      <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                     </Grid>
                   </Grid>
                 </CardContent>
