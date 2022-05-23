@@ -13,7 +13,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
-import { Store, Update, STATUS } from "src/frontend-utils/types/store";
+import { Store, Update, STATUS, Category } from "src/frontend-utils/types/store";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
@@ -46,9 +46,7 @@ export default function UpdatePricing() {
   const [selectedStoresIds, setSelectedStoresIds] = useState<number[]>([]);
 
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categories = Object.keys(
-    getApiResourceObjects(apiResourceObjects, "categories")
-  ) as string[];
+  const categories = getApiResourceObjects(apiResourceObjects, "categories") as Category[];
   const stores = getApiResourceObjects(apiResourceObjects, "stores") as Store[];
 
   useEffect(() => {
