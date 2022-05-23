@@ -23,13 +23,13 @@ export class ApiFormPagination {
     this.cleanedData = this.cleanData(query);
   }
 
-  cleanData(query?: URLSearchParams): ApiFormPaginationData {
+  cleanData(query: URLSearchParams): ApiFormPaginationData {
     const newData: any = {
       page_size: 20,
     };
     const arr = ["page", "page_size"];
     arr.forEach((a) => {
-      const q = query?.get(a);
+      const q = query.get(a);
       if (q) newData[a] = q;
     });
     return newData;
