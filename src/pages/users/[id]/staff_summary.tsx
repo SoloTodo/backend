@@ -40,6 +40,7 @@ export default function StaffSummary(props: { userDetail: User }) {
     {
       fieldType: "date_range" as "date_range",
       name: "timestamp",
+      required: true,
     },
   ];
 

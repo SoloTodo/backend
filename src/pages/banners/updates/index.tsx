@@ -62,6 +62,7 @@ export default function BannerUpdates() {
     {
       fieldType: "date_range" as "date_range",
       name: "timestamp",
+      required: true,
     },
   ];
 

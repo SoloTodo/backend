@@ -33,6 +33,7 @@ export default function PricesHistory() {
     {
       fieldType: "date_range" as "date_range",
       name: "timestamp",
+      required: true,
     },
     {
       fieldType: "select" as "select",

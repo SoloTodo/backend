@@ -36,6 +36,7 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
     {
       fieldType: "date_range" as "date_range",
       name: "timestamp",
+      required: true,
     },
     {
       fieldType: "select" as "select",

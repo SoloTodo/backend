@@ -38,6 +38,7 @@ export default function EntityPriceHistory() {
     {
       fieldType: "date_range" as "date_range",
       name: "timestamp",
+      required: true,
     },
   ];
 

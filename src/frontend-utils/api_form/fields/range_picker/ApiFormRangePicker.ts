@@ -26,10 +26,10 @@ export class ApiFormRangePicker {
     const after = query.get(`${this.name}_after`);
     const before = query.get(`${this.name}_before`);
 
-    let past30 = this.name.includes("timestamp")
+    let past30 = this.required
       ? set(subDays(new Date(), 30), { hours: 0, minutes: 0, seconds: 0 })
       : null;
-    const today = this.name.includes("timestamp")
+    const today = this.required
       ? set(new Date(), { hours: 0, minutes: 0, seconds: 0 })
       : null;
 
