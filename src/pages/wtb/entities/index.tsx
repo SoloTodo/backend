@@ -202,7 +202,7 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="brands" />
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="categories" />

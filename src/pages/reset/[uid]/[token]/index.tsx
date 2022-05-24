@@ -19,6 +19,7 @@ import { FormProvider, RHFTextField } from "../../../../components/hook-form";
 //routes
 import { PATH_AUTH } from "src/routes/paths";
 import Iconify from "src/components/Iconify";
+import {fetchJson} from "../../../../frontend-utils/network/utils";
 
 // ----------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ export default function NewPassword() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await authFetch("rest-auth/password/reset/confirm/", {
+      await fetchJson("rest-auth/password/reset/confirm/", {
         headers: {},
         method: "post",
         body: JSON.stringify({ ...data, ...query }),
