@@ -24,7 +24,6 @@ export default function ProductEntitiesTable({
     entity: Entity;
     _pricing_history: any[];
   }) => entity)
-  console.log(currentEntities)
 
   return (
     <Scrollbar>
