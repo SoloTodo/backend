@@ -15,7 +15,6 @@ import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTab
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import ApiFormSelectComponent, {
   choicesYesNo,
 } from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
@@ -29,6 +28,7 @@ import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -60,14 +60,8 @@ export default function BannerUpdates() {
       choices: choicesYesNo,
     },
     {
-      fieldType: "date" as "date",
-      name: "timestamp_after",
-      label: "Desde",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "timestamp_before",
-      label: "Hasta",
+      fieldType: "date_range" as "date_range",
+      name: "timestamp",
     },
   ];
 
@@ -135,11 +129,8 @@ export default function BannerUpdates() {
                   spacing={{ xs: 2, md: 3 }}
                   columns={{ xs: 6, md: 12 }}
                 >
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="timestamp_after" />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="timestamp_before" />
+                  <Grid item xs={6}>
+                    <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="stores" />

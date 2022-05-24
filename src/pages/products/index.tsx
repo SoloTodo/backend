@@ -13,7 +13,6 @@ import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTab
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import {
@@ -25,6 +24,7 @@ import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -69,24 +69,12 @@ export default function Products() {
       inputType: "text" as "text",
     },
     {
-      fieldType: "date" as "date",
-      name: "creation_date_after",
-      label: "Desde (Fecha creación)",
+      fieldType: "date_range" as "date_range",
+      name: "creation_date",
     },
     {
-      fieldType: "date" as "date",
-      name: "creation_date_before",
-      label: "Hasta (Fecha creación)",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "last_updated_after",
-      label: "Desde (Última act.)",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "last_updated_before",
-      label: "Hasta (Última act.)",
+      fieldType: "date_range" as "date_range",
+      name: "last_updated",
     },
   ];
 
@@ -157,17 +145,11 @@ export default function Products() {
                   <Grid item xs={6}>
                     <ApiFormTextComponent name="search" />
                   </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="creation_date_after" />
+                  <Grid item xs={6}>
+                    <ApiFormRangePickerComponent name="creation_date" label="Fecha creación" />
                   </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="creation_date_before" />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="last_updated_after" />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="last_updated_before" />
+                  <Grid item xs={6}>
+                    <ApiFormRangePickerComponent name="last_updated" label="Última act." />
                   </Grid>
                 </Grid>
               </CardContent>

@@ -1,0 +1,61 @@
+import { set, subDays, isValid as isValidDate, addDays } from "date-fns";
+import { ApiFormApiParams } from "../../types";
+
+export type ApiFormRangePickerProps = {
+  fieldType: "date_range";
+  name: string;
+  required?: boolean;
+};
+
+export class ApiFormRangePicker {
+  readonly name: string;
+  readonly required: boolean;
+  cleanedData?: [Date | null, Date | null];
+
+  constructor(
+    name: string,
+    required?: boolean,
+    cleanedData?: [Date | null, Date | null]
+  ) {
+    this.name = name;
+    this.required = required || false;
+    this.cleanedData = cleanedData;
+  }
+
+  loadData(query: URLSearchParams) {
+    const after = query.get(`${this.name}_after`);
+    const before = query.get(`${this.name}_before`);
+
+    let past30 = this.name.includes("timestamp")
+      ? set(subDays(new Date(), 30), { hours: 0, minutes: 0, seconds: 0 })
+      : null;
+    const today = this.name.includes("timestamp")
+      ? set(new Date(), { hours: 0, minutes: 0, seconds: 0 })
+      : null;
+
+    const valueAfter = after
+      ? set(new Date(after), { hours: 0, minutes: 0, seconds: 0 })
+      : past30;
+    const valueBefore = before
+      ? set(new Date(before), { hours: 0, minutes: 0, seconds: 0 })
+      : today;
+
+    this.cleanedData = [valueAfter, valueBefore];
+  }
+
+  isValid() {
+    return typeof this.cleanedData !== "undefined";
+  }
+
+  getApiParams(): ApiFormApiParams {
+    if (typeof this.cleanedData === "undefined") {
+      throw new Error("Invalid call on invalid field");
+    }
+    const apiParams: ApiFormApiParams = {};
+    if (this.cleanedData[0] !== null && isValidDate(this.cleanedData[0]))
+      apiParams[`${this.name}_after`] = [this.cleanedData[0].toISOString()];
+    if (this.cleanedData[1] !== null && isValidDate(this.cleanedData[1]))
+      apiParams[`${this.name}_before`] = [addDays(this.cleanedData[1], 1).toISOString()];
+    return apiParams;
+  }
+}

@@ -16,7 +16,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiRangePickerComponent";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 

@@ -16,7 +16,7 @@ import {
 } from "./fields/date_picker/ApiDatePicker";
 import { ApiFormSubmit, ApiFormSubmitProps } from "./fields/submit/ApiFormSubmit";
 import { ApiFormRemoveListField, ApiFormRemoveListFieldProps } from "./fields/remove/ApiFormRemoveListField";
-import { ApiFormRangePicker, ApiFormRangePickerProps } from "./fields/range_picker/ApiRangePicker";
+import { ApiFormRangePicker, ApiFormRangePickerProps } from "./fields/range_picker/ApiFormRangePicker";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
@@ -89,6 +89,7 @@ export class ApiForm {
           this.fields[fieldMetadata.name] =
             new ApiFormRangePicker(
               fieldMetadata.name,
+              fieldMetadata.required,
               initialData && initialData[fieldMetadata.name]
             )
           break;
