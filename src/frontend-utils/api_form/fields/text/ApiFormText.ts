@@ -11,7 +11,7 @@ export class ApiFormText {
   readonly name: string;
   readonly label: string;
   readonly inputType: "text" | "number" | "url";
-  cleanedData?: string | null;
+  cleanedData?: string;
 
   constructor(
     name: string,
@@ -27,7 +27,7 @@ export class ApiFormText {
 
   loadData(query: URLSearchParams) {
     const value = query.get(this.name);
-    this.cleanedData = value ? value : null;
+    this.cleanedData = value ? value : "";
   }
 
   isValid() {
@@ -40,7 +40,7 @@ export class ApiFormText {
     }
 
     const apiParams: ApiFormApiParams = {};
-    if (this.cleanedData != null) apiParams[this.name] = [this.cleanedData];
+    if (this.cleanedData != "") apiParams[this.name] = [this.cleanedData];
     return apiParams;
   }
 

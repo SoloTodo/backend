@@ -11,8 +11,8 @@ export default function ApiFormTextComponent({ name }: { name: string }) {
     throw `Invalid field name: ${name}`;
   }
 
-  const data = typeof field.cleanedData !== "undefined" ? field.cleanedData : null;
-  const [value, setValue] = useState<string | null>(data);
+  const data = typeof field.cleanedData !== "undefined" ? field.cleanedData : "";
+  const [value, setValue] = useState<string>(data);
   
   const handleChange = () => {
     if (value === "" || value === null) {
