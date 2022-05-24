@@ -1,8 +1,18 @@
-import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Grid,
+} from "@mui/material";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import Layout from "src/layouts";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
 import {
   getApiResourceObject,
@@ -17,6 +27,7 @@ import { GetServerSideProps } from "next/types";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
+import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBrowseTable";
 
 // ----------------------------------------------------------------------
 
@@ -106,13 +117,15 @@ export default function CategoryBrowse({
   const filterComponents: JSX.Element[] = [];
 
   categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
+    const fieldFilters: JSX.Element[] = [];
     fieldset.filters.forEach((filter) => {
-      console.log(filter.name);
-
-      let filterChoices = filter.choices.map((c) => ({
-        label: c.name,
-        value: c.id,
-      }));
+      let filterChoices =
+        filter.choices === null
+          ? filter.choices
+          : filter.choices.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }));
 
       if (filter.type === "exact") {
         filterChoices = filterChoices || [
@@ -131,13 +144,13 @@ export default function CategoryBrowse({
           fieldType: "select" as "select",
           name: filter.name,
           label: filter.label,
-          multiple: true,
+          multiple: Boolean(filter.choices),
           choices: filterChoices,
         });
-        filterComponents.push(
-          <Grid item xs={12} key={filter.name}>
+        fieldFilters.push(
+          <AccordionDetails key={filter.id}>
             <ApiFormSelectComponent name={filter.name} />
-          </Grid>
+          </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
         fieldsMetadata.push({
@@ -147,13 +160,27 @@ export default function CategoryBrowse({
           multiple: false,
           choices: filterChoices,
         });
-        filterComponents.push(
-          <Grid item xs={12} key={filter.name}>
+        fieldFilters.push(
+          <AccordionDetails key={filter.id}>
             <ApiFormSelectComponent name={filter.name} />
-          </Grid>
+          </AccordionDetails>
         );
       } // TODO: range and else cases
     });
+    filterComponents.push(
+      <Grid item xs={12} key={fieldset.label}>
+        <Accordion>
+          <AccordionSummary
+            id={fieldset.label}
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2a-content"
+          >
+            {fieldset.label}
+          </AccordionSummary>
+          {fieldFilters.map((f) => f)}
+        </Accordion>
+      </Grid>
+    );
   });
 
   return (
@@ -208,6 +235,14 @@ export default function CategoryBrowse({
                     </Grid>
                     {filterComponents.map((f) => f)}
                   </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title="Resultados" />
+                <CardContent>
+                  <CategoryDetailBrowseTable />
                 </CardContent>
               </Card>
             </Grid>
