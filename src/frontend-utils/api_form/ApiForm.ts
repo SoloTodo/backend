@@ -15,19 +15,25 @@ import {
   ApiFormDatePickerProps,
 } from "./fields/date_picker/ApiDatePicker";
 import { ApiFormSubmit, ApiFormSubmitProps } from "./fields/submit/ApiFormSubmit";
+import { ApiFormRemoveListField, ApiFormRemoveListFieldProps } from "./fields/remove/ApiFormRemoveListField";
+import { ApiFormRangePicker, ApiFormRangePickerProps } from "./fields/range_picker/ApiRangePicker";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
   | ApiFormPaginationProps
   | ApiFormTextProps
   | ApiFormDatePickerProps
-  | ApiFormSubmitProps;
+  | ApiFormRangePickerProps
+  | ApiFormSubmitProps
+  | ApiFormRemoveListFieldProps;
 export type ApiFormField =
   | ApiFormSelect
   | ApiFormPagination
   | ApiFormText
   | ApiFormDatePicker
-  | ApiFormSubmit;
+  | ApiFormRangePicker
+  | ApiFormSubmit
+  | ApiFormRemoveListField;
 
 export class ApiForm {
   private fields: ApiFormField[] = [];
@@ -84,10 +90,27 @@ export class ApiForm {
             )
           );
           break;
+        case "date_range":
+          this.fields.push(
+            new ApiFormRangePicker(
+              fieldMetadata.name,
+              initialData && initialData[fieldMetadata.name]
+            )
+          );
+          break;
         case "submit":
           this.fields.push(
             new ApiFormSubmit(
               fieldMetadata.name,
+              initialData && initialData[fieldMetadata.name]
+            )
+          );
+          break;
+        case "remove":
+          this.fields.push(
+            new ApiFormRemoveListField(
+              fieldMetadata.name,
+              fieldMetadata.label,
               initialData && initialData[fieldMetadata.name]
             )
           );

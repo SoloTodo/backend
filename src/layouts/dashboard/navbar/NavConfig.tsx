@@ -43,9 +43,9 @@ const sidebarConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
   {
-    subheader: "general v3.0.0",
+    subheader: "general",
     items: [
-      { title: "Dashboard", path: "/dashboard/one", icon: ICONS.dashboard },
+      { title: "Dashboard", path: "/", icon: ICONS.dashboard },
       {
         title: "Tiendas",
         path: "-",

@@ -111,7 +111,7 @@ export default function Entities() {
       flex: 1,
       renderCell: (row: { id: string; name: string }) => (
         <NextLink href={`${PATH_ENTITY.root}/${row.id}`} passHref>
-          <Link>{row.name}</Link>
+          <Link>{row.name || "N/A"}</Link>
         </NextLink>
       ),
     },

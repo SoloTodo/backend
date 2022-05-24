@@ -27,9 +27,6 @@ import {
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_STORE } from "src/routes/paths";
-// redux 
-import { useAppSelector } from "src/store/hooks";
-import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 export default function UpdateStorePricingForm({
   storeScrapingOptions,
@@ -42,8 +39,6 @@ export default function UpdateStorePricingForm({
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const UpdateSchema = Yup.object().shape({});
 
@@ -67,7 +62,7 @@ export default function UpdateStorePricingForm({
   const onSubmit = async (data: FormValuesProps) => {
     const send_data = {
       ...data,
-      categories: data.categories.map((c) => apiResourceObjects[c].id.toString()),
+      categories: data.categories.map((c) => c.id.toString()),
     };
 
     for (const id of storeIds) {
@@ -121,16 +116,16 @@ export default function UpdateStorePricingForm({
                 <Autocomplete
                   {...field}
                   multiple
-                  getOptionLabel={(option) => apiResourceObjects[option].name}
+                  getOptionLabel={(option) => option.name}
                   onChange={(_event, newValue) => field.onChange(newValue)}
                   options={storeScrapingOptions.categories}
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                       <Chip
                         {...getTagProps({ index })}
-                        key={apiResourceObjects[option].id}
+                        key={option.id}
                         size="small"
-                        label={apiResourceObjects[option].name}
+                        label={option.name}
                       />
                     ))
                   }

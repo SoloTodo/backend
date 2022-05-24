@@ -34,6 +34,8 @@ import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import ApiFormRemoveListFieldComponent from "src/frontend-utils/api_form/fields/remove/ApiFormRemoveListFieldComponent";
+import { useRouter } from "next/router";
 
 // ----------------------------------------------------------------------
 
@@ -50,6 +52,7 @@ export default function Banners({
   brands: InLineProduct[];
   subsections: InLineProduct[];
 }) {
+  const router = useRouter();
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const brandChoices = brands.map((b) => ({
@@ -112,6 +115,11 @@ export default function Banners({
       name: "creation_date_before",
       label: "Hasta (Fecha creación)",
     },
+    {
+      fieldType: "remove" as "remove",
+      name: "update_id",
+      label: "Banner Update",
+    },
   ];
 
   const columns: any[] = [
@@ -151,12 +159,7 @@ export default function Banners({
         row.destination_url_list.length !== 0 ? (
           <Stack spacing={1}>
             {row.destination_url_list.map((l) => (
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                href={l}
-                key={l}
-              >
+              <Link target="_blank" rel="noopener noreferrer" href={l} key={l}>
                 Link
               </Link>
             ))}
@@ -277,6 +280,22 @@ export default function Banners({
                 </Grid>
               </CardContent>
             </Card>
+            {typeof router.query.update_id !== "undefined" ? (
+              <Card>
+                <CardHeader title="Filtros Extra" />
+                <CardContent>
+                  <Grid
+                    container
+                    spacing={{ xs: 2, md: 3 }}
+                    columns={{ xs: 6, md: 12 }}
+                  >
+                    <Grid item xs={6}>
+                      <ApiFormRemoveListFieldComponent name="update_id" />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ) : null}
             <ApiFormPaginationTable
               columns={columns}
               title="Banners"

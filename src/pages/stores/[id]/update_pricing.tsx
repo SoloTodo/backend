@@ -9,6 +9,8 @@ import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 import { wrapper } from "src/store/store";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import { useAppSelector } from "src/store/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -18,6 +20,7 @@ UpdateStorePricing.getLayout = function getLayout(page: ReactElement) {
 
 export default function UpdateStorePricing(props: { store: Store }) {
   const { store } = props;
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const [storeScrapingOptions, setStoreScrapingOptions] =
     useState<StoreScrapingOptions>({
@@ -28,7 +31,11 @@ export default function UpdateStorePricing(props: { store: Store }) {
 
   useEffect(() => {
     setLoading(true);
-    jwtFetch(null, `${store.url}scraper/`).then((data) => {
+    jwtFetch(null, `${store.url}scraper/`).then((res) => {
+      const data = {
+        ...res,
+        categories: res.categories.map((c: string) => apiResourceObjects[c]),
+      };
       setStoreScrapingOptions(data);
       setLoading(false);
     });
