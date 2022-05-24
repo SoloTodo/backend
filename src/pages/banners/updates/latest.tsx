@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, Container } from "@mui/material";
-import { GridColDef, GridColumns } from "@mui/x-data-grid";
+import { GridColumns } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";

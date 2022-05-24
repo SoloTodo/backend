@@ -59,8 +59,7 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
 
   const fieldMetadata = [
     {
-      fieldType: "pagination" as "pagination",
-      name: "entities",
+      fieldType: "pagination" as "pagination"
     },
     {
       fieldType: "select" as "select",
@@ -226,7 +225,6 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
             <ApiFormPaginationTable
               columns={columns}
               title="Entidades"
-              paginationName="entities"
             />
           </Stack>
         </ApiFormComponent>

@@ -36,7 +36,7 @@ export type ApiFormField =
   | ApiFormRemoveListField;
 
 export class ApiForm {
-  private fields: ApiFormField[] = [];
+  private fields: Record<string, ApiFormField> = {};
   private endpoint: URL;
   private fetchFunction: (input: string, init?: FetchJsonInit) => Promise<any>;
 
@@ -52,7 +52,7 @@ export class ApiForm {
     for (const fieldMetadata of fieldsMetadata) {
       switch (fieldMetadata.fieldType) {
         case "select":
-          this.fields.push(
+          this.fields[fieldMetadata.name] =
             new ApiFormSelect(
               fieldMetadata.name,
               fieldMetadata.label,
@@ -60,60 +60,52 @@ export class ApiForm {
               fieldMetadata.multiple,
               fieldMetadata.required,
               initialData && initialData[fieldMetadata.name]
-            )
-          );
+            );
           break;
         case "pagination":
-          this.fields.push(
+          this.fields['pagination'] =
             new ApiFormPagination(
-              fieldMetadata.name,
-              initialData && initialData[fieldMetadata.name]
+              initialData && initialData['pagination']
             )
-          );
           break;
         case "text":
-          this.fields.push(
+          this.fields[fieldMetadata.name] =
             new ApiFormText(
               fieldMetadata.name,
               fieldMetadata.label,
               fieldMetadata.inputType,
               initialData && initialData[fieldMetadata.name]
             )
-          );
           break;
         case "date":
-          this.fields.push(
+          this.fields[fieldMetadata.name] =
             new ApiFormDatePicker(
               fieldMetadata.name,
               fieldMetadata.label,
               initialData && initialData[fieldMetadata.name]
             )
-          );
           break;
         case "date_range":
-          this.fields.push(
+          this.fields[fieldMetadata.name] =
             new ApiFormRangePicker(
               fieldMetadata.name,
               initialData && initialData[fieldMetadata.name]
             )
-          );
           break;
         case "submit":
-          this.fields.push(
+          this.fields['submit'] =
             new ApiFormSubmit(
               fieldMetadata.name,
               initialData && initialData[fieldMetadata.name]
             )
-          );
           break;
         case "remove":
-          this.fields.push(
+          this.fields[fieldMetadata.name] =
             new ApiFormRemoveListField(
               fieldMetadata.name,
               fieldMetadata.label,
               initialData && initialData[fieldMetadata.name]
             )
-          );
           break;
       }
     }
@@ -125,10 +117,10 @@ export class ApiForm {
 
     const currentUrl =
       context && context.req
-        ? new URL(context.req.url || "", `http://${context.req.headers.host}`)
+        ? new URL(context.req.url || "", `https://${context.req.headers.host}`)
         : new URL(window.location.href);
     const query = currentUrl.searchParams;
-    for (const field of this.fields) {
+    for (const field of Object.values(this.fields)) {
       field.loadData(query);
     }
   }
@@ -143,7 +135,7 @@ export class ApiForm {
       endpointSearch
     );
 
-    for (const field of this.fields) {
+    for (const field of Object.values(this.fields)) {
       for (const [key, values] of Object.entries(field.getApiParams())) {
         for (const value of values) {
           querySearchParams.append(key, value);
@@ -157,24 +149,11 @@ export class ApiForm {
     return this.fetchFunction(queryUrl.href);
   }
 
-  isValid() {
-    return this.fields.every((field) => field.isValid());
+  isValid(): boolean {
+    return Object.values(this.fields).every(field => field.isValid());
   }
 
-  getCleanedData() {
-    if (!this.isValid()) {
-      return null;
-    }
-
-    const cleanedData = {} as Record<string, any>;
-    for (const field of this.fields) {
-      cleanedData[field.name] = field.cleanedData;
-    }
-
-    return cleanedData;
-  }
-
-  getField(name: string) {
-    return this.fields.find((field) => field.name === name);
+  getField(name: string): ApiFormField {
+    return this.fields[name];
   }
 }

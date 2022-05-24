@@ -1,8 +1,5 @@
 import { Button, Container, Link, Typography } from "@mui/material";
-import NextLink from "next/link";
 import { ReactElement } from "react";
-import ClearIcon from "@mui/icons-material/Clear";
-import CheckIcon from "@mui/icons-material/Check";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -25,7 +22,6 @@ export default function BannerAssetsPending() {
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
-      name: "pending",
     },
   ];
 
@@ -97,7 +93,6 @@ export default function BannerAssetsPending() {
           <ApiFormPaginationTable
             columns={columns}
             title="Pendientes"
-            paginationName="pending"
           />
         </ApiFormComponent>
       </Container>

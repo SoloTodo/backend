@@ -52,7 +52,7 @@ export default function EntityEventPage({
     ) {
       return value.name;
     } else if (["product", "cell_plan"].includes(field)) {
-      return value && value !== null && typeof value !== "string" ? (
+      return value && typeof value !== "string" ? (
         <NextLink href={`${PATH_PRODUCT.root}/${value.id}`} passHref>
           <Link>{value.name}</Link>
         </NextLink>

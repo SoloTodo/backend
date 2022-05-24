@@ -112,7 +112,6 @@ export default function StoreUpdateLogs(props: { store: Store }) {
         >
           <PaginationTable
             title="Registros de actualización"
-            paginationName="udpate_logs"
             columns={columns}
           />
         </ApiFormComponent>

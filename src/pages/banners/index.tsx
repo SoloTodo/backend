@@ -68,7 +68,6 @@ export default function Banners({
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
-      name: "banners",
     },
     {
       fieldType: "select" as "select",
@@ -299,7 +298,6 @@ export default function Banners({
             <ApiFormPaginationTable
               columns={columns}
               title="Banners"
-              paginationName="banners"
             />
           </Stack>
         </ApiFormComponent>

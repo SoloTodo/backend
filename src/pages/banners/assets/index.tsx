@@ -35,8 +35,7 @@ BannerAssets.getLayout = function getLayout(page: ReactElement) {
 export default function BannerAssets() {
   const fieldMetadata = [
     {
-      fieldType: "pagination" as "pagination",
-      name: "banners",
+      fieldType: "pagination" as "pagination"
     },
     {
       fieldType: "select" as "select",
@@ -133,7 +132,6 @@ export default function BannerAssets() {
             <ApiFormPaginationTable
               columns={columns}
               title="Banners"
-              paginationName="banners"
             />
           </Stack>
         </ApiFormComponent>

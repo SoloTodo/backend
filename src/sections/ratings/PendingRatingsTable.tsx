@@ -144,7 +144,6 @@ export default function PendingRatingssTable() {
     <ApiFormPaginationTable
       columns={columns}
       title="Ratings"
-      paginationName="pending_ratings"
     />
   );
 }

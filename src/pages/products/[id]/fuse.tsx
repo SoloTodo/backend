@@ -64,7 +64,7 @@ export default function ProductFuse({ product }: { product: Product }) {
       jwtFetch(null, product.url + "fuse/", {
         method: "POST",
         body: JSON.stringify(payload),
-      }).then((data) => {
+      }).then(() => {
         closeSnackbar(key);
         window.location.href = "/products/" + selectedProduct.id;
       });

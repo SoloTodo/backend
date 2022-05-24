@@ -7,7 +7,6 @@ import {
   Stack,
 } from "@mui/material";
 import { GetServerSideProps } from "next/types";
-import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -37,7 +36,6 @@ WebsitesTraffic.getLayout = function getLayout(page: ReactElement) {
 
 export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const { enqueueSnackbar } = useSnackbar();
 
   const websiteChoices = websites.map((w) => ({ label: w.name, value: w.id }));
 

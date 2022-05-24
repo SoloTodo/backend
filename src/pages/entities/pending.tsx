@@ -35,7 +35,7 @@ PendingEntities.getLayout = function getLayout(page: ReactElement) {
 export default function PendingEntities({
   categoryStats,
 }: {
-  categoryStats: { [id: number]: number };
+  categoryStats: Record<number, number>;
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 

@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import { GetServerSideProps } from "next/types";
-import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -28,7 +27,6 @@ ReportWtbPrices.getLayout = function getLayout(page: ReactElement) {
 
 export default function ReportWtbPrices({ brands }: { brands: Brand[] }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const { enqueueSnackbar } = useSnackbar();
 
   const brandChoices = brands.map((b) => ({ label: b.name, value: b.id }));
 

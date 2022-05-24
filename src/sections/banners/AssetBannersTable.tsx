@@ -15,7 +15,6 @@ export default function AssetBannersTable({ assetId }: { assetId: string }) {
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
-      name: "banners",
     },
   ];
 
@@ -81,7 +80,6 @@ export default function AssetBannersTable({ assetId }: { assetId: string }) {
       <ApiFormPaginationTable
         columns={columns}
         title="Banners"
-        paginationName="banners"
       />
     </ApiFormComponent>
   );

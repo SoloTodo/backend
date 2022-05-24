@@ -92,7 +92,6 @@ export default function BrandUpdateLogs({ brand }: { brand: Brand }) {
         >
           <PaginationTable
             title="Registros de actualización"
-            paginationName="udpate_logs"
             columns={columns}
           />
         </ApiFormComponent>

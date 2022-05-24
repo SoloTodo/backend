@@ -39,8 +39,7 @@ export default function Products() {
 
   const fieldMetadata = [
     {
-      fieldType: "pagination" as "pagination",
-      name: "products",
+      fieldType: "pagination" as "pagination"
     },
     {
       fieldType: "select" as "select",
@@ -176,7 +175,6 @@ export default function Products() {
             <ApiFormPaginationTable
               columns={columns}
               title="Productos"
-              paginationName="products"
             />
           </Stack>
         </ApiFormComponent>

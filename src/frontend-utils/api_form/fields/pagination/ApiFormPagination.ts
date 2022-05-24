@@ -1,53 +1,60 @@
 import { ApiFormApiParams } from "../../types";
 
 export type ApiFormPaginationData = {
-  page?: number;
-  page_size?: number;
+  page: number;
+  page_size: number;
 };
 
 export type ApiFormPaginationProps = {
   fieldType: "pagination";
-  name: string;
 };
 
 export class ApiFormPagination {
-  readonly name: string;
   cleanedData?: ApiFormPaginationData;
 
-  constructor(name: string, cleanedData?: ApiFormPaginationData) {
-    this.name = name;
+  constructor(cleanedData?: ApiFormPaginationData) {
     this.cleanedData = cleanedData;
   }
 
-  loadData(query: URLSearchParams) {
+  loadData(query: URLSearchParams): void {
     this.cleanedData = this.cleanData(query);
   }
 
-  cleanData(query: URLSearchParams): ApiFormPaginationData {
-    const newData: any = {
+  cleanData(query: URLSearchParams): ApiFormPaginationData | undefined {
+    const newData: ApiFormPaginationData = {
+      page: 1,
       page_size: 20,
     };
-    const arr = ["page", "page_size"];
-    arr.forEach((a) => {
+    const arr = ['page' as 'page', 'page_size' as 'page_size'];
+    for (const a of arr) {
       const q = query.get(a);
-      if (q) newData[a] = q;
-    });
+
+      if (q) {
+        const parsedQ = parseInt(q)
+        if (isNaN(parsedQ)) {
+          return undefined
+        }
+        newData[a] = parsedQ;
+      }
+    }
     return newData;
   }
 
-  isValid() {
+  isValid(): boolean {
     return typeof this.cleanedData !== "undefined";
   }
 
   getApiParams(): ApiFormApiParams {
-    if (typeof this.cleanedData === "undefined") {
-      throw new Error("Invalid call on invalid field");
+    const cleanedData = this.cleanedData
+
+    if (typeof cleanedData === 'undefined') {
+      throw new Error('Invalid field')
     }
 
     const apiParams: ApiFormApiParams = {};
-    Object.keys(this.cleanedData).map((k) => {
-      apiParams[k] = [(this.cleanedData as any)[k]];
-    });
-    return apiParams;
+    ['page' as 'page', 'page_size' as 'page_size'].map((k) => {
+      apiParams[k] = [cleanedData[k].toString()];
+    })
+    return apiParams
   }
 }

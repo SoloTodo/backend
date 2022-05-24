@@ -94,7 +94,7 @@ export async function jwtFetch(
     const refreshTokenExpiration = new Date(decodedRefreshToken.exp * 1000);
 
     if (refreshTokenExpiration < now) {
-      // Both tokens have expired. The tokens cookie is set to have a
+      // Both tokens have expired. The tokens' cookie is set to have a
       // maxAge equal to the refresh token so this path should never
       // happen
       throw new InvalidTokenError("Access and expiration tokens have expired");

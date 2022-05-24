@@ -3,7 +3,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import { Button, Link, Stack } from "@mui/material";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { PATH_ENTITY, PATH_STORE, PATH_WTB } from "src/routes/paths";
+import { PATH_ENTITY, PATH_WTB } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
@@ -93,7 +93,6 @@ export default function PendingEntitiesTable({ brands }: { brands: Brand[] }) {
     <ApiFormPaginationTable
       columns={columns}
       title="Entidades"
-      paginationName="pending_wtb_entities"
     />
   );
 }

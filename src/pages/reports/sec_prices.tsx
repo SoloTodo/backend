@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
-import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -25,7 +24,6 @@ SecPrices.getLayout = function getLayout(page: ReactElement) {
 
 export default function SecPrices() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {

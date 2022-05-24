@@ -127,6 +127,7 @@ class MyApp extends App<MyAppProps> {
     return (
       <>
         <Head>
+            <title>SoloTodo Backend</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
 

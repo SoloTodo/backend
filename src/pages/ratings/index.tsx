@@ -44,7 +44,6 @@ export default function Ratings() {
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
-      name: "ratings",
     },
     {
       fieldType: "select" as "select",
@@ -172,7 +171,6 @@ export default function Ratings() {
             <ApiFormPaginationTable
               columns={columns}
               title="Ratings"
-              paginationName="ratings"
             />
           </Stack>
         </ApiFormComponent>

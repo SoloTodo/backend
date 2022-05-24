@@ -101,7 +101,6 @@ export default function PendingEntitiesTable() {
     <ApiFormPaginationTable
       columns={columns}
       title="Entidades"
-      paginationName="pending_entities"
     />
   );
 }

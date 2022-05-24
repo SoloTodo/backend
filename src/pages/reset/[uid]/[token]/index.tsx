@@ -87,7 +87,7 @@ export default function NewPassword() {
       });
       reset();
       enqueueSnackbar("Contraseña cambiada exitosamente!");
-      router.push(PATH_AUTH.login);
+      await router.push(PATH_AUTH.login);
     } catch (error) {
       const json = await error.json();
       if ("token" in json)

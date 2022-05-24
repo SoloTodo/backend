@@ -44,11 +44,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function BasicTableWithPagination({
   title,
-  paginationName,
   columns,
 }: {
   title: string;
-  paginationName: string;
   columns: GridColumns;
 }) {
   const context = useContext(ApiFormContext);
@@ -83,7 +81,7 @@ export default function BasicTableWithPagination({
             </TableBody>
           </Table>
         </TableContainer>
-        <ApiFormPaginationComponent name={paginationName} />
+        <ApiFormPaginationComponent />
       </CardContent>
     </Card>
   );

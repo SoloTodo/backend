@@ -116,7 +116,6 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
         >
           <PaginationTable
             title="Entidades"
-            paginationName="wtb_entities"
             columns={columns}
           />
         </ApiFormComponent>

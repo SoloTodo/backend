@@ -128,7 +128,7 @@ export default function Login() {
           dispatch(userSlice.actions.setUser(user));
           const nextPath =
             typeof router.query.next == "string" ? router.query.next : PATH_DASHBOARD.root;
-          router.push(nextPath);
+          router.push(nextPath).then(() => {});
         });
         jwtFetch(
           null,

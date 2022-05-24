@@ -77,7 +77,7 @@ export default function ChangePassword() {
       });
       reset();
       enqueueSnackbar("Contraseña cambiada exitosamente!");
-      router.push(PATH_DASHBOARD.root);
+      await router.push(PATH_DASHBOARD.root);
     } catch (error) {
       const json = await error.json();
       if ("old_password" in json)
