@@ -1,11 +1,13 @@
-import { Card, CardContent, CardHeader, Container, Grid, Stack } from "@mui/material";
+import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
-import ApiFormSelectComponent, { choicesYesNo } from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormSelectComponent, {
+  choicesYesNo,
+} from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormSubmitComponent from "src/frontend-utils/api_form/fields/submit/ApiFormSubmitComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import {
@@ -31,14 +33,9 @@ export default function DailyPrices() {
 
   const fieldsMetadata = [
     {
-      fieldType: "date" as "date",
-      name: "timestamp_after",
-      label: "Desde",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "timestamp_before",
-      label: "Hasta",
+      fieldType: "date_range" as "date_range",
+      name: "timestamp",
+      required: true,
     },
     {
       fieldType: "select" as "select",
@@ -132,10 +129,7 @@ export default function DailyPrices() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <Stack spacing={2} direction="row">
-                    <ApiFormDatePickerComponent name="timestamp_after" />
-                    <ApiFormDatePickerComponent name="timestamp_before" />
-                  </Stack>
+                  <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="category" />

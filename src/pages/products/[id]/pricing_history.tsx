@@ -18,7 +18,6 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import {
@@ -37,6 +36,7 @@ import {
 import { useAppSelector } from "src/store/hooks";
 import ProductEntitiesTable from "src/sections/products/ProductEntitiesTable";
 import { GridColDef } from "@mui/x-data-grid";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -55,14 +55,9 @@ export default function ProductPricingHistory({
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
-      fieldType: "date" as "date",
-      name: "timestamp_after",
-      label: "Desde",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "timestamp_before",
-      label: "Hasta",
+      fieldType: "date_range" as "date_range",
+      name: "timestamp",
+      required: true,
     },
     {
       fieldType: "select" as "select",
@@ -173,7 +168,7 @@ export default function ProductPricingHistory({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.products}${product.id}/pricing_history/?price_type=normal`}
+          endpoint={`${apiSettings.apiResourceEndpoints.products}${product.id}/pricing_history/`}
         >
           <Stack spacing={3}>
             <Card>
@@ -185,10 +180,7 @@ export default function ProductPricingHistory({
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6} md={4}>
-                    <Stack spacing={2} direction="row">
-                      <ApiFormDatePickerComponent name="timestamp_after" />
-                      <ApiFormDatePickerComponent name="timestamp_before" />
-                    </Stack>
+                    <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6} md={4}>
                     <ApiFormSelectComponent name="countries" />

@@ -18,7 +18,6 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Image from "src/components/Image";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import ApiFormSelectComponent, {
   choicesYesNo,
 } from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
@@ -36,6 +35,7 @@ import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import ApiFormRemoveListFieldComponent from "src/frontend-utils/api_form/fields/remove/ApiFormRemoveListFieldComponent";
 import { useRouter } from "next/router";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -105,14 +105,8 @@ export default function Banners({
       choices: choicesYesNo,
     },
     {
-      fieldType: "date" as "date",
-      name: "creation_date_after",
-      label: "Desde (Fecha creación)",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "creation_date_before",
-      label: "Hasta (Fecha creación)",
+      fieldType: "date_range" as "date_range",
+      name: "creation_date",
     },
     {
       fieldType: "remove" as "remove",
@@ -270,11 +264,8 @@ export default function Banners({
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="is_active" />
                   </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="creation_date_after" />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <ApiFormDatePickerComponent name="creation_date_before" />
+                  <Grid item xs={6}>
+                    <ApiFormRangePickerComponent name="creation_date" label="Fecha creación" />
                   </Grid>
                 </Grid>
               </CardContent>

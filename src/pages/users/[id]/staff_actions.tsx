@@ -16,8 +16,8 @@ import Layout from "src/layouts";
 import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormDatePickerComponent from "src/frontend-utils/api_form/fields/date_picker/ApiDatePickerComponent";
 import ApiFormActionsSummaryTable from "src/sections/users/ApiFormActionsSummaryTable";
+import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -45,14 +45,9 @@ export default function ActionsSummary(props: { userDetail: User }) {
 
   const fieldMetadata = [
     {
-      fieldType: "date" as "date",
-      name: "timestamp_after",
-      label: "Desde",
-    },
-    {
-      fieldType: "date" as "date",
-      name: "timestamp_before",
-      label: "Hasta",
+      fieldType: "date_range" as "date_range",
+      name: "timestamp",
+      required: true,
     },
   ];
 
@@ -142,10 +137,10 @@ export default function ActionsSummary(props: { userDetail: User }) {
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <Stack spacing={2} direction="row">
-                      <ApiFormDatePickerComponent name="timestamp_after" />
-                      <ApiFormDatePickerComponent name="timestamp_before" />
-                    </Stack>
+                    <ApiFormRangePickerComponent
+                      name="timestamp"
+                      label="Rango"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
