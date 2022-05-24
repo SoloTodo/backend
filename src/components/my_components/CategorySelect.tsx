@@ -45,7 +45,7 @@ export default function CategorySelect({
       <Select
         value={category}
         onChange={(evt) => handleCategory(evt.target.value)}
-        disabled={entity.product || !hasStaffPermission ? true : false}
+        disabled={!!(entity.product || !hasStaffPermission)}
         onClick={() => {
           if (entity.product)
             enqueueSnackbar(
