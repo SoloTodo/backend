@@ -27,8 +27,7 @@ import {
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Banner } from "src/frontend-utils/types/banner";
-import { InLineProduct } from "src/frontend-utils/types/entity";
+import { Banner, Brand, Section } from "src/frontend-utils/types/banner";
 import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
@@ -49,8 +48,8 @@ export default function Banners({
   brands,
   subsections,
 }: {
-  brands: InLineProduct[];
-  subsections: InLineProduct[];
+  brands: Brand[];
+  subsections: Section[];
 }) {
   const router = useRouter();
   const apiResourceObjects = useAppSelector(useApiResourceObjects);

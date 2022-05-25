@@ -1,18 +1,35 @@
-import { InLineProduct } from "./entity";
 import { Category } from "./store";
+
+export type Brand = {
+  id: number;
+  name: string;
+  url: string;
+};
+
+export type Section = {
+  id: number;
+  name: string;
+  url: string;
+};
+
+export type Type = {
+  id: number;
+  name: string;
+  url: string;
+};
 
 export type Content = {
   id: number;
   percentage: number;
-  brand: InLineProduct;
+  brand: Brand;
   category: Category;
 }
 
 export type Subsection = {
   id: number;
   name: string;
-  section: InLineProduct;
-  type: InLineProduct;
+  section: Section;
+  type: Type;
 }
 
 export type BannerAsset = {

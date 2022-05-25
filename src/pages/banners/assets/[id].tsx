@@ -6,8 +6,7 @@ import Image from "src/components/Image";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { BannerAsset } from "src/frontend-utils/types/banner";
-import { InLineProduct } from "src/frontend-utils/types/entity";
+import { BannerAsset, Brand } from "src/frontend-utils/types/banner";
 import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import AssetBannersTable from "src/sections/banners/AssetBannersTable";
@@ -26,7 +25,7 @@ export default function Asset({
   brands,
 }: {
   asset: BannerAsset;
-  brands: InLineProduct[];
+  brands: Brand[];
 }) {
   return (
     <Page title={`${asset.id} | Banner assets`}>
