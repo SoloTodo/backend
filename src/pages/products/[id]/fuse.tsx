@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next/types";
 import { useSnackbar } from "notistack";
 import { ReactElement, useState } from "react";
@@ -37,6 +38,7 @@ ProductFuse.getLayout = function getLayout(page: ReactElement) {
 
 export default function ProductFuse({ product }: { product: Product }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const [selectedCategory, setSelectedCategory] = useState(product.category);
   const [selectedProduct, setSelectedProduct] = useState(
@@ -66,7 +68,7 @@ export default function ProductFuse({ product }: { product: Product }) {
         body: JSON.stringify(payload),
       }).then(() => {
         closeSnackbar(key);
-        window.location.href = "/products/" + selectedProduct.id;
+        router.push(`${PATH_PRODUCT.root}/${selectedProduct.id}`);
       });
     }
   };
