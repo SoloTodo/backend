@@ -60,18 +60,22 @@ export default function StaffSummary(props: { userDetail: User }) {
       field: "individual_amount",
       flex: 1,
       renderCell: (params) =>
-        currency(params.row.individual_amount, {
-          precision: 0,
-        }).format(),
+        typeof params.row.individual_amount !== "undefined"
+          ? currency(params.row.individual_amount, {
+              precision: 0,
+            }).format()
+          : "",
     },
     {
       headerName: "Monto total",
       field: "total_amount",
       flex: 1,
       renderCell: (params) =>
-        currency(params.row.total_amount, {
-          precision: 0,
-        }).format(),
+        typeof params.row.total_amount !== "undefined"
+          ? currency(params.row.total_amount, {
+              precision: 0,
+            }).format()
+          : "",
     },
   ];
 
