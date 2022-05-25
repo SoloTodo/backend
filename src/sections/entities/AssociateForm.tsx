@@ -1,13 +1,17 @@
 import { Button, Card, CardContent, CardHeader, Stack } from "@mui/material";
+import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import BundleSelect from "src/components/my_components/BundleSelect";
 import CellPlanSelect from "src/components/my_components/CellPlanSelect";
 import ProductSearch from "src/components/my_components/ProductSearch";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Entity } from "src/frontend-utils/types/entity";
-import { PATH_PRODUCT } from "src/routes/paths";
+import { Product } from "src/frontend-utils/types/product";
+import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
+import { useAppSelector } from "src/store/hooks";
 
 export default function AssociateForm({
   entity,
@@ -17,10 +21,10 @@ export default function AssociateForm({
   setEntity: Function;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const router = useRouter();
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
-  const [selectedProduct, setSelectedProduct] = useState(
-    null as { id: number; instance_model_id: number } | null
-  );
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCellPlan, setSelectedCellPlan] = useState(
     null as { id: number } | null
   );
@@ -79,6 +83,11 @@ export default function AssociateForm({
       enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
         variant: "success",
       });
+      router.push(
+        `${PATH_ENTITY.pending}/?categories=${
+          apiResourceObjects[entity.category].id
+        }`
+      );
     });
   };
 
@@ -130,7 +139,7 @@ export default function AssociateForm({
                     { variant: "warning" }
                   );
                 } else {
-                  handleProductAssociationSubmit()
+                  handleProductAssociationSubmit();
                 }
               }}
               disableElevation={!selectedProduct}
