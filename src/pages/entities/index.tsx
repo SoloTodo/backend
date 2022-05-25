@@ -150,9 +150,18 @@ export default function Entities() {
       flex: 1,
       renderCell: (row: Entity) =>
         row.product ? (
-          <NextLink href={`${PATH_PRODUCT.root}/${row.product.id}`} passHref>
-            <Link>{row.product.name}</Link>
-          </NextLink>
+          <Stack spacing={1}>
+            <NextLink href={`${PATH_PRODUCT.root}/${row.product.id}`} passHref>
+              <Link>{row.product.name}</Link>
+            </NextLink>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://www.solotodo.cl/products/${row.product.id}`}
+            >
+              <LinkIcon />
+            </Link>
+          </Stack>
         ) : (
           "N/A"
         ),
