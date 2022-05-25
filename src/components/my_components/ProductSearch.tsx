@@ -10,7 +10,7 @@ export default function ProductSearch({
   setSelectedProduct,
 }: {
   entityCategory: string;
-  selectedProduct: any
+  selectedProduct: any;
   setSelectedProduct: Function;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -30,16 +30,23 @@ export default function ProductSearch({
         value
       )}`
     ).then((data) => {
+      const l = data.results.length;
       setProductChoices(data.results);
-      setSelectedProduct(data.results.length ? data.results[0] : null);
+      setSelectedProduct(l ? data.results[0] : null);
       closeSnackbar(key);
+      if (!l)
+        enqueueSnackbar("No se econtraron productos.", {
+          variant: "error",
+        });
     });
   };
 
   const handleSelectedProductChange = (value: string | any[]) => {
-    const newSelectedProduct = productChoices.find(p => p.id.toString() === value)
-    setSelectedProduct(newSelectedProduct)
-  }
+    const newSelectedProduct = productChoices.find(
+      (p) => p.id.toString() === value
+    );
+    setSelectedProduct(newSelectedProduct);
+  };
 
   return (
     <>
