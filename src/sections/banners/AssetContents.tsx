@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GridColumns } from "@mui/x-data-grid";
-import { BannerAsset, Content } from "src/frontend-utils/types/banner";
+import { BannerAsset, Brand, Content } from "src/frontend-utils/types/banner";
 import CustomTable from "../CustomTable";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -27,7 +27,6 @@ import {
   selectApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
-import { InLineProduct } from "src/frontend-utils/types/entity";
 import * as Yup from "yup";
 // form
 import { useForm } from "react-hook-form";
@@ -48,14 +47,14 @@ const style = {
 };
 
 type FormValuesProps = {
-  brand: number;
-  category: number;
+  brand: number | string;
+  category: number | string;
   percentage: number;
 };
 
 export default function AssetContents(props: {
   asset: BannerAsset;
-  brands: InLineProduct[];
+  brands: Brand[];
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -80,8 +79,8 @@ export default function AssetContents(props: {
   };
 
   const defaultValues = {
-    brand: brandChoices[0].value,
-    category: categories[0].value,
+    brand: "",
+    category: "",
     percentage: 0,
   };
 
@@ -102,6 +101,7 @@ export default function AssetContents(props: {
   const {
     handleSubmit,
     reset,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -207,6 +207,7 @@ export default function AssetContents(props: {
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2} direction="row">
               <RHFSelect name="brand" label="Marca">
+                <option value=""></option>
                 {brandChoices.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -214,6 +215,7 @@ export default function AssetContents(props: {
                 ))}
               </RHFSelect>
               <RHFSelect name="category" label="Categoría">
+                <option value=""></option>
                 {categories.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -223,7 +225,12 @@ export default function AssetContents(props: {
             </Stack>
             <br />
             <Stack>
-              <RHFTextField name="percentage" label="Porcentaje" />
+              <RHFTextField
+                name="percentage"
+                label="Porcentaje"
+                type="number"
+                value={getValues('percentage') === 0 ? '' : getValues('percentage')}
+              />
             </Stack>
             <br />
             <Stack spacing={1} direction="row">
