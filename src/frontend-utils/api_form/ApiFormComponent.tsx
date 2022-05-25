@@ -41,11 +41,13 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       });
     } else {
       updateUrl({ submit: [] });
-      setCurrentResult([]);
+      setCurrentResult(null);
     }
 
     const handleRouteChange = async (url: string) => {
       const parseUrl = queryString.parseUrl(url);
+
+      setCurrentResult(null);
 
       form.initialize();
       if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
@@ -56,7 +58,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
           props.onResultsChange && props.onResultsChange(results);
         });
       } else {
-        setCurrentResult([]);
+        setCurrentResult(null);
       }
     };
 
@@ -68,12 +70,16 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     };
   }, []);
 
-  const updateUrl = (newUrlParams: Record<string, string[]>) => {
+  const updateUrl = (
+    newUrlParams: Record<string, string[]>,
+    paginationChange = false
+  ) => {
     const currentQuery = router.query;
-
     for (const [key, value] of Object.entries(newUrlParams)) {
       currentQuery[key] = value;
     }
+
+    if (!paginationChange) delete currentQuery["page"];
 
     const newSearch = queryString.stringify(currentQuery);
     const newPath = newSearch ? `${router.route}?${newSearch}` : router.route;

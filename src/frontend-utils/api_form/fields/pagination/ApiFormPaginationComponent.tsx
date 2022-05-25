@@ -23,7 +23,7 @@ export default function ApiFormPaginationComponent() {
   const handleChange = (value: string, name: string) => {
     context.updateUrl({
       [name]: [value],
-    });
+    }, true);
   };
 
   return (
