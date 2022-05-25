@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
+import { ReactElement, useMemo, useState } from "react";
 import Page from "src/components/Page";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { Product, Website } from "src/frontend-utils/types/product";
+import { Product } from "src/frontend-utils/types/product";
 import {
   Card,
   CardContent,
@@ -19,7 +19,8 @@ import OptionsMenu from "src/sections/products/OptionsMenu";
 import CarouselBasic from "src/sections/mui/CarouselBasic";
 import ActualPricesCard from "src/sections/products/ActualPricesCard";
 import { Entity } from "src/frontend-utils/types/entity";
-import { wrapper } from "src/store/store";
+import { useAppSelector } from "src/store/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 
 // ----------------------------------------------------------------------
 
@@ -31,15 +32,33 @@ ProductPage.getLayout = function getLayout(page: ReactElement) {
 
 type ProductProps = {
   product: Product;
-  websites: Website[];
-  renderSpecs: { body: string };
   entities: Entity[];
 };
 
 // ----------------------------------------------------------------------
 
 export default function ProductPage(props: ProductProps) {
-  const { product, websites, renderSpecs, entities } = props;
+  const { product, entities } = props;
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const [renderSpecs, setRenderSpecs] = useState({
+    body: "",
+  });
+
+  useMemo(() => {
+    jwtFetch(
+      null,
+      `${
+        apiSettings.apiResourceEndpoints.category_templates
+      }?website=1&purpose=1&category=${apiResourceObjects[product.category].id}`
+    ).then((category_template) => {
+      category_template.length !== 0 &&
+        jwtFetch(
+          null,
+          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${product.id}`
+        ).then((data) => setRenderSpecs(data));
+    });
+  }, []);
+
   return (
     <Page title={product.name}>
       <Container maxWidth={false}>
@@ -61,7 +80,7 @@ export default function ProductPage(props: ProductProps) {
             </Card>
           </Grid>
           <Grid item xs={12} md={4}>
-            <OptionsMenu product={product} websites={websites} />
+            <OptionsMenu product={product} />
           </Grid>
           <Grid item xs={12}>
             <ActualPricesCard entities={entities} />
@@ -76,7 +95,7 @@ export default function ProductPage(props: ProductProps) {
                 </Typography>
                 <br />
                 <Container>
-                  {renderSpecs.body ? (
+                  {renderSpecs.body !== "" ? (
                     <div
                       className="product_specs"
                       dangerouslySetInnerHTML={{ __html: renderSpecs.body }}
@@ -97,47 +116,25 @@ export default function ProductPage(props: ProductProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((st) => async (context) => {
-    const apiResourceObjects = st.getState().apiResourceObjects;
-    try {
-      const product = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
-      );
-      const category_template = await jwtFetch(
-        context,
-        `${
-          apiSettings.apiResourceEndpoints.category_templates
-        }?website=1&purpose=1&category=${
-          apiResourceObjects[product.category].id
-        }`
-      );
-      const renderSpecs =
-        category_template.length !== 0 &&
-        (await jwtFetch(
-          context,
-          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${context.params?.id}`
-        ));
-      const entities = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
-      );
-      const websites = await jwtFetch(
-        context,
-        `${apiSettings.apiResourceEndpoints.websites}`
-      );
-      return {
-        props: {
-          product: product,
-          websites: websites,
-          renderSpecs: renderSpecs,
-          entities: entities,
-        },
-      };
-    } catch {
-      return {
-        notFound: true,
-      };
-    }
-  });
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const product = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
+    );
+    const entities = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
+    );
+    return {
+      props: {
+        product: product,
+        entities: entities,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+};

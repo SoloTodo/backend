@@ -1,19 +1,16 @@
 import { PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
 import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
-import { Product, Website } from "src/frontend-utils/types/product";
+import { Product } from "src/frontend-utils/types/product";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Category } from "src/frontend-utils/types/store";
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogTitle,
   Link,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import { useState } from "react";
 import { JSONTree } from "react-json-tree";
@@ -22,15 +19,11 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 export default function OptionsMenu({
   product,
-  websites,
 }: {
   product: Product;
-  websites: Website[];
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openModal, setOpenModal] = useState(false);
-  const openMenu = Boolean(anchorEl);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const baseRoute = `${PATH_PRODUCT.root}/${product.id}`;
 
@@ -47,10 +40,6 @@ export default function OptionsMenu({
       const clonedInstanceUrl = `${apiSettings.endpoint}metamodel/instances/${clonedInstanceId}`;
       window.open(clonedInstanceUrl, "_blank");
     });
-  };
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
   };
 
   const options: Option[] = [
@@ -146,41 +135,13 @@ export default function OptionsMenu({
       text: "Ver en sitio",
       path: `${baseRoute}/ver`,
       renderObject: (
-        <>
-          <Button
-            id="basic-button"
-            variant="contained"
-            aria-controls={openMenu ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={openMenu ? "true" : undefined}
-            onClick={handleClick}
-            style={{ textAlign: "start" }}
-          >
-            Ver en sitio
-          </Button>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={openMenu}
-            onClose={() => setAnchorEl(null)}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            {websites.map((w) => (
-              <MenuItem key={w.id}>
-                <Button
-                  href={`${w.external_url}/products/${product.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ width: "100%", height: "100%" }}
-                >
-                  {w.name}
-                </Button>
-              </MenuItem>
-            ))}
-          </Menu>
-        </>
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`https://www.solotodo.cl/products/${product.id}`}
+        >
+          Ver en SoloTodo
+        </Link>
       ),
     },
   ];
