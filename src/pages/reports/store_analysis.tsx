@@ -31,7 +31,6 @@ export default function StoreAnalysis() {
     {
       fieldType: "select" as "select",
       name: "store",
-      label: "Tienda",
       multiple: false,
       required: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
@@ -39,35 +38,30 @@ export default function StoreAnalysis() {
     {
       fieldType: "select" as "select",
       name: "competing_stores",
-      label: "Tiendas para comparar",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "store_types",
-      label: "Tipos",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
     {
       fieldType: "select" as "select",
       name: "price_type",
-      label: "Tipo de precio",
       multiple: false,
       required: true,
       choices: [
@@ -78,7 +72,6 @@ export default function StoreAnalysis() {
     {
       fieldType: "select" as "select",
       name: "layout",
-      label: "Layout",
       multiple: false,
       required: true,
       choices: [
@@ -88,7 +81,6 @@ export default function StoreAnalysis() {
     },
     {
       fieldType: "submit" as "submit",
-      name: "submit",
     },
   ];
 
@@ -122,29 +114,29 @@ export default function StoreAnalysis() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store" />
+                  <ApiFormSelectComponent name="store" label="Tienda" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="competing_stores" />
+                  <ApiFormSelectComponent name="competing_stores" label="Tiendas para comparar" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="categories" />
+                  <ApiFormSelectComponent name="categories" label="Categorías" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="countries" />
+                  <ApiFormSelectComponent name="countries" label="Países" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store_types" />
+                  <ApiFormSelectComponent name="store_types" label="Tipos" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="price_type" />
+                  <ApiFormSelectComponent name="price_type" label="Tipo de precio" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="layout" />
+                  <ApiFormSelectComponent name="layout" label="Layout" />
                 </Grid>
                 <Grid item xs={6} />
                 <Grid item xs={6}>
-                  <ApiFormSubmitComponent name="submit" />
+                  <ApiFormSubmitComponent />
                 </Grid>
               </Grid>
             </CardContent>

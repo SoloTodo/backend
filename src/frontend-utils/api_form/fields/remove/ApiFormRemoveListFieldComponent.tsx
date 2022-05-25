@@ -5,8 +5,10 @@ import { Chip, Stack, Typography } from "@mui/material";
 
 export default function ApiFormRemoveListFieldComponent({
   name,
+  label
 }: {
   name: string;
+  label: string;
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormRemoveListField | undefined;
@@ -24,7 +26,7 @@ export default function ApiFormRemoveListFieldComponent({
 
   return (
     <Stack spacing={1}>
-      <Typography>{field.label}</Typography>
+      <Typography>{label}</Typography>
       <Stack spacing={1} direction="row">
         {field.cleanedData?.map((c) => (
           <Chip

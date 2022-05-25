@@ -42,7 +42,12 @@ export default function PendingEntities({
   const categoriasChoices = selectApiResourceObjects(
     apiResourceObjects,
     "categories"
-  ).map((c) => ({label: `${c.label} (${categoryStats[c.value] ? categoryStats[c.value] : 0})`, value: c.value}));
+  ).map((c) => ({
+    label: `${c.label} (${
+      categoryStats[c.value] ? categoryStats[c.value] : 0
+    })`,
+    value: c.value,
+  }));
 
   const fieldMetadata = [
     {
@@ -52,29 +57,24 @@ export default function PendingEntities({
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: categoriasChoices,
     },
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "text" as "text",
       name: "search",
-      label: "Palabras clave",
-      inputType: "text" as "text",
     },
   ];
 
@@ -103,16 +103,22 @@ export default function PendingEntities({
                   columns={{ xs: 6, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent
+                      name="categories"
+                      label="Categorías"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="countries" />
+                    <ApiFormSelectComponent name="countries" label="Países" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormTextComponent name="search" />
+                    <ApiFormTextComponent
+                      name="search"
+                      label="Palabras clave"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>

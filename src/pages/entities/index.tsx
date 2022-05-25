@@ -15,7 +15,12 @@ import CheckIcon from "@mui/icons-material/Check";
 // layouts
 import Layout from "src/layouts";
 // routes
-import { PATH_DASHBOARD, PATH_ENTITY, PATH_PRODUCT, PATH_STORE } from "src/routes/paths";
+import {
+  PATH_DASHBOARD,
+  PATH_ENTITY,
+  PATH_PRODUCT,
+  PATH_STORE,
+} from "src/routes/paths";
 // components
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -51,55 +56,47 @@ export default function Entities() {
 
   const fieldMetadata = [
     {
-      fieldType: "pagination" as "pagination"
+      fieldType: "pagination" as "pagination",
     },
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
       name: "is_available",
-      label: "¿Disponible?",
       multiple: false,
       choices: choicesYesNo,
     },
     {
       fieldType: "select" as "select",
       name: "is_active",
-      label: "¿Activa?",
       multiple: false,
       choices: choicesYesNo,
     },
     {
       fieldType: "select" as "select",
       name: "is_visible",
-      label: "¿Visible?",
       multiple: false,
       choices: choicesYesNo,
     },
     {
       fieldType: "select" as "select",
       name: "is_associated",
-      label: "¿Asociada?",
       multiple: false,
       choices: choicesYesNo,
     },
     {
       fieldType: "text" as "text",
       name: "search",
-      label: "Palabras clave",
-      inputType: "text" as "text",
     },
   ];
 
@@ -264,33 +261,45 @@ export default function Entities() {
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent
+                      name="categories"
+                      label="Categorías"
+                    />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_available" />
+                    <ApiFormSelectComponent
+                      name="is_available"
+                      label="¿Disponible?"
+                    />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_active" />
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?" />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_visible" />
+                    <ApiFormSelectComponent
+                      name="is_visible"
+                      label="¿Visible?"
+                    />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_associated" />
+                    <ApiFormSelectComponent
+                      name="is_associated"
+                      label="¿Asociada?"
+                    />
                   </Grid>
                   <Grid item xs={4}>
-                    <ApiFormTextComponent name="search" />
+                    <ApiFormTextComponent
+                      name="search"
+                      label="Palabras clave"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
-            <ApiFormPaginationTable
-              columns={columns}
-              title="Entidades"
-            />
+            <ApiFormPaginationTable columns={columns} title="Entidades" />
           </Stack>
         </ApiFormComponent>
       </Container>

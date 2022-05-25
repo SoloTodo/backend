@@ -40,14 +40,12 @@ export default function BannerAssets() {
     {
       fieldType: "select" as "select",
       name: "is_active",
-      label: "¿Activa?",
       multiple: false,
       choices: choicesYesNo,
     },
     {
       fieldType: "select" as "select",
       name: "is_complete",
-      label: "Completo?",
       multiple: false,
       choices: choicesYesNo,
     },
@@ -121,10 +119,10 @@ export default function BannerAssets() {
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="is_active" />
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="is_complete" />
+                    <ApiFormSelectComponent name="is_complete" label="Completo?" />
                   </Grid>
                 </Grid>
               </CardContent>

@@ -49,22 +49,18 @@ export default function PendingWtbEntities({ brands }: { brands: Brand[] }) {
     {
       fieldType: "select" as "select",
       name: "brands",
-      label: "Marcas",
       multiple: true,
       choices: brandChoices,
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "text" as "text",
       name: "search",
-      label: "Palabras clave",
-      inputType: "text" as "text",
     },
   ];
 
@@ -94,13 +90,19 @@ export default function PendingWtbEntities({ brands }: { brands: Brand[] }) {
                   columns={{ xs: 6, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="brands" />
+                    <ApiFormSelectComponent name="brands" label="Marcas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent
+                      name="categories"
+                      label="Categorías"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormTextComponent name="search" />
+                    <ApiFormTextComponent
+                      name="search"
+                      label="Palabras clave"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
@@ -114,13 +116,13 @@ export default function PendingWtbEntities({ brands }: { brands: Brand[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const brands = await jwtFetch(
-      context,
-      apiSettings.apiResourceEndpoints.wtb_brands
-    );
-    return {
-      props: {
-        brands: brands,
-      },
-    };
+  const brands = await jwtFetch(
+    context,
+    apiSettings.apiResourceEndpoints.wtb_brands
+  );
+  return {
+    props: {
+      brands: brands,
+    },
   };
+};

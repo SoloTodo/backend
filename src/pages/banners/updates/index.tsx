@@ -48,14 +48,12 @@ export default function BannerUpdates() {
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "is_active",
-      label: "¿Activa?",
       multiple: false,
       choices: choicesYesNo,
     },
@@ -134,10 +132,10 @@ export default function BannerUpdates() {
                     <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="is_active" />
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?" />
                   </Grid>
                 </Grid>
               </CardContent>

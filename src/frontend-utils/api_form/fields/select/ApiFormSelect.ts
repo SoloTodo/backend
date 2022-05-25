@@ -8,7 +8,6 @@ export type ApiFormSelectChoice = {
 export type ApiFormSelectProps = {
   fieldType: "select";
   name: string;
-  label: string;
   choices: ApiFormSelectChoice[];
   multiple?: boolean;
   required?: boolean;
@@ -16,7 +15,6 @@ export type ApiFormSelectProps = {
 
 export class ApiFormSelect {
   readonly name: string;
-  readonly label: string;
   readonly choices: ApiFormSelectChoice[];
   readonly multiple: boolean;
   readonly required: boolean;
@@ -24,14 +22,12 @@ export class ApiFormSelect {
 
   constructor(
     name: string,
-    label: string,
     choices: ApiFormSelectChoice[],
     multiple?: boolean,
     required?: boolean,
     cleanedData?: ApiFormSelectChoice[]
   ) {
     this.name = name;
-    this.label = label;
     this.choices = choices;
     this.multiple = multiple || false;
     this.required = required || false;

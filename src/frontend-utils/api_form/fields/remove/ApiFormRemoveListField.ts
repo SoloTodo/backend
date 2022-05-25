@@ -3,17 +3,14 @@ import { ApiFormApiParams } from "../../types";
 export type ApiFormRemoveListFieldProps = {
   fieldType: "remove";
   name: string;
-  label: string;
 };
 
 export class ApiFormRemoveListField {
   readonly name: string;
-  readonly label: string;
   cleanedData?: string[];
 
   constructor(name: string, label: string, cleanedData?: string[]) {
     this.name = name;
-    this.label = label;
     this.cleanedData = cleanedData;
   }
 

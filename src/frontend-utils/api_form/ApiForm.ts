@@ -14,9 +14,18 @@ import {
   ApiFormDatePicker,
   ApiFormDatePickerProps,
 } from "./fields/date_picker/ApiDatePicker";
-import { ApiFormSubmit, ApiFormSubmitProps } from "./fields/submit/ApiFormSubmit";
-import { ApiFormRemoveListField, ApiFormRemoveListFieldProps } from "./fields/remove/ApiFormRemoveListField";
-import { ApiFormRangePicker, ApiFormRangePickerProps } from "./fields/range_picker/ApiFormRangePicker";
+import {
+  ApiFormSubmit,
+  ApiFormSubmitProps,
+} from "./fields/submit/ApiFormSubmit";
+import {
+  ApiFormRemoveListField,
+  ApiFormRemoveListFieldProps,
+} from "./fields/remove/ApiFormRemoveListField";
+import {
+  ApiFormRangePicker,
+  ApiFormRangePickerProps,
+} from "./fields/range_picker/ApiFormRangePicker";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
@@ -52,61 +61,49 @@ export class ApiForm {
     for (const fieldMetadata of fieldsMetadata) {
       switch (fieldMetadata.fieldType) {
         case "select":
-          this.fields[fieldMetadata.name] =
-            new ApiFormSelect(
-              fieldMetadata.name,
-              fieldMetadata.label,
-              fieldMetadata.choices,
-              fieldMetadata.multiple,
-              fieldMetadata.required,
-              initialData && initialData[fieldMetadata.name]
-            );
+          this.fields[fieldMetadata.name] = new ApiFormSelect(
+            fieldMetadata.name,
+            fieldMetadata.choices,
+            fieldMetadata.multiple,
+            fieldMetadata.required,
+            initialData && initialData[fieldMetadata.name]
+          );
           break;
         case "pagination":
-          this.fields['pagination'] =
-            new ApiFormPagination(
-              initialData && initialData['pagination']
-            )
+          this.fields["pagination"] = new ApiFormPagination(
+            initialData && initialData["pagination"]
+          );
           break;
         case "text":
-          this.fields[fieldMetadata.name] =
-            new ApiFormText(
-              fieldMetadata.name,
-              fieldMetadata.label,
-              fieldMetadata.inputType,
-              initialData && initialData[fieldMetadata.name]
-            )
+          this.fields[fieldMetadata.name] = new ApiFormText(
+            fieldMetadata.name,
+            initialData && initialData[fieldMetadata.name]
+          );
           break;
         case "date":
-          this.fields[fieldMetadata.name] =
-            new ApiFormDatePicker(
-              fieldMetadata.name,
-              fieldMetadata.label,
-              initialData && initialData[fieldMetadata.name]
-            )
+          this.fields[fieldMetadata.name] = new ApiFormDatePicker(
+            fieldMetadata.name,
+            fieldMetadata.label,
+            initialData && initialData[fieldMetadata.name]
+          );
           break;
         case "date_range":
-          this.fields[fieldMetadata.name] =
-            new ApiFormRangePicker(
-              fieldMetadata.name,
-              fieldMetadata.required,
-              initialData && initialData[fieldMetadata.name]
-            )
+          this.fields[fieldMetadata.name] = new ApiFormRangePicker(
+            fieldMetadata.name,
+            fieldMetadata.required,
+            initialData && initialData[fieldMetadata.name]
+          );
           break;
         case "submit":
-          this.fields['submit'] =
-            new ApiFormSubmit(
-              fieldMetadata.name,
-              initialData && initialData[fieldMetadata.name]
-            )
+          this.fields["submit"] = new ApiFormSubmit(
+            initialData && initialData["submit"]
+          );
           break;
         case "remove":
-          this.fields[fieldMetadata.name] =
-            new ApiFormRemoveListField(
-              fieldMetadata.name,
-              fieldMetadata.label,
-              initialData && initialData[fieldMetadata.name]
-            )
+          this.fields[fieldMetadata.name] = new ApiFormRemoveListField(
+            fieldMetadata.name,
+            initialData && initialData[fieldMetadata.name]
+          );
           break;
       }
     }
@@ -143,7 +140,7 @@ export class ApiForm {
         }
       }
     }
-    
+
     const querySearch = querySearchParams.toString();
     const queryUrl = new URL(this.endpoint.href);
     queryUrl.search = "?" + querySearch;
@@ -151,7 +148,7 @@ export class ApiForm {
   }
 
   isValid(): boolean {
-    return Object.values(this.fields).every(field => field.isValid());
+    return Object.values(this.fields).every((field) => field.isValid());
   }
 
   getField(name: string): ApiFormField {

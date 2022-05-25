@@ -46,14 +46,12 @@ export default function Stores() {
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "types",
-      label: "Tipos",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
@@ -123,10 +121,10 @@ export default function Stores() {
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="countries" />
+                    <ApiFormSelectComponent name="countries" label="Países" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="types" />
+                    <ApiFormSelectComponent name="types" label="Tipos" />
                   </Grid>
                 </Grid>
               </CardContent>

@@ -43,14 +43,12 @@ export default function RatingsPending() {
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
@@ -80,10 +78,10 @@ export default function RatingsPending() {
                   columns={{ xs: 6, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent name="categories" label="Categorías" />
                   </Grid>
                 </Grid>
               </CardContent>

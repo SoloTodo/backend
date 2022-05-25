@@ -29,7 +29,6 @@ export default function SecPrices() {
     {
       fieldType: "select" as "select",
       name: "category",
-      label: "Categoría",
       multiple: false,
       required: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
@@ -37,13 +36,11 @@ export default function SecPrices() {
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "submit" as "submit",
-      name: "submit",
     },
   ];
 
@@ -75,13 +72,13 @@ export default function SecPrices() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="category" />
+                  <ApiFormSelectComponent name="category" label="Categoría" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="stores" />
+                  <ApiFormSelectComponent name="stores" label="Tiendas" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSubmitComponent name="submit" />
+                  <ApiFormSubmitComponent />
                 </Grid>
               </Grid>
             </CardContent>

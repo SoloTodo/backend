@@ -5,6 +5,7 @@ import { ApiFormSelect, ApiFormSelectChoice } from "./ApiFormSelect";
 
 type ApiFormSelectComponentProps = {
   name: string;
+  label: string;
 };
 
 export const choicesYesNo = [
@@ -39,7 +40,7 @@ export default function ApiFormSelectComponent(
     }
   };
 
-  let cleanedData: any = field.cleanedData;
+  let cleanedData: ApiFormSelectChoice | ApiFormSelectChoice[] | null | undefined = field.cleanedData;
   if (
     typeof field.cleanedData === "undefined" ||
     field.cleanedData.length === 0
@@ -54,10 +55,10 @@ export default function ApiFormSelectComponent(
   }
 
   return (
-    <Autocomplete
+    <Autocomplete<ApiFormSelectChoice, boolean, boolean>
       multiple={field.multiple}
       options={field.choices}
-      renderInput={(params) => <TextField {...params} label={field.label} />}
+      renderInput={(params) => <TextField {...params} label={props.label} />}
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={cleanedData}

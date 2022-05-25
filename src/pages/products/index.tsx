@@ -39,34 +39,29 @@ export default function Products() {
 
   const fieldMetadata = [
     {
-      fieldType: "pagination" as "pagination"
+      fieldType: "pagination" as "pagination",
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
       name: "availability_countries",
-      label: "Disponibilidad en país",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "availability_stores",
-      label: "Disponibilidad en tienda",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "text" as "text",
       name: "search",
-      label: "Palabras clave",
-      inputType: "text" as "text",
     },
     {
       fieldType: "date_range" as "date_range",
@@ -134,30 +129,45 @@ export default function Products() {
                   columns={{ xs: 6, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent
+                      name="categories"
+                      label="Categorías"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="availability_countries" />
+                    <ApiFormSelectComponent
+                      name="availability_countries"
+                      label="Disponibilidad en país"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="availability_stores" />
+                    <ApiFormSelectComponent
+                      name="availability_stores"
+                      label="Disponibilidad en tienda"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormTextComponent name="search" />
+                    <ApiFormTextComponent
+                      name="search"
+                      label="Palabras clave"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent name="creation_date" label="Fecha creación" />
+                    <ApiFormRangePickerComponent
+                      name="creation_date"
+                      label="Fecha creación"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent name="last_updated" label="Última act." />
+                    <ApiFormRangePickerComponent
+                      name="last_updated"
+                      label="Última act."
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
-            <ApiFormPaginationTable
-              columns={columns}
-              title="Productos"
-            />
+            <ApiFormPaginationTable columns={columns} title="Productos" />
           </Stack>
         </ApiFormComponent>
       </Container>

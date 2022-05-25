@@ -2,12 +2,13 @@ import { ApiFormApiParams } from "../../types";
 
 export type ApiFormSubmitProps = {
   fieldType: "submit";
-  name: string;
 };
 
-const submitBlacklist = ["false", "0", ""];
+export const submitReady = (
+  value: string | (string | null)[] | null | undefined
+) => {
+  const submitBlacklist = ["false", "0", ""];
 
-export const submitReady = (value: string | (string | null)[] | null | undefined) => {
   if (typeof value !== "undefined" && value !== null && !Array.isArray(value)) {
     return !submitBlacklist.includes(value);
   } else {
@@ -16,16 +17,14 @@ export const submitReady = (value: string | (string | null)[] | null | undefined
 };
 
 export class ApiFormSubmit {
-  readonly name: string;
   cleanedData?: boolean;
 
-  constructor(name: string, cleanData?: boolean) {
-    this.name = name;
+  constructor(cleanData?: boolean) {
     this.cleanedData = cleanData;
   }
 
   loadData(query: URLSearchParams) {
-    this.cleanedData = submitReady(query.get(this.name));
+    this.cleanedData = submitReady(query.get("submit"));
   }
 
   isValid() {

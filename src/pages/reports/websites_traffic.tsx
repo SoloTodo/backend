@@ -41,7 +41,6 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       required: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
@@ -49,47 +48,39 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
     {
       fieldType: "select" as "select",
       name: "currency",
-      label: "Moneda",
       multiple: false,
       choices: selectApiResourceObjects(apiResourceObjects, "currencies"),
     },
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "websites",
-      label: "Sitios",
       multiple: true,
       choices: websiteChoices,
     },
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "store_types",
-      label: "Tipos",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
     {
       fieldType: "text" as "text",
       name: "filename_optional",
-      label: "Nombre de archivo (opcional)",
-      inputType: "text" as "text",
     },
     {
       fieldType: "submit" as "submit",
-      name: "submit",
     },
   ];
 
@@ -124,28 +115,34 @@ export default function WebsitesTraffic({ websites }: { websites: Website[] }) {
                   <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="categories" />
+                  <ApiFormSelectComponent
+                    name="categories"
+                    label="Categorías"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="currency" />
+                  <ApiFormSelectComponent name="currency" label="Moneda" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="stores" />
+                  <ApiFormSelectComponent name="stores" label="Tiendas" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="websites" />
+                  <ApiFormSelectComponent name="websites" label="Sitios" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="countries" />
+                  <ApiFormSelectComponent name="countries" label="Países" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="store_types" />
+                  <ApiFormSelectComponent name="store_types" label="Tipos" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormTextComponent name="filename_optional" />
+                  <ApiFormTextComponent
+                    name="filename_optional"
+                    label="Nombre de archivo (opcional)"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSubmitComponent name="submit" />
+                  <ApiFormSubmitComponent />
                 </Grid>
               </Grid>
             </CardContent>

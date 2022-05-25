@@ -3,28 +3,17 @@ import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { ApiFormSubmit } from './ApiFormSubmit';
 
-export default function ApiFormSubmitComponent({ name }: { name: string }) {
+export default function ApiFormSubmitComponent() {
   const context = useContext(ApiFormContext);
 
-  const field = context.getField(name) as ApiFormSubmit | undefined;
+  const field = context.getField('submit') as ApiFormSubmit | undefined;
 
   if (typeof field === "undefined") {
-    throw `Invalid field name: ${name}`;
+    throw `Invalid field name: submit`;
   }
-  // let params = {}
-  // fields.map((field) => {
-  //   const apiField = context.getField(field)
-  //   if (typeof apiField !== "undefined") {
-  //     const apiParamsByField = apiField.getApiParams() as ApiFormApiParams
-  //     params = Object.assign({}, params, apiParamsByField);
-  //   }
-  // })
-
-  // console.log(params)
-  // console.log(context.currentResult)
 
   const handleSubmit = () => {
-    context.updateUrl({ [name]: ['true'] });
+    context.updateUrl({ 'submit': ['true'] });
   };
 
   return (

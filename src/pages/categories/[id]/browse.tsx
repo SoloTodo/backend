@@ -88,29 +88,24 @@ export default function CategoryBrowse({
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "types",
-      label: "Tipos",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
     {
       fieldType: "text" as "text",
       name: "search",
-      label: "Palabras clave",
-      inputType: "text" as "text",
     },
   ];
 
@@ -143,26 +138,24 @@ export default function CategoryBrowse({
         fieldsMetadata.push({
           fieldType: "select" as "select",
           name: filter.name,
-          label: filter.label,
           multiple: Boolean(filter.choices),
           choices: filterChoices,
         });
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
-            <ApiFormSelectComponent name={filter.name} />
+            <ApiFormSelectComponent name={filter.name} label={filter.label} />
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
         fieldsMetadata.push({
           fieldType: "select" as "select",
           name: filter.name,
-          label: filter.label,
           multiple: false,
           choices: filterChoices,
         });
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
-            <ApiFormSelectComponent name={filter.name} />
+            <ApiFormSelectComponent name={filter.name} label={filter.label} />
           </AccordionDetails>
         );
       } // TODO: range and else cases
@@ -213,13 +206,13 @@ export default function CategoryBrowse({
                     columns={{ xs: 6, lg: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormSelectComponent name="stores" />
+                      <ApiFormSelectComponent name="stores" label="Tiendas" />
                     </Grid>
                     <Grid item xs={6}>
-                      <ApiFormSelectComponent name="countries" />
+                      <ApiFormSelectComponent name="countries" label="Países" />
                     </Grid>
                     <Grid item xs={6}>
-                      <ApiFormSelectComponent name="types" />
+                      <ApiFormSelectComponent name="types" label="Tipos" />
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -231,7 +224,10 @@ export default function CategoryBrowse({
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
                     <Grid item xs={12}>
-                      <ApiFormTextComponent name="search" />
+                      <ApiFormTextComponent
+                        name="search"
+                        label="Palabras clave"
+                      />
                     </Grid>
                     {filterComponents.map((f) => f)}
                   </Grid>

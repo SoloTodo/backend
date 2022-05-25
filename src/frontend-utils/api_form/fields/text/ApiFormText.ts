@@ -3,25 +3,17 @@ import { ApiFormApiParams } from "../../types";
 export type ApiFormTextProps = {
   fieldType: "text";
   name: string;
-  label: string;
-  inputType: "text" | "number" | "url";
 };
 
 export class ApiFormText {
   readonly name: string;
-  readonly label: string;
-  readonly inputType: "text" | "number" | "url";
   cleanedData?: string;
 
   constructor(
     name: string,
-    label: string,
-    inputType: "text" | "number" | "url",
     cleanedData?: string
   ) {
     this.name = name;
-    this.label = label;
-    this.inputType = inputType;
     this.cleanedData = cleanedData;
   }
 

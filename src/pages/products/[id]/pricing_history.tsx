@@ -62,28 +62,24 @@ export default function ProductPricingHistory({
     {
       fieldType: "select" as "select",
       name: "countries",
-      label: "Países",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "exclude_unavailable",
-      label: "Ver",
       multiple: false,
       choices: [{ label: "Sólo cuando disponible", value: 1 }],
     },
     {
       fieldType: "select" as "select",
       name: "price_type",
-      label: "Tipo de precio",
       multiple: false,
       required: true,
       choices: [
@@ -183,16 +179,16 @@ export default function ProductPricingHistory({
                     <ApiFormRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6} md={4}>
-                    <ApiFormSelectComponent name="countries" />
+                    <ApiFormSelectComponent name="countries" label="Países" />
                   </Grid>
                   <Grid item xs={6} md={4}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6} md={4}>
-                    <ApiFormSelectComponent name="exclude_unavailable" />
+                    <ApiFormSelectComponent name="exclude_unavailable" label="Ver" />
                   </Grid>
                   <Grid item xs={6} md={4}>
-                    <ApiFormSelectComponent name="price_type" />
+                    <ApiFormSelectComponent name="price_type" label="Tipo de precio" />
                   </Grid>
                 </Grid>
               </CardContent>

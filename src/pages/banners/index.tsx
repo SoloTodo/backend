@@ -72,35 +72,30 @@ export default function Banners({
     {
       fieldType: "select" as "select",
       name: "brands",
-      label: "Marcas",
       multiple: true,
       choices: brandChoices,
     },
     {
       fieldType: "select" as "select",
       name: "categories",
-      label: "Categorías",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
       name: "stores",
-      label: "Tiendas",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
       name: "types",
-      label: "Tipos",
       multiple: true,
       choices: subsectionChoices,
     },
     {
       fieldType: "select" as "select",
       name: "is_active",
-      label: "¿Activa?",
       multiple: false,
       choices: choicesYesNo,
     },
@@ -111,7 +106,6 @@ export default function Banners({
     {
       fieldType: "remove" as "remove",
       name: "update_id",
-      label: "Banner Update",
     },
   ];
 
@@ -250,19 +244,19 @@ export default function Banners({
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="brands" />
+                    <ApiFormSelectComponent name="brands" label="Marcas"/>
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" />
+                    <ApiFormSelectComponent name="categories" label="Categorías"/>
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" />
+                    <ApiFormSelectComponent name="stores" label="Tiendas"/>
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="types" />
+                    <ApiFormSelectComponent name="types" label="Tipos"/>
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="is_active" />
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?"/>
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormRangePickerComponent name="creation_date" label="Fecha creación" />
@@ -280,7 +274,7 @@ export default function Banners({
                     columns={{ xs: 6, md: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormRemoveListFieldComponent name="update_id" />
+                      <ApiFormRemoveListFieldComponent name="update_id" label="Banner Update" />
                     </Grid>
                   </Grid>
                 </CardContent>
