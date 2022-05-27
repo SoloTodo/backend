@@ -55,7 +55,7 @@ export default function CategoryPage({ category }: { category: Category }) {
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
-            { name: "Tiendas", href: PATH_CATEGORY.root },
+            { name: "Categorías", href: PATH_CATEGORY.root },
             { name: `${category.name}` },
           ]}
         />
