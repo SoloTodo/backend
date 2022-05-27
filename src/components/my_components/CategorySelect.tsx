@@ -30,7 +30,7 @@ export default function CategorySelect({
   const handleCategory = async (value: string) => {
     await jwtFetch(
       null,
-      `${entity.url}/change_category/`,
+      `${entity.url}change_category/`,
       {
         method: "post",
         body: JSON.stringify({ category: apiResourceObjects[value].id }),
