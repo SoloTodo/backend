@@ -19,7 +19,7 @@ export default function VisibilitySwitch({
     if (!entity.product) {
       await jwtFetch(
         null,
-        `${entity.url}/toggle_visibility/`,
+        `${entity.url}toggle_visibility/`,
         {
           method: "post",
           body: JSON.stringify({ is_visible: checked }),
