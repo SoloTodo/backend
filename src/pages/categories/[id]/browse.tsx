@@ -28,6 +28,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBrowseTable";
+import { Brand } from "src/frontend-utils/types/banner";
 
 // ----------------------------------------------------------------------
 
@@ -70,8 +71,10 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 
 export default function CategoryBrowse({
   categorySpecsFormLayout,
+  brands
 }: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
+  brands: Brand[];
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
@@ -81,8 +84,6 @@ export default function CategoryBrowse({
     "categories",
     categoryId
   );
-
-  console.log(categorySpecsFormLayout);
 
   const fieldsMetadata = [
     {
@@ -130,9 +131,6 @@ export default function CategoryBrowse({
       } else {
         filterChoices = filterChoices || [];
       }
-
-      // TODO: sub filter choices according to selected ones
-      // esto se encuentra en los currentResults ...
 
       if (filter.type === "exact") {
         fieldsMetadata.push({
@@ -183,7 +181,7 @@ export default function CategoryBrowse({
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
-            { name: "Tiendas", href: PATH_CATEGORY.root },
+            { name: "Categorías", href: PATH_CATEGORY.root },
             {
               name: `${category.name}`,
               href: `${PATH_CATEGORY.root}/${category.id}`,
@@ -238,7 +236,7 @@ export default function CategoryBrowse({
               <Card>
                 <CardHeader title="Resultados" />
                 <CardContent>
-                  <CategoryDetailBrowseTable />
+                  <CategoryDetailBrowseTable brands={brands} />
                 </CardContent>
               </Card>
             </Grid>
@@ -260,9 +258,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       if (res.website == "http://localhost:8000/websites/1/")
         categorySpecsFormLayout = res;
     });
+    const brands = await jwtFetch(
+      context,
+      apiSettings.apiResourceEndpoints.brands
+    );
     return {
       props: {
         categorySpecsFormLayout: categorySpecsFormLayout,
+        brands: brands
       },
     };
   } catch {
