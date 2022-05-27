@@ -13,7 +13,7 @@ export type Entity = {
   };
   bundle: { name: string, id: number };
   category: string;
-  cell_plan?: InLineProduct;
+  cell_plan: InLineProduct | null;
   cell_plan_name?: string;
   condition: string;
   creation_date: string;

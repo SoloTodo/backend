@@ -77,12 +77,14 @@ export default function PendingEntitiesTable() {
       field: "id",
       flex: 1,
       renderCell: (row: any) => (
+          <NextLink href={`${PATH_ENTITY.root}/${row.id}/associate`} passHref>
         <Button
           variant="contained"
           href={`${PATH_ENTITY.root}/${row.id}/associate`}
         >
           Asociar
         </Button>
+          </NextLink>
       ),
     },
     {

@@ -50,8 +50,7 @@ export default function AssociateForm({
     if (selectedCellPlan) {
       payload.cell_plan = selectedCellPlan.id;
       matchExistingCellPlan =
-        typeof entity.cell_plan !== "undefined" &&
-        entity.cell_plan.id === selectedCellPlan.id;
+        entity.cell_plan !== null && entity.cell_plan.id === selectedCellPlan.id;
     } else {
       matchExistingCellPlan = !entity.cell_plan;
     }
