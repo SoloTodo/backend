@@ -3,11 +3,10 @@ import { TablePagination } from "@mui/material";
 import ApiFormContext from "../../ApiFormContext";
 import { ApiFormPagination } from "./ApiFormPagination";
 
-
 export default function ApiFormPaginationComponent() {
   const context = useContext(ApiFormContext);
   const data = context.currentResult;
-  const field = context.getField('pagination') as ApiFormPagination | undefined;
+  const field = context.getField("pagination") as ApiFormPagination | undefined;
 
   if (typeof field === "undefined") {
     throw `Invalid field name: pagination`;
@@ -23,7 +22,7 @@ export default function ApiFormPaginationComponent() {
   const handleChange = (value: string, name: string) => {
     context.updateUrl({
       [name]: [value],
-    }, true);
+    });
   };
 
   return (

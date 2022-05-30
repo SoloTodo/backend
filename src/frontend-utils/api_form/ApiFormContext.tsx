@@ -3,7 +3,7 @@ import { ApiForm, ApiFormField } from "./ApiForm";
 
 const ApiFormContext = React.createContext({
   getField: (name: string) => undefined as ApiFormField | undefined,
-  updateUrl: (newUrlParams: Record<string, string[]>, paginationChange?: boolean) => {},
+  updateUrl: (newUrlParams: Record<string, string[]>) => {},
   currentResult: undefined as any,
   setCurrentResult: (newCurrentResult: any) => {},
 });

@@ -41,13 +41,14 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       });
     } else {
       updateUrl({ submit: [] });
-      setCurrentResult(null);
+      // setCurrentResult(null);
     }
 
     const handleRouteChange = async (url: string) => {
       const parseUrl = queryString.parseUrl(url);
 
-      setCurrentResult(null);
+      // setCurrentResult(null);
+      console.log("CurrentResults " + currentResult)
 
       form.initialize();
       if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
@@ -57,8 +58,8 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
             updateUrl({ ...parseUrl.query, submit: [] });
           props.onResultsChange && props.onResultsChange(results);
         });
-      } else {
-        setCurrentResult(null);
+      // } else {
+      //   setCurrentResult("");
       }
     };
 
@@ -70,16 +71,14 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     };
   }, []);
 
-  const updateUrl = (
-    newUrlParams: Record<string, string[]>,
-    paginationChange = false
-  ) => {
+  const updateUrl = (newUrlParams: Record<string, string[]>) => {
     const currentQuery = router.query;
     for (const [key, value] of Object.entries(newUrlParams)) {
       currentQuery[key] = value;
     }
 
-    if (!paginationChange) delete currentQuery["page"];
+    if (!Object.keys(newUrlParams).includes("page"))
+      delete currentQuery["page"];
 
     const newSearch = queryString.stringify(currentQuery);
     const newPath = newSearch ? `${router.route}?${newSearch}` : router.route;
