@@ -15,6 +15,7 @@ import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormStaffSummaryTable from "src/sections/users/ApiFormStaffSummaryTable";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import currency from "currency.js";
@@ -23,7 +24,6 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";
 // types
 import { User } from "src/frontend-utils/types/user";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ export default function StaffSummary(props: { userDetail: User }) {
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent
+                    <ApiFormDateRangePickerComponent
                       name="timestamp"
                       label="Rango"
                     />

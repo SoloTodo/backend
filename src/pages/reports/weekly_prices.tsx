@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormSubmitComponent from "src/frontend-utils/api_form/fields/submit/ApiFormSubmitComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
@@ -101,7 +101,7 @@ export default function WeeklyPrices() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormRangePickerComponent name="timestamp" label="Rango" />
+                  <ApiFormDateRangePickerComponent name="timestamp" label="Rango" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent name="category" label="Categoría" />

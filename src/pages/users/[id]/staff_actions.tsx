@@ -17,7 +17,7 @@ import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormActionsSummaryTable from "src/sections/users/ApiFormActionsSummaryTable";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -137,7 +137,7 @@ export default function ActionsSummary(props: { userDetail: User }) {
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent
+                    <ApiFormDateRangePickerComponent
                       name="timestamp"
                       label="Rango"
                     />

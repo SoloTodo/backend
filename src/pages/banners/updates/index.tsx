@@ -28,7 +28,7 @@ import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ export default function BannerUpdates() {
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent name="timestamp" label="Rango" />
+                    <ApiFormDateRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="stores" label="Tiendas" />

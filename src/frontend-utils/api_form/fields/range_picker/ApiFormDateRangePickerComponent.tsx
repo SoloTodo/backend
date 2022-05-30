@@ -2,11 +2,11 @@ import { useContext } from "react";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ApiFormContext from "../../ApiFormContext";
-import { ApiFormRangePicker } from "./ApiFormRangePicker";
+import { ApiFormDateRangePicker } from "./ApiFormDateRangePicker";
 import { Stack, TextField } from "@mui/material";
 import { isValid, set } from "date-fns";
 
-export default function ApiFormRangePickerComponent({
+export default function ApiFormDateRangePickerComponent({
   name,
   label,
 }: {
@@ -14,7 +14,7 @@ export default function ApiFormRangePickerComponent({
   label: string;
 }) {
   const context = useContext(ApiFormContext);
-  const field = context.getField(name) as ApiFormRangePicker | undefined;
+  const field = context.getField(name) as ApiFormDateRangePicker | undefined;
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;

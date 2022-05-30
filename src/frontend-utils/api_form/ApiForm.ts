@@ -23,16 +23,16 @@ import {
   ApiFormRemoveListFieldProps,
 } from "./fields/remove/ApiFormRemoveListField";
 import {
-  ApiFormRangePicker,
-  ApiFormRangePickerProps,
-} from "./fields/range_picker/ApiFormRangePicker";
+  ApiFormDateRangePicker,
+  ApiFormDateRangePickerProps,
+} from "./fields/range_picker/ApiFormDateRangePicker";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
   | ApiFormPaginationProps
   | ApiFormTextProps
   | ApiFormDatePickerProps
-  | ApiFormRangePickerProps
+  | ApiFormDateRangePickerProps
   | ApiFormSubmitProps
   | ApiFormRemoveListFieldProps;
 export type ApiFormField =
@@ -40,7 +40,7 @@ export type ApiFormField =
   | ApiFormPagination
   | ApiFormText
   | ApiFormDatePicker
-  | ApiFormRangePicker
+  | ApiFormDateRangePicker
   | ApiFormSubmit
   | ApiFormRemoveListField;
 
@@ -88,7 +88,7 @@ export class ApiForm {
           );
           break;
         case "date_range":
-          this.fields[fieldMetadata.name] = new ApiFormRangePicker(
+          this.fields[fieldMetadata.name] = new ApiFormDateRangePicker(
             fieldMetadata.name,
             fieldMetadata.required,
             initialData && initialData[fieldMetadata.name]

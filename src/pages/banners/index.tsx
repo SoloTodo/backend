@@ -34,7 +34,7 @@ import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import ApiFormRemoveListFieldComponent from "src/frontend-utils/api_form/fields/remove/ApiFormRemoveListFieldComponent";
 import { useRouter } from "next/router";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -258,7 +258,7 @@ export default function Banners({
                     <ApiFormSelectComponent name="is_active" label="¿Activa?"/>
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent name="creation_date" label="Fecha creación" />
+                    <ApiFormDateRangePickerComponent name="creation_date" label="Fecha creación" />
                   </Grid>
                 </Grid>
               </CardContent>

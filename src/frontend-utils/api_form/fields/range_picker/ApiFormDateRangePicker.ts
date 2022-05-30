@@ -1,13 +1,13 @@
 import { set, subDays, isValid as isValidDate, addDays } from "date-fns";
 import { ApiFormApiParams } from "../../types";
 
-export type ApiFormRangePickerProps = {
+export type ApiFormDateRangePickerProps = {
   fieldType: "date_range";
   name: string;
   required?: boolean;
 };
 
-export class ApiFormRangePicker {
+export class ApiFormDateRangePicker {
   readonly name: string;
   readonly required: boolean;
   cleanedData?: [Date | null, Date | null];

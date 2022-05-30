@@ -16,7 +16,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ export default function EntityPriceHistory() {
                     columns={{ xs: 4, sm: 6, md: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormRangePickerComponent name="timestamp" label="Rango" />
+                      <ApiFormDateRangePickerComponent name="timestamp" label="Rango" />
                     </Grid>
                   </Grid>
                 </CardContent>

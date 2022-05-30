@@ -36,7 +36,7 @@ import {
 import { useAppSelector } from "src/store/hooks";
 import ProductEntitiesTable from "src/sections/products/ProductEntitiesTable";
 import { GridColDef } from "@mui/x-data-grid";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ export default function ProductPricingHistory({
                   columns={{ xs: 4, sm: 6, md: 12 }}
                 >
                   <Grid item xs={6} md={4}>
-                    <ApiFormRangePickerComponent name="timestamp" label="Rango" />
+                    <ApiFormDateRangePickerComponent name="timestamp" label="Rango" />
                   </Grid>
                   <Grid item xs={6} md={4}>
                     <ApiFormSelectComponent name="countries" label="Países" />

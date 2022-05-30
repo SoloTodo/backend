@@ -24,7 +24,7 @@ import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import ApiFormRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormRangePickerComponent";
+import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 
 // ----------------------------------------------------------------------
 
@@ -153,13 +153,13 @@ export default function Products() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent
+                    <ApiFormDateRangePickerComponent
                       name="creation_date"
                       label="Fecha creación"
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormRangePickerComponent
+                    <ApiFormDateRangePickerComponent
                       name="last_updated"
                       label="Última act."
                     />
