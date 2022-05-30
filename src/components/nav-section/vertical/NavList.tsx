@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useState } from "react";
+import { useRouter } from "next/router";
 // @mui
-import { List, Collapse } from '@mui/material';
+import { List, Collapse } from "@mui/material";
 // type
-import { NavListProps } from '../type';
+import { NavListProps } from "../type";
 //
-import { NavItemRoot, NavItemSub } from './NavItem';
-import { getActive } from '..';
+import { NavItemRoot, NavItemSub } from "./NavItem";
+import { getActive } from "..";
+import { useAppSelector } from "src/store/hooks";
+import { useUser } from "src/frontend-utils/redux/user";
 
 // ----------------------------------------------------------------------
 
@@ -17,12 +19,19 @@ type NavListRootProps = {
 
 export function NavListRoot({ list, isCollapse }: NavListRootProps) {
   const { pathname, asPath } = useRouter();
+  const user = useAppSelector(useUser);
 
   const active = getActive(list.path, pathname, asPath);
 
   const [open, setOpen] = useState(active);
 
   const hasChildren = list.children;
+
+  if (
+    typeof list.hasPermission !== "undefined" &&
+    !user?.permissions.includes(list.hasPermission)
+  )
+    return null;
 
   if (hasChildren) {
     return (
@@ -38,9 +47,12 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
         {!isCollapse && (
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {(list.children || []).map((item) => (
-                <NavListSub key={item.title} list={item} />
-              ))}
+              {(list.children || []).map((item) =>
+                typeof item.hasPermission !== "undefined" &&
+                !user?.permissions.includes(item.hasPermission) ? null : (
+                  <NavListSub key={item.title} list={item} />
+                )
+              )}
             </List>
           </Collapse>
         )}
@@ -69,7 +81,12 @@ function NavListSub({ list }: NavListSubProps) {
   if (hasChildren) {
     return (
       <>
-        <NavItemSub item={list} onOpen={() => setOpen(!open)} open={open} active={active} />
+        <NavItemSub
+          item={list}
+          onOpen={() => setOpen(!open)}
+          open={open}
+          active={active}
+        />
 
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding sx={{ pl: 3 }}>

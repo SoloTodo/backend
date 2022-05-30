@@ -2,10 +2,10 @@
 import SvgIconStyle from "../../../components/SvgIconStyle";
 import StoreIcon from "@mui/icons-material/Store";
 import InboxIcon from "@mui/icons-material/Inbox";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ExploreIcon from '@mui/icons-material/Explore';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ExploreIcon from "@mui/icons-material/Explore";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 // routes
 import {
   PATH_BANNERS,
@@ -52,14 +52,20 @@ const sidebarConfig = [
         icon: ICONS.store,
         children: [
           { title: "Todas", path: PATH_STORE.root },
-          { title: "Actualizar", path: PATH_STORE.update_pricing },
+          {
+            title: "Actualizar",
+            path: PATH_STORE.update_pricing,
+            hasPermission: "solotodo.update_store_pricing",
+          },
         ],
+        hasPermission: "solotodo.backend_list_stores",
       },
       {
         title: "Categorías",
         path: "-",
         icon: ICONS.cart,
         children: [{ title: "Todas", path: PATH_CATEGORY.root }],
+        hasPermission: "solotodo.backend_list_categories",
       },
       {
         title: "Entidades",
@@ -70,14 +76,14 @@ const sidebarConfig = [
           { title: "Pendientes", path: PATH_ENTITY.pending },
           { title: "Conflictos", path: PATH_ENTITY.conflicts },
         ],
+        hasPermission: "solotodo.backend_list_entities",
       },
       {
         title: "Productos",
         path: "-",
         icon: ICONS.ecommerce,
-        children: [
-          { title: "Todos", path: PATH_PRODUCT.root },
-        ],
+        children: [{ title: "Todos", path: PATH_PRODUCT.root }],
+        hasPermission: "solotodo.backend_list_products",
       },
       {
         title: "Ratings",
@@ -87,6 +93,7 @@ const sidebarConfig = [
           { title: "Todos", path: PATH_RATING.root },
           { title: "Pendientes", path: PATH_RATING.pending },
         ],
+        hasPermission: "solotodo.backend_list_ratings",
       },
       {
         title: "Donde Comprar",
@@ -102,9 +109,8 @@ const sidebarConfig = [
         title: "Reportes",
         path: "-",
         icon: ICONS.fileDownload,
-        children: [
-          { title: "Todos", path: PATH_REPORTS.root },
-        ],
+        children: [{ title: "Todos", path: PATH_REPORTS.root }],
+        hasPermission: "solotodo.view_category_reports",
       },
       {
         title: "Banner Visibility",
@@ -115,8 +121,12 @@ const sidebarConfig = [
           { title: "Assets", path: PATH_BANNERS.assets },
           { title: "Assets pendientes", path: PATH_BANNERS.assetsPending },
           { title: "Actualizaciones", path: PATH_BANNERS.updates },
-          { title: "Últimas actualizaciones", path: PATH_BANNERS.updatesLatest },
+          {
+            title: "Últimas actualizaciones",
+            path: PATH_BANNERS.updatesLatest,
+          },
         ],
+        hasPermission: "solotodo.view_store_banners",
       },
     ],
   },
@@ -134,6 +144,7 @@ const sidebarConfig = [
           { title: "Todos", path: PATH_USER.root },
           { title: "Mi usuario", path: `${PATH_USER.root}/me` },
         ],
+        hasPermission: "solotodo.backend_list_users",
       },
     ],
   },
