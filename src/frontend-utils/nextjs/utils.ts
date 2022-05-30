@@ -1,9 +1,8 @@
 import { GetServerSidePropsContext } from "next";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
-import { AppStore } from "src/store/store";
 import { fetchJson, FetchJsonInit, InvalidTokenError } from "../network/utils";
-import { getApiResourceObject } from "../redux/api_resources/apiResources";
 import atob from 'atob'
+import { apiSettings } from "../settings";
 
 type GetServerSidePropsContextOrNull =
   | GetServerSidePropsContext
@@ -143,16 +142,20 @@ export async function jwtFetch(
   return await fetchJson(input, requestInit);
 }
 
-export const getStore = (st: AppStore, context: GetServerSidePropsContext) => {
-  const apiResourceObjects = st.getState().apiResourceObjects;
-  const store = getApiResourceObject(
-    apiResourceObjects,
-    "stores",
-    context.params?.id as string
-  );
-  if (typeof store === "undefined") {
-    return null;
-  } else {
-    return store;
+export const getStore = async (context: GetServerSidePropsContext) => {
+  try {
+    const store = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.stores}${context.params?.id}`
+    )
+    return {
+      props: {
+        store: store,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
   }
 };

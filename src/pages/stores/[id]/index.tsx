@@ -13,8 +13,9 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { useAppSelector } from "src/store/hooks";
 import { getStore } from "src/frontend-utils/nextjs/utils";
-import { wrapper } from "src/store/store";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
+import { GetServerSidePropsContext, PreviewData } from "next/types";
+import { ParsedUrlQuery } from "querystring";
 
 // ----------------------------------------------------------------------
 
@@ -78,19 +79,6 @@ export default function StorePage(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (st) => async (context) => {
-    const store = getStore(st, context);
-    if (store === null) {
-      return {
-        notFound: true,
-      };
-    } else {
-      return {
-        props: {
-          store: store,
-        },
-      };
-    }
-  }
-);
+export const getServerSideProps = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+  return await getStore(context);
+};

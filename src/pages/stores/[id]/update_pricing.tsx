@@ -7,10 +7,11 @@ import { Store, StoreScrapingOptions } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
-import { wrapper } from "src/store/store";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { useAppSelector } from "src/store/hooks";
+import { GetServerSidePropsContext, PreviewData } from "next";
+import { ParsedUrlQuery } from "querystring";
 
 // ----------------------------------------------------------------------
 
@@ -73,19 +74,6 @@ export default function UpdateStorePricing(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (st) => async (context) => {
-    const store = getStore(st, context);
-    if (store === null) {
-      return {
-        notFound: true,
-      };
-    } else {
-      return {
-        props: {
-          store: store,
-        },
-      };
-    }
-  }
-);
+export const getServerSideProps = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+  return await getStore(context);
+};
