@@ -8,7 +8,7 @@ import ProductSearch from "src/components/my_components/ProductSearch";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Entity } from "src/frontend-utils/types/entity";
+import { Bundle, CellPlan, Entity } from "src/frontend-utils/types/entity";
 import { Product } from "src/frontend-utils/types/product";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
@@ -25,12 +25,10 @@ export default function AssociateForm({
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedCellPlan, setSelectedCellPlan] = useState(
-    null as { id: number } | null
+  const [selectedCellPlan, setSelectedCellPlan] = useState<CellPlan | null>(
+    null
   );
-  const [selectedBundle, setSelectedBundle] = useState(
-    null as { id: number } | null
-  );
+  const [selectedBundle, setSelectedBundle] = useState<Bundle | null>(null);
 
   const handleProductAssociationSubmit = () => {
     if (entity.cell_plan_name && !selectedCellPlan) {
@@ -50,7 +48,8 @@ export default function AssociateForm({
     if (selectedCellPlan) {
       payload.cell_plan = selectedCellPlan.id;
       matchExistingCellPlan =
-        entity.cell_plan !== null && entity.cell_plan.id === selectedCellPlan.id;
+        entity.cell_plan !== null &&
+        entity.cell_plan.id === selectedCellPlan.id;
     } else {
       matchExistingCellPlan = !entity.cell_plan;
     }
@@ -99,9 +98,9 @@ export default function AssociateForm({
       jwtFetch(
         null,
         `${apiSettings.apiResourceEndpoints.products}${selectedProduct.id}/clone/`,
-          {
-            method: 'POST'
-          }
+        {
+          method: "POST",
+        }
       ).then((data) => {
         const clonedInstanceId = data.instance_id;
         const clonedInstanceUrl = `${apiSettings.endpoint}metamodel/instances/${clonedInstanceId}`;

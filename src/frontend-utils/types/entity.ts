@@ -4,6 +4,18 @@ export type InLineProduct = {
   url: string;
 };
 
+export type Bundle = {
+  id: number;
+  name: string;
+  url: string;
+};
+
+export type CellPlan = {
+  id: number;
+  name: string;
+  url: string;
+};
+
 export type Entity = {
   active_registry?: {
     normal_price: string;
@@ -11,9 +23,9 @@ export type Entity = {
     is_available: boolean;
     cell_monthly_payment: string,
   };
-  bundle: { name: string, id: number };
+  bundle: Bundle | null;
   category: string;
-  cell_plan: InLineProduct | null;
+  cell_plan: CellPlan | null;
   cell_plan_name?: string;
   condition: string;
   creation_date: string;

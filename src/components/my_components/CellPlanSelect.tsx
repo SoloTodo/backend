@@ -2,6 +2,7 @@ import { MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
+import { CellPlan } from "src/frontend-utils/types/entity";
 
 export default function CellPlanSelect({
   entityId,
@@ -9,12 +10,10 @@ export default function CellPlanSelect({
   setSelectedCellPlan,
 }: {
   entityId: number;
-  selectedCellPlan: any;
+  selectedCellPlan: CellPlan | null;
   setSelectedCellPlan: Function;
 }) {
-  const [planCellChoices, setPlanCellChoices] = useState(
-    [] as { id: number; name: string }[]
-  );
+  const [planCellChoices, setPlanCellChoices] = useState<CellPlan[]>([]);
 
   useEffect(() => {
     jwtFetch(
@@ -25,7 +24,7 @@ export default function CellPlanSelect({
     });
   }, []);
 
-  const handleSelectedCellPlanChange = (value: number) => {
+  const handleSelectedCellPlanChange = (value: number | string) => {
     const newSelectedCellPlan = planCellChoices.find((p) => p.id === value);
     setSelectedCellPlan(newSelectedCellPlan ? newSelectedCellPlan : null);
   };

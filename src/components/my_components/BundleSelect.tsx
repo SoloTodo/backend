@@ -16,6 +16,7 @@ import apiResourceObjectsSlice, {
   getApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
+import { Bundle } from "src/frontend-utils/types/entity";
 
 const style = {
   position: "absolute" as "absolute",
@@ -33,16 +34,14 @@ export default function BundleSelect({
   selectedBundle,
   setSelectedBundle,
 }: {
-  selectedBundle: any;
+  selectedBundle: Bundle | null;
   setSelectedBundle: Function;
 }) {
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
-  const [bundleChoices, setBundleChoices] = useState(
-    [] as { id: number; name: string }[]
-  );
+  const [bundleChoices, setBundleChoices] = useState<Bundle[]>([]);
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -60,7 +59,7 @@ export default function BundleSelect({
         setBundleChoices(data);
       });
     } else {
-      setBundleChoices(bundles as { id: number; name: string }[]);
+      setBundleChoices(bundles);
     }
   }, []);
 
@@ -83,6 +82,7 @@ export default function BundleSelect({
             apiResourceObjectsSlice.actions.addApiResourceObjects([data])
           );
           setBundleChoices([data, ...bundleChoices]);
+          setSelectedBundle(data);
           handleClose();
         })
         .catch((err) => {
@@ -102,7 +102,7 @@ export default function BundleSelect({
   };
 
   const handleSelectedBundleChange = (
-    value: { id: number; name: string } | null
+    value: Bundle | null
   ) => {
     setSelectedBundle(value ? value : null);
   };
