@@ -33,18 +33,38 @@ export class ApiFormDateRangePicker {
       ? set(new Date(), { hours: 0, minutes: 0, seconds: 0 })
       : null;
 
-    const valueAfter = after
+    let valueAfter = after
       ? set(new Date(after), { hours: 0, minutes: 0, seconds: 0 })
       : past30;
     const valueBefore = before
       ? set(new Date(before), { hours: 0, minutes: 0, seconds: 0 })
       : today;
 
+    if (
+      valueAfter !== null &&
+      valueBefore !== null &&
+      valueAfter > valueBefore
+    ) {
+      if (this.required) {
+        valueAfter = past30;
+      } else {
+        valueAfter = null;
+      }
+    }
+
     this.cleanedData = [valueAfter, valueBefore];
   }
 
   isValid() {
-    return typeof this.cleanedData !== "undefined";
+    if (this.required) {
+      return (
+        typeof this.cleanedData !== "undefined" &&
+        this.cleanedData[0] !== null &&
+        this.cleanedData[1] !== null
+      );
+    } else {
+      return typeof this.cleanedData !== "undefined";
+    }
   }
 
   getApiParams(): ApiFormApiParams {
@@ -55,7 +75,9 @@ export class ApiFormDateRangePicker {
     if (this.cleanedData[0] !== null && isValidDate(this.cleanedData[0]))
       apiParams[`${this.name}_after`] = [this.cleanedData[0].toISOString()];
     if (this.cleanedData[1] !== null && isValidDate(this.cleanedData[1]))
-      apiParams[`${this.name}_before`] = [addDays(this.cleanedData[1], 1).toISOString()];
+      apiParams[`${this.name}_before`] = [
+        addDays(this.cleanedData[1], 1).toISOString(),
+      ];
     return apiParams;
   }
 }
