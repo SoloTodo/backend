@@ -81,7 +81,7 @@ export default function AssetContents(props: {
   const defaultValues = {
     brand: "",
     category: "",
-    percentage: 0,
+    percentage: undefined,
   };
 
   const NewContentSchema = Yup.object().shape({
@@ -89,6 +89,7 @@ export default function AssetContents(props: {
     category: Yup.string().required("Categoría requerida"),
     percentage: Yup.number()
       .required("Porcentaje requerido")
+      .typeError("Ingresar un número válido")
       .moreThan(0, "Porcentaje debe ser mayor o igual a 1")
       .lessThan(101, "Porcentaje debe ser menor o igual a 100"),
   });
@@ -229,7 +230,6 @@ export default function AssetContents(props: {
                 name="percentage"
                 label="Porcentaje"
                 type="number"
-                value={getValues('percentage') === 0 ? '' : getValues('percentage')}
               />
             </Stack>
             <br />
