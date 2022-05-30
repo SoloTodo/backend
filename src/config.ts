@@ -41,7 +41,7 @@ export const cookiesKey = {
 export const defaultSettings: SettingsValueProps = {
   themeMode: 'dark',
   themeDirection: 'ltr',
-  themeColorPresets: 'blue',
+  themeColorPresets: 'orange',
   themeLayout: 'horizontal',
   themeStretch: true,
 };
