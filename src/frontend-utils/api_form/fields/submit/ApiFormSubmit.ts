@@ -9,8 +9,12 @@ export const submitReady = (
 ) => {
   const submitBlacklist = ["false", "0", ""];
 
-  if (typeof value !== "undefined" && value !== null && !Array.isArray(value)) {
-    return !submitBlacklist.includes(value);
+  if (typeof value !== "undefined" && value !== null) {
+    if (Array.isArray(value)) {
+      return !submitBlacklist.includes(value[0] !== null ? value[0] : "");
+    } else {
+      return !submitBlacklist.includes(value);
+    }
   } else {
     return false;
   }
