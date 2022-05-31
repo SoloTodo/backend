@@ -47,8 +47,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     const handleRouteChange = async (url: string) => {
       const parseUrl = queryString.parseUrl(url);
 
-      // setCurrentResult(null);
-      console.log("CurrentResults " + currentResult)
+      setCurrentResult(null);
 
       form.initialize();
       if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
@@ -58,8 +57,8 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
             updateUrl({ ...parseUrl.query, submit: [] });
           props.onResultsChange && props.onResultsChange(results);
         });
-      // } else {
-      //   setCurrentResult("");
+      } else {
+        setCurrentResult("");
       }
     };
 
