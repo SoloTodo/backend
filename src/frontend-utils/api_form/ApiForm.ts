@@ -11,10 +11,6 @@ import {
 } from "./fields/pagination/ApiFormPagination";
 import { ApiFormText, ApiFormTextProps } from "./fields/text/ApiFormText";
 import {
-  ApiFormDatePicker,
-  ApiFormDatePickerProps,
-} from "./fields/date_picker/ApiDatePicker";
-import {
   ApiFormSubmit,
   ApiFormSubmitProps,
 } from "./fields/submit/ApiFormSubmit";
@@ -31,7 +27,6 @@ export type ApiFormFieldMetadata =
   | ApiFormSelectProps
   | ApiFormPaginationProps
   | ApiFormTextProps
-  | ApiFormDatePickerProps
   | ApiFormDateRangePickerProps
   | ApiFormSubmitProps
   | ApiFormRemoveListFieldProps;
@@ -39,7 +34,6 @@ export type ApiFormField =
   | ApiFormSelect
   | ApiFormPagination
   | ApiFormText
-  | ApiFormDatePicker
   | ApiFormDateRangePicker
   | ApiFormSubmit
   | ApiFormRemoveListField;
@@ -77,13 +71,6 @@ export class ApiForm {
         case "text":
           this.fields[fieldMetadata.name] = new ApiFormText(
             fieldMetadata.name,
-            initialData && initialData[fieldMetadata.name]
-          );
-          break;
-        case "date":
-          this.fields[fieldMetadata.name] = new ApiFormDatePicker(
-            fieldMetadata.name,
-            fieldMetadata.label,
             initialData && initialData[fieldMetadata.name]
           );
           break;
