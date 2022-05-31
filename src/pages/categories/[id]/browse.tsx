@@ -254,6 +254,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=${context.params?.id}`
     );
+    categorySpecsFormLayout = response[0]
     response.forEach((res: { website: string }) => {
       if (res.website == "http://localhost:8000/websites/1/")
         categorySpecsFormLayout = res;

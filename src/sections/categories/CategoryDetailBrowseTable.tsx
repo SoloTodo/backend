@@ -12,13 +12,17 @@ import {
   AccordionSummary,
   AccordionDetails,
   Theme,
+  Paper,
+  IconButton,
 } from "@mui/material";
 import { withStyles, createStyles } from "@mui/styles";
 import NextLink from "next/link";
 import LinkIcon from "@mui/icons-material/Link";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { GridColumns, GridRenderCellParams } from "@mui/x-data-grid";
-import { useContext, useState } from "react";
+import {
+  GridColumns,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
+import React, { useContext, useState } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import {
   getApiResourceObjects,
@@ -31,11 +35,22 @@ import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
 import { Brand } from "src/frontend-utils/types/banner";
 // currency
 import currency from "currency.js";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 type Results = {
   cell_plan: InLineProduct | null;
   entities: Entity[];
   product: Product;
+  min_offer: number;
+  min_normal: number;
+  subResults?: {
+    cell_plan: InLineProduct | null;
+    entities: Entity[];
+    product: Product;
+    min_offer: number;
+    min_normal: number;
+  }[];
 };
 
 const StyledTableCell = withStyles((theme: Theme) =>
@@ -49,55 +64,114 @@ const StyledTableCell = withStyles((theme: Theme) =>
   })
 )(TableCell);
 
-// const StyledTableRow = withStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       "&:nth-of-type(odd)": {
-//         backgroundColor: theme.palette.action.hover
-//       }
-//     }
-//   })
-// )(TableRow);
+const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      "&:nth-of-type(odd)": {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  })
+)(TableRow);
 
-const storePriceText = (
-  e: Entity[],
-  minPrice: number,
-  field: "normal_price" | "offer_price"
-) => {
-  if (e.length !== 0 && typeof e[0].active_registry !== "undefined") {
-    return (
-      <Stack spacing={1} direction="row">
-        <NextLink href={`${PATH_ENTITY.root}/${e[0].id}`} passHref>
-          <Link
-            color={
-              Number(e[0].active_registry[field]) === minPrice
-                ? "green"
-                : "primary"
-            }
-          >
-            {currency(e[0].active_registry[field], {
-              precision: 0,
-            }).format()}
-          </Link>
-        </NextLink>
-        <Link
-          target="_blank"
-          rel="noopener noreferrer"
-          href={e[0].external_url}
-          color={
-            Number(e[0].active_registry[field]) === minPrice
-              ? "green"
-              : "primary"
-          }
-        >
-          <LinkIcon />
-        </Link>
-      </Stack>
-    );
-  } else {
-    return "";
-  }
-};
+function Row({
+  columnsIG,
+  columnsMin,
+  columnsStores,
+  result,
+  dataHasCellPlans,
+}: {
+  columnsIG: GridColumns<Results>;
+  columnsMin: GridColumns<Results>;
+  columnsStores: GridColumns<Results>;
+  result: Results;
+  dataHasCellPlans: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const brandCol = columnsIG.filter((c) => c.field === "brand")[0];
+  return (
+    <React.Fragment>
+      <StyledTableRow>
+        <StyledTableCell>
+          {dataHasCellPlans ? (
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          ) : (
+            ""
+          )}
+        </StyledTableCell>
+        {columnsIG.map((col) => (
+          <StyledTableCell key={col.field} component="th">
+            {col.renderCell
+              ? col.renderCell({
+                  row: result,
+                } as GridRenderCellParams<any, any, any>)
+              : ""}
+          </StyledTableCell>
+        ))}
+        {columnsMin.map((col, index) => (
+          <StyledTableCell key={`${col.headerName}-${index}`}>
+            {col.renderCell
+              ? col.renderCell({
+                  row: result,
+                } as GridRenderCellParams<any, Results, any>)
+              : ""}
+          </StyledTableCell>
+        ))}
+        {columnsStores.map((col) => (
+          <StyledTableCell key={col.field}>
+            {col.renderCell
+              ? col.renderCell({
+                  row: result,
+                } as GridRenderCellParams<any, Results, any>)
+              : ""}
+          </StyledTableCell>
+        ))}
+      </StyledTableRow>
+      {dataHasCellPlans &&
+        result.subResults &&
+        result.subResults.map((r, index) => (
+          <StyledTableRow key={index} style={{ display: open ? "" : "none" }}>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell></StyledTableCell>
+            <StyledTableCell>
+              {r.cell_plan ? r.cell_plan.name : "Liberado"}
+            </StyledTableCell>
+            <StyledTableCell>
+              {brandCol.renderCell
+                ? brandCol.renderCell({
+                    row: r,
+                  } as GridRenderCellParams<any, Results, any>)
+                : ""}
+            </StyledTableCell>
+            {columnsMin.map((col, index) => (
+              <StyledTableCell key={`${col.headerName}-${index}`}>
+                {col.renderCell
+                  ? col.renderCell({
+                      row: result,
+                    } as GridRenderCellParams<any, Results, any>)
+                  : ""}
+              </StyledTableCell>
+            ))}
+            {columnsStores.map((col) => (
+              <StyledTableCell key={col.field}>
+                {col.renderCell
+                  ? col.renderCell({
+                      row: result,
+                    } as GridRenderCellParams<any, Results, any>)
+                  : ""}
+              </StyledTableCell>
+            ))}
+          </StyledTableRow>
+        ))}
+    </React.Fragment>
+  );
+}
 
 export default function CategoryDetailBrowseTable({
   brands,
@@ -108,7 +182,7 @@ export default function CategoryDetailBrowseTable({
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+    _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPage(newPage);
@@ -127,7 +201,6 @@ export default function CategoryDetailBrowseTable({
 
   let currentResult = context.currentResult;
   if (currentResult === null) currentResult = { results: [] };
-  console.log(currentResult);
 
   const storeUrlSet = new Set();
   currentResult.results.forEach((entry: { entities: Entity[] }) => {
@@ -135,16 +208,11 @@ export default function CategoryDetailBrowseTable({
       storeUrlSet.add(entity.store);
     });
   });
+  const currentStores = stores.filter((store) => storeUrlSet.has(store.url));
+
   const dataHasCellPlans = currentResult.results.some(
     (entry: { cell_plan: any }) => entry.cell_plan
   );
-
-  const currentStores = stores.filter((store) => storeUrlSet.has(store.url));
-
-  const brandsDict = brands.reduce((acc: Record<string, Brand>, a) => {
-    acc[a.url] = a;
-    return acc;
-  }, {});
 
   const minPriceByField = (
     result: Results,
@@ -166,7 +234,118 @@ export default function CategoryDetailBrowseTable({
       : 0;
   };
 
-  const minPriceText = (
+  let results = currentResult.results;
+  results = Object.values(
+    currentResult.results.reduce((acc: Record<number, Results>, a: Results) => {
+      const min_offer = minPriceByField(a, "offer_price");
+      const min_normal = minPriceByField(a, "normal_price");
+
+      const actual_min_offer = acc[a.product.id] && acc[a.product.id].min_offer;
+      const actual_subResults =
+        acc[a.product.id] && acc[a.product.id].subResults;
+      if (
+        dataHasCellPlans &&
+        typeof actual_min_offer !== "undefined" &&
+        typeof actual_subResults != "undefined"
+      ) {
+        if (actual_min_offer < min_offer) {
+          acc[a.product.id] = {
+            ...acc[a.product.id],
+            subResults: [
+              ...actual_subResults,
+              {
+                ...a,
+                min_normal: min_normal,
+                min_offer: min_offer,
+              },
+            ],
+          };
+        } else {
+          acc[a.product.id] = {
+            ...a,
+            min_normal: min_normal,
+            min_offer: min_offer,
+            subResults: [
+              ...actual_subResults,
+              {
+                ...a,
+                min_normal: min_normal,
+                min_offer: min_offer,
+              },
+            ],
+          };
+        }
+      } else {
+        acc[a.product.id] = {
+          ...a,
+          min_normal: min_normal,
+          min_offer: min_offer,
+          subResults: [
+            {
+              ...a,
+              min_normal: min_normal,
+              min_offer: min_offer,
+            },
+          ],
+        };
+      }
+      return acc;
+    }, {})
+  );
+
+  const brandsDict = brands.reduce((acc: Record<string, Brand>, a) => {
+    acc[a.url] = a;
+    return acc;
+  }, {});
+
+  const storePriceText = (
+    e: Entity[],
+    minPrice: number,
+    field: "normal_price" | "offer_price"
+  ) => {
+    return (
+      <Stack spacing={1} direction="column">
+        {e.map((entity) => (
+          <Stack spacing={1} direction="row" key={entity.id}>
+            <NextLink href={`${PATH_ENTITY.root}/${entity.id}`} passHref>
+              <Link
+                color={
+                  Number(
+                    entity.active_registry && entity.active_registry[field]
+                  ) === minPrice
+                    ? "green"
+                    : "primary"
+                }
+              >
+                {currency(
+                  entity.active_registry ? entity.active_registry[field] : 0,
+                  {
+                    precision: 0,
+                  }
+                ).format()}
+              </Link>
+            </NextLink>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={entity.external_url}
+              color={
+                Number(
+                  entity.active_registry && entity.active_registry[field]
+                ) === minPrice
+                  ? "green"
+                  : "primary"
+              }
+            >
+              <LinkIcon />
+            </Link>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  };
+
+  const minPriceAccordion = (
     result: Results,
     minPrice: number,
     field: "normal_price" | "offer_price"
@@ -175,31 +354,33 @@ export default function CategoryDetailBrowseTable({
       (e) => e.active_registry && Number(e.active_registry[field]) === minPrice
     );
     return (
-      <Accordion>
-        <AccordionSummary>
-          {currency(minPrice, {
-            precision: 0,
-          }).format()}
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack spacing={1} direction="column">
-            {filteredEntities.map((f) => (
-              <Stack spacing={1} direction="row" key={f.id}>
-                <NextLink href={`${PATH_ENTITY.root}/${f.id}`} passHref>
-                  <Link>{apiResourceObjects[f.store].name}</Link>
-                </NextLink>
-                <Link
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={f.external_url}
-                >
-                  <LinkIcon />
-                </Link>
-              </Stack>
-            ))}
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
+      <Paper elevation={1}>
+        <Accordion>
+          <AccordionSummary>
+            {currency(minPrice, {
+              precision: 0,
+            }).format()}
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack spacing={1} direction="column">
+              {filteredEntities.map((f) => (
+                <Stack spacing={1} direction="row" key={f.id}>
+                  <NextLink href={`${PATH_ENTITY.root}/${f.id}`} passHref>
+                    <Link>{apiResourceObjects[f.store].name}</Link>
+                  </NextLink>
+                  <Link
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={f.external_url}
+                  >
+                    <LinkIcon />
+                  </Link>
+                </Stack>
+              ))}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+      </Paper>
     );
   };
 
@@ -227,55 +408,63 @@ export default function CategoryDetailBrowseTable({
     columnsIG.splice(1, 0, {
       headerName: "Plan celular",
       field: "cell_plan",
-      renderCell: (params) =>
-        params.row.cell_plan ? params.row.cell_plan.name : "Liberado",
+      renderCell: (_params) => "Cualquiera",
     });
 
   const columnsMin: GridColumns<Results> = [
     {
       headerName: "Normal",
-      field: "normal_price",
+      field: "min_normal",
       renderCell: (params) =>
-        minPriceText(params.row, params.minPrice, "normal_price"),
+        minPriceAccordion(params.row, params.row.min_normal, "normal_price"),
     },
     {
       headerName: "Oferta",
       field: "offer_price",
       renderCell: (params) =>
-        minPriceText(params.row, params.minPrice, "offer_price"),
+        minPriceAccordion(params.row, params.row.min_offer, "offer_price"),
     },
   ];
 
-  const columnsStores: GridColumns<Results> = [
-    {
-      headerName: "Normal",
-      field: "normal_price",
-      renderCell: (params) => {
-        const e = params.row.entities.filter(
-          (entity) => entity.store === params.store.url
-        );
-        return storePriceText(e, params.minPrice, "normal_price");
+  const columnsStores: GridColumns<Results> = [];
+
+  currentStores.forEach((store) =>
+    columnsStores.push(
+      {
+        headerName: "Normal",
+        field: `normal_price_${store.id}`,
+        renderCell: (params) => {
+          const e = params.row.entities.filter(
+            (entity) => entity.store === store.url
+          );
+          return storePriceText(e, params.row.min_normal, "normal_price");
+        },
       },
-    },
-    {
-      headerName: "Oferta",
-      field: "offer_price",
-      renderCell: (params) => {
-        const e = params.row.entities.filter(
-          (entity) => entity.store === params.store.url
-        );
-        return storePriceText(e, params.minPrice, "offer_price");
-      },
-    },
-  ];
+      {
+        headerName: "Oferta",
+        field: `offer_price_${store.id}`,
+        renderCell: (params) => {
+          const e = params.row.entities.filter(
+            (entity) => entity.store === store.url
+          );
+          return storePriceText(e, params.row.min_offer, "offer_price");
+        },
+      }
+    )
+  );
 
   return (
     <>
-      <TableContainer>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center" colSpan={columnsIG.length}>
+              <StyledTableCell />
+              <StyledTableCell
+                align="center"
+                colSpan={columnsIG.length}
+                component="th"
+              >
                 Información General
               </StyledTableCell>
               <StyledTableCell align="center" colSpan={2}>
@@ -288,10 +477,12 @@ export default function CategoryDetailBrowseTable({
               ))}
             </TableRow>
             <TableRow>
+              <StyledTableCell />
               {columnsIG.map((col, index) => (
                 <StyledTableCell
                   key={`${col.headerName}-${index}`}
                   align="center"
+                  component="th"
                 >
                   {col.headerName}
                 </StyledTableCell>
@@ -304,61 +495,26 @@ export default function CategoryDetailBrowseTable({
                   {col.headerName}
                 </StyledTableCell>
               ))}
-              {currentStores.map((store) =>
-                columnsStores.map((col) => (
-                  <StyledTableCell
-                    key={`${col.headerName}-${store.id}`}
-                    align="center"
-                  >
-                    {col.headerName}
-                  </StyledTableCell>
-                ))
-              )}
+              {columnsStores.map((col) => (
+                <StyledTableCell key={col.field} align="center">
+                  {col.headerName}
+                </StyledTableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentResult.results
+            {results
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((result: Results, index: number) => {
-                const minPrices = {
-                  normal_price: minPriceByField(result, "normal_price"),
-                  offer_price: minPriceByField(result, "offer_price"),
-                };
                 return (
-                  <TableRow key={index}>
-                    {columnsIG.map((col) => (
-                      <StyledTableCell key={col.field} component="th">
-                        {col.renderCell
-                          ? col.renderCell({
-                              row: result,
-                            } as GridRenderCellParams<any, any, any>)
-                          : ""}
-                      </StyledTableCell>
-                    ))}
-                    {columnsMin.map((col, index) => (
-                      <StyledTableCell key={`${col.headerName}-${index}`}>
-                        {col.renderCell
-                          ? col.renderCell({
-                              row: result,
-                              minPrice: minPrices[col.field],
-                            })
-                          : ""}
-                      </StyledTableCell>
-                    ))}
-                    {currentStores.map((store) =>
-                      columnsStores.map((col) => (
-                        <StyledTableCell key={`${col.field}-${store.id}`}>
-                          {col.renderCell
-                            ? col.renderCell({
-                                row: result,
-                                store: store,
-                                minPrice: minPrices[col.field],
-                              })
-                            : ""}
-                        </StyledTableCell>
-                      ))
-                    )}
-                  </TableRow>
+                  <Row
+                    key={index}
+                    columnsIG={columnsIG}
+                    columnsMin={columnsMin}
+                    columnsStores={columnsStores}
+                    result={result}
+                    dataHasCellPlans={dataHasCellPlans}
+                  />
                 );
               })}
           </TableBody>
