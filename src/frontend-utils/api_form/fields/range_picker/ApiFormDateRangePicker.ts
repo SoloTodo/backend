@@ -33,10 +33,10 @@ export class ApiFormDateRangePicker {
       ? set(new Date(), { hours: 0, minutes: 0, seconds: 0 })
       : null;
 
-    let valueAfter = after
+    let valueAfter = after && isValidDate(new Date(after))
       ? set(new Date(after), { hours: 0, minutes: 0, seconds: 0 })
       : past30;
-    const valueBefore = before
+    let valueBefore = before && isValidDate(new Date(before))
       ? set(new Date(before), { hours: 0, minutes: 0, seconds: 0 })
       : today;
 
@@ -47,6 +47,7 @@ export class ApiFormDateRangePicker {
     ) {
       if (this.required) {
         valueAfter = past30;
+        valueBefore = today;
       } else {
         valueAfter = null;
       }
