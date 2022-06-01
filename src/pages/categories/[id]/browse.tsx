@@ -29,6 +29,8 @@ import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBrowseTable";
 import { Brand } from "src/frontend-utils/types/banner";
+import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
+import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 
 // ----------------------------------------------------------------------
 
@@ -85,7 +87,7 @@ export default function CategoryBrowse({
     categoryId
   );
 
-  const fieldsMetadata = [
+  const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
       fieldType: "select" as "select",
       name: "stores",
@@ -156,7 +158,21 @@ export default function CategoryBrowse({
             <ApiFormSelectComponent name={filter.name} label={filter.label} />
           </AccordionDetails>
         );
-      } // TODO: range and else cases
+      } else if (filter.type === "range") {
+        fieldsMetadata.push({
+          fieldType: "slider" as "slider",
+          name: filter.name,
+          step: filter.continuous_range_step,
+          unit: filter.continuous_range_unit,
+          discrete: filter.choices !== null,
+          choices: filterChoices,
+        });
+        fieldFilters.push(
+          <AccordionDetails key={filter.id}>
+            <ApiFormSliderComponent name={filter.name} label={filter.label} />
+          </AccordionDetails>
+        );
+      }
     });
     filterComponents.push(
       <Grid item xs={12} key={fieldset.label}>
@@ -236,7 +252,7 @@ export default function CategoryBrowse({
               <Card>
                 <CardHeader title="Resultados" />
                 <CardContent>
-                  <CategoryDetailBrowseTable brands={brands} />
+                  {/* <CategoryDetailBrowseTable brands={brands} /> */}
                 </CardContent>
               </Card>
             </Grid>

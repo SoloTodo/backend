@@ -22,6 +22,10 @@ import {
   ApiFormDateRangePicker,
   ApiFormDateRangePickerProps,
 } from "./fields/range_picker/ApiFormDateRangePicker";
+import {
+  ApiFormSlider,
+  ApiFormSliderProps,
+} from "./fields/slider/ApiFormSlider";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
@@ -29,14 +33,16 @@ export type ApiFormFieldMetadata =
   | ApiFormTextProps
   | ApiFormDateRangePickerProps
   | ApiFormSubmitProps
-  | ApiFormRemoveListFieldProps;
+  | ApiFormRemoveListFieldProps
+  | ApiFormSliderProps;
 export type ApiFormField =
   | ApiFormSelect
   | ApiFormPagination
   | ApiFormText
   | ApiFormDateRangePicker
   | ApiFormSubmit
-  | ApiFormRemoveListField;
+  | ApiFormRemoveListField
+  | ApiFormSlider;
 
 export class ApiForm {
   private fields: Record<string, ApiFormField> = {};
@@ -92,6 +98,15 @@ export class ApiForm {
             initialData && initialData[fieldMetadata.name]
           );
           break;
+        case "slider":
+          this.fields[fieldMetadata.name] = new ApiFormSlider(
+            fieldMetadata.name,
+            fieldMetadata.choices,
+            fieldMetadata.step,
+            fieldMetadata.unit,
+            fieldMetadata.discrete,
+            initialData && initialData[fieldMetadata.name]
+          );
       }
     }
   }
