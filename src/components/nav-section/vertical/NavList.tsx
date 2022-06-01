@@ -20,18 +20,17 @@ type NavListRootProps = {
 export function NavListRoot({ list, isCollapse }: NavListRootProps) {
   const { pathname, asPath } = useRouter();
   const user = useAppSelector(useUser);
-
   const active = getActive(list.path, pathname, asPath);
-
   const [open, setOpen] = useState(active);
-
   const hasChildren = list.children;
 
   if (
     typeof list.hasPermission !== "undefined" &&
     !user?.permissions.includes(list.hasPermission)
-  )
+  ) {
     return null;
+  }
+
 
   if (hasChildren) {
     return (
