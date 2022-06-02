@@ -14,14 +14,13 @@ import {
   Theme,
   Paper,
   IconButton,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 import { withStyles, createStyles } from "@mui/styles";
 import NextLink from "next/link";
 import LinkIcon from "@mui/icons-material/Link";
-import {
-  GridColumns,
-  GridRenderCellParams,
-} from "@mui/x-data-grid";
+import { GridColumns, GridRenderCellParams } from "@mui/x-data-grid";
 import React, { useContext, useState } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import {
@@ -453,6 +452,12 @@ export default function CategoryDetailBrowseTable({
     )
   );
 
+  if (context.isLoading)
+    return (
+      <Box textAlign={"center"}>
+        <CircularProgress color="inherit" />
+      </Box>
+    );
   return (
     <>
       <TableContainer component={Paper}>

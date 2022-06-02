@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 import NextLink from "next/link";
-import { Container, Link, Stack } from "@mui/material";
+import { Box, CircularProgress, Container, Link, Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 // layout
 import Layout from "src/layouts";
@@ -13,7 +13,12 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
-import { Store, Update, STATUS, Category } from "src/frontend-utils/types/store";
+import {
+  Store,
+  Update,
+  STATUS,
+  Category,
+} from "src/frontend-utils/types/store";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
@@ -46,7 +51,10 @@ export default function UpdatePricing() {
   const [selectedStoresIds, setSelectedStoresIds] = useState<number[]>([]);
 
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categories = getApiResourceObjects(apiResourceObjects, "categories") as Category[];
+  const categories = getApiResourceObjects(
+    apiResourceObjects,
+    "categories"
+  ) as Category[];
   const stores = getApiResourceObjects(apiResourceObjects, "stores") as Store[];
 
   useEffect(() => {
@@ -119,15 +127,18 @@ export default function UpdatePricing() {
       headerName: "Registro",
       field: "registry_file",
       flex: 1,
-      renderCell: (params) => (
-        params.row.registry_file ? <Link
-          target="_blank"
-          rel="noopener noreferrer"
-          href={params.row.registry_file}
-        >
-          Descargar 
-        </Link> : "No disponible"
-      ),
+      renderCell: (params) =>
+        params.row.registry_file ? (
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={params.row.registry_file}
+          >
+            Descargar
+          </Link>
+        ) : (
+          "No disponible"
+        ),
     },
   ];
 
@@ -143,7 +154,9 @@ export default function UpdatePricing() {
           ]}
         />
         {isLoading ? (
-          <p>Loading...</p>
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+          </Box>
         ) : (
           <Stack spacing={3}>
             <UpdateStorePricingForm

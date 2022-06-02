@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Container, Grid } from "@mui/material";
+import { Box, CircularProgress, Container, Grid } from "@mui/material";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { getStore, jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -55,7 +55,9 @@ export default function UpdateStorePricing(props: { store: Store }) {
           ]}
         />
         {isLoading ? (
-          <p>Loading...</p>
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+          </Box>
         ) : (
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
@@ -74,6 +76,8 @@ export default function UpdateStorePricing(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
   return await getStore(context);
 };

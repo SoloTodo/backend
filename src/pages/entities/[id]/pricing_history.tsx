@@ -1,7 +1,9 @@
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Grid,
   Stack,
@@ -79,7 +81,10 @@ export default function EntityPriceHistory() {
                     columns={{ xs: 4, sm: 6, md: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormDateRangePickerComponent name="timestamp" label="Rango" />
+                      <ApiFormDateRangePickerComponent
+                        name="timestamp"
+                        label="Rango"
+                      />
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -93,7 +98,9 @@ export default function EntityPriceHistory() {
             </Stack>
           </ApiFormComponent>
         ) : (
-          <p>Loading...</p>
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+          </Box>
         )}
       </Container>
     </Page>
