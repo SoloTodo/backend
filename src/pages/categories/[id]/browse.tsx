@@ -147,15 +147,16 @@ export default function CategoryBrowse({
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
+        const fullName = filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
         fieldsMetadata.push({
           fieldType: "select" as "select",
-          name: filter.name,
+          name: fullName,
           multiple: false,
           choices: filterChoices,
         });
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
-            <ApiFormSelectComponent name={filter.name} label={filter.label} />
+            <ApiFormSelectComponent name={fullName} label={filter.label} />
           </AccordionDetails>
         );
       } else if (filter.type === "range") {
