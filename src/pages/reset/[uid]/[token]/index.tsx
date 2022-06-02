@@ -10,7 +10,6 @@ import { LoadingButton } from "@mui/lab";
 // hooks
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
 //components
 import Layout from "src/layouts";
 import Page from "src/components/Page";
@@ -47,7 +46,6 @@ type FormValuesProps = {
 export default function NewPassword() {
   const router = useRouter();
   const { enqueueSnackbar } =  useSnackbar();
-  const { authFetch } = useAuth();
 
   const [showPasswordNew1, setShowPasswordNew1] = useState(false);
   const [showPasswordNew2, setShowPasswordNew2] = useState(false);
