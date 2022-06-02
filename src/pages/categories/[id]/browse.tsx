@@ -252,7 +252,7 @@ export default function CategoryBrowse({
               <Card>
                 <CardHeader title="Resultados" />
                 <CardContent>
-                  {/* <CategoryDetailBrowseTable brands={brands} /> */}
+                  <CategoryDetailBrowseTable brands={brands} />
                 </CardContent>
               </Card>
             </Grid>
