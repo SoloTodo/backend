@@ -40,8 +40,8 @@ export class ApiFormSlider {
   }
 
   loadData(query: URLSearchParams) {
-    const start = query.get(`${this.name}_start`);
-    const end = query.get(`${this.name}_end`);
+    const start = query.get(`${this.name}_min`);
+    const end = query.get(`${this.name}_max`);
 
     const valueStart = start === null ? null : Number(start);
     const valueEnd = end === null ? null : Number(end);
@@ -60,9 +60,9 @@ export class ApiFormSlider {
 
     const apiParams: ApiFormApiParams = {};
     if (this.cleanedData[0] !== null)
-      apiParams[`${this.name}_start`] = [this.cleanedData[0].toString()];
+      apiParams[`${this.name}_min`] = [this.cleanedData[0].toString()];
     if (this.cleanedData[1] !== null)
-      apiParams[`${this.name}_end`] = [this.cleanedData[1].toString()];
+      apiParams[`${this.name}_max`] = [this.cleanedData[1].toString()];
     return apiParams;
   }
 }
