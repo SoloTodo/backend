@@ -53,7 +53,6 @@ export default function ApiFormSelectComponent(
   } else if (!field.multiple) {
     cleanedData = field.cleanedData[0];
   }
-
   return (
     <Autocomplete<ApiFormSelectChoice, boolean, boolean>
       multiple={field.multiple}
@@ -63,6 +62,8 @@ export default function ApiFormSelectComponent(
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={cleanedData}
       disableClearable={field.required}
+      loading={context.isLoading}
+      // getOptionLabel={(e) => e.label + e.value.toString()}
     />
   );
 }

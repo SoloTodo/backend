@@ -1,6 +1,6 @@
 import { useContext } from "react";
 // @mui
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 // components
 import Scrollbar from "../Scrollbar";
@@ -22,7 +22,12 @@ export default function ApiFormResultsTable({
   const data = context.currentResult;
 
   return (
-    withPagination ? 
+    context.isLoading ? (
+      <Box textAlign="center">
+        <CircularProgress color="inherit" />
+      </Box>
+    )
+    : withPagination ? 
       <Scrollbar>
         <Box sx={{ height: "70vh", width: "100%" }}>
           <StyledDataGrid

@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -17,7 +18,6 @@ import { GridColumns } from "@mui/x-data-grid";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 // components
 import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
-
 
 export type PagintationData = {
   count: number;
@@ -51,38 +51,42 @@ export default function BasicTableWithPagination({
 }) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult as PagintationData;
-
-  if (!data) return (<div>Loading...</div>)
   return (
     <Card>
       <CardHeader title={title} />
-      <CardContent>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <StyledTableRow>
-                {columns.map((col) => (
-                  <StyledTableCell key={col.field}>
-                    {col.headerName}
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {data.results.map((row) => (
-                <StyledTableRow key={row.id}>
+      {context.isLoading ? (
+        <CardContent style={{ textAlign: "center" }}>
+          <CircularProgress color="inherit" />
+        </CardContent>
+      ) : (
+        <CardContent>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <StyledTableRow>
                   {columns.map((col) => (
                     <StyledTableCell key={col.field}>
-                      {col.renderCell ? col.renderCell(row) : row[col.field]}
+                      {col.headerName}
                     </StyledTableCell>
                   ))}
                 </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <ApiFormPaginationComponent />
-      </CardContent>
+              </TableHead>
+              <TableBody>
+                {data.results.map((row) => (
+                  <StyledTableRow key={row.id}>
+                    {columns.map((col) => (
+                      <StyledTableCell key={col.field}>
+                        {col.renderCell ? col.renderCell(row) : row[col.field]}
+                      </StyledTableCell>
+                    ))}
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <ApiFormPaginationComponent />
+        </CardContent>
+      )}
     </Card>
   );
 }

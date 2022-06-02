@@ -31,6 +31,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   const [currentResult, setCurrentResult] = useState(
     props.initialState ? props.initialState.initialResult : null
   );
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -38,27 +39,28 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     if (!props.requiresSubmit) {
       form.submit().then((results) => {
         if (isMounted) setCurrentResult(results);
+        setIsLoading(false);
       });
     } else {
       updateUrl({ submit: [] });
-      // setCurrentResult(null);
+      setIsLoading(false);
     }
 
-    const handleRouteChange = async (url: string) => {
+    const handleRouteChange = (url: string) => {
       const parseUrl = queryString.parseUrl(url);
 
-      setCurrentResult(null);
-
       form.initialize();
+      setIsLoading(true);
       if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
-        await form.submit().then((results) => {
+        form.submit().then((results) => {
           if (isMounted) setCurrentResult(results);
           if (props.requiresSubmit)
             updateUrl({ ...parseUrl.query, submit: [] });
           props.onResultsChange && props.onResultsChange(results);
+          setIsLoading(false);
         });
       } else {
-        setCurrentResult("");
+        setIsLoading(false);
       }
     };
 
@@ -89,6 +91,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       updateUrl={updateUrl}
       currentResult={currentResult}
       setCurrentResult={setCurrentResult}
+      isLoading={isLoading}
     >
       {props.children}
     </ApiFormProvider>

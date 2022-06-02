@@ -6,6 +6,7 @@ const ApiFormContext = React.createContext({
   updateUrl: (newUrlParams: Record<string, string[]>) => {},
   currentResult: undefined as any,
   setCurrentResult: (newCurrentResult: any) => {},
+  isLoading: true
 });
 
 type ApiFormProviderProps = {
@@ -13,7 +14,8 @@ type ApiFormProviderProps = {
   form: ApiForm;
   updateUrl: (newUrlParams: Record<string, string[]>) => void;
   currentResult: any;
-  setCurrentResult: React.Dispatch<any>
+  setCurrentResult: React.Dispatch<any>,
+  isLoading: boolean
 };
 
 export const ApiFormProvider = ({
@@ -21,7 +23,8 @@ export const ApiFormProvider = ({
   form,
   updateUrl,
   currentResult,
-  setCurrentResult
+  setCurrentResult,
+  isLoading
 }: ApiFormProviderProps) => {
   const getField = (name: string) => form.getField(name);
 
@@ -31,7 +34,8 @@ export const ApiFormProvider = ({
         getField: getField,
         updateUrl: updateUrl,
         currentResult: currentResult,
-        setCurrentResult: setCurrentResult
+        setCurrentResult: setCurrentResult,
+        isLoading: isLoading
       }}
     >
       {children}

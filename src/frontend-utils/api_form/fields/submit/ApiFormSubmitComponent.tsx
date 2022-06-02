@@ -17,7 +17,7 @@ export default function ApiFormSubmitComponent() {
   };
 
   return (
-    <LoadingButton variant="contained" onClick={handleSubmit} loading={field.cleanedData}>
+    <LoadingButton variant="contained" onClick={handleSubmit} loading={context.isLoading}>
       Generar
     </LoadingButton>
   );
