@@ -40,7 +40,11 @@ export default function ApiFormSelectComponent(
     }
   };
 
-  let cleanedData: ApiFormSelectChoice | ApiFormSelectChoice[] | null | undefined = field.cleanedData;
+  let cleanedData:
+    | ApiFormSelectChoice
+    | ApiFormSelectChoice[]
+    | null
+    | undefined = field.cleanedData;
   if (
     typeof field.cleanedData === "undefined" ||
     field.cleanedData.length === 0
@@ -53,17 +57,75 @@ export default function ApiFormSelectComponent(
   } else if (!field.multiple) {
     cleanedData = field.cleanedData[0];
   }
+
+  let choices = field.choices;
+  if (
+    context.currentResult !== null &&
+    typeof context.currentResult.aggs !== "undefined" &&
+    typeof context.currentResult.aggs[field.name] !== "undefined"
+  ) {
+    choices = context.currentResult.aggs[field.name].reduce(
+      (
+        acc: { value: string | number; label: string }[],
+        a: { id: number; doc_count: number }
+      ) => {
+        const choice = field.choices.filter((c) => c.value === a.id)[0];
+        acc.push({
+          value: choice.value,
+          label: `${choice.label} (${a.doc_count})`,
+        });
+        return acc;
+      },
+      []
+    );
+    if (
+      cleanedData !== null &&
+      typeof cleanedData !== "undefined" &&
+      choices.length !== 0
+    ) {
+      if (Array.isArray(cleanedData)) {
+        cleanedData = cleanedData.reduce((acc: ApiFormSelectChoice[], c) => {
+          const ch = choices.filter((choice) => c.value === choice.value);
+          if (ch.length !== 0)
+            acc.push({
+              value: c.value,
+              label: ch[0].label,
+            });
+          return acc;
+        }, []);
+      } else {
+        const actualValue = cleanedData.value;
+        const ch = choices.filter((choice) => actualValue === choice.value);
+        if (ch.length !== 0) {
+          cleanedData = {
+            value: actualValue,
+            label: ch[0].label,
+          };
+        } else {
+          cleanedData = null;
+        }
+      }
+    }
+  }
+
+  const isOptionEqualToValue = (
+    option: ApiFormSelectChoice,
+    value: ApiFormSelectChoice
+  ) => {
+    return option.value === value.value;
+  };
+
   return (
     <Autocomplete<ApiFormSelectChoice, boolean, boolean>
       multiple={field.multiple}
-      options={field.choices}
+      options={choices}
       renderInput={(params) => <TextField {...params} label={props.label} />}
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={cleanedData}
       disableClearable={field.required}
       loading={context.isLoading}
-      // getOptionLabel={(e) => e.label + e.value.toString()}
+      isOptionEqualToValue={isOptionEqualToValue}
     />
   );
 }
