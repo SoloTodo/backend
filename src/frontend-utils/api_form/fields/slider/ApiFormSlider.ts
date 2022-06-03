@@ -4,6 +4,7 @@ export type ApiFormSliderChoice = {
   value: number;
   label: string;
   id?: number;
+  count?: number;
 };
 
 export type ApiFormSliderProps = {
