@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { HTMLInputTypeAttribute, useContext, useState } from "react";
+import { HTMLInputTypeAttribute, useContext, useEffect, useState } from "react";
 import ApiFormContext from "../../ApiFormContext";
 import { ApiFormText } from "./ApiFormText";
 
@@ -14,14 +14,22 @@ export default function ApiFormTextComponent({
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormText | undefined;
+  const [first, setFirst] = useState(true);
+  const [value, setValue] = useState<string>("");
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
   }
 
-  const data =
-    typeof field.cleanedData !== "undefined" ? field.cleanedData : "";
-  const [value, setValue] = useState<string>(data);
+  // const data =
+  // typeof field.cleanedData !== "undefined" ? field.cleanedData : "";
+
+  useEffect(() => {
+    if (typeof field.cleanedData !== "undefined" && first) {
+      setValue(field.cleanedData);
+      setFirst(false);
+    }
+  });
 
   const handleChange = () => {
     if (value === "" || value === null) {
