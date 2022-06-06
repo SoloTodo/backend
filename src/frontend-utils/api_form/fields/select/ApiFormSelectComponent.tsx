@@ -59,12 +59,13 @@ export default function ApiFormSelectComponent(
   }
 
   let choices = field.choices;
+  let strictName = field.name.replace("_min", "").replace("_max", "");
   if (
     context.currentResult !== null &&
     typeof context.currentResult.aggs !== "undefined" &&
-    typeof context.currentResult.aggs[field.name] !== "undefined"
+    typeof context.currentResult.aggs[strictName] !== "undefined"
   ) {
-    choices = context.currentResult.aggs[field.name].reduce(
+    choices = context.currentResult.aggs[strictName].reduce(
       (
         acc: { value: string | number; label: string }[],
         a: { id: number; doc_count: number }
