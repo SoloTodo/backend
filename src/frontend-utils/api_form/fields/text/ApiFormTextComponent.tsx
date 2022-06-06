@@ -31,14 +31,19 @@ export default function ApiFormTextComponent({
     }
   });
 
-  const handleChange = () => {
-    if (value === "" || value === null) {
-      context.updateUrl({ [name]: [] });
-    } else {
-      context.updateUrl({ [name]: [value] });
+  const handleChange = (newValue: string | null) => {
+    console.log(newValue)
+    console.log(value)
+    if (newValue !== value) {
+      if (value === "" || value === null) {
+        context.updateUrl({ [name]: [] });
+      } else {
+        context.updateUrl({ [name]: [value] });
+      }
     }
   };
 
+  // TODO: check actualización de search una sola vez
   return (
     <TextField
       id="outlined-basic"
@@ -47,8 +52,8 @@ export default function ApiFormTextComponent({
       style={{ width: "100%" }}
       value={value}
       onChange={(evt) => setValue(evt.target.value)}
-      onKeyPress={(e) => e.key === "Enter" && handleChange()}
-      onBlur={handleChange}
+      onKeyPress={(e) => e.key === "Enter" && handleChange(null)}
+      onBlur={(e) => handleChange(e.target.value)}
       type={inputType}
     />
   );
