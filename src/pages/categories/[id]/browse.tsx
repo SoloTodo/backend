@@ -73,7 +73,7 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 
 export default function CategoryBrowse({
   categorySpecsFormLayout,
-  brands
+  brands,
 }: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
   brands: Brand[];
@@ -147,7 +147,9 @@ export default function CategoryBrowse({
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
-        const fullName = filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
+        // TODO: probar con start y end
+        const fullName =
+          filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
         fieldsMetadata.push({
           fieldType: "select" as "select",
           name: fullName,
@@ -234,7 +236,7 @@ export default function CategoryBrowse({
               </Card>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <Card>
+              <Card style={{ overflow: "visible" }}>
                 <CardHeader title="Filtros" />
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
@@ -271,7 +273,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=${context.params?.id}`
     );
-    categorySpecsFormLayout = response[0]
+    categorySpecsFormLayout = response[0];
     response.forEach((res: { website: string }) => {
       if (res.website == "http://localhost:8000/websites/1/")
         categorySpecsFormLayout = res;
@@ -283,7 +285,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         categorySpecsFormLayout: categorySpecsFormLayout,
-        brands: brands
+        brands: brands,
       },
     };
   } catch {
