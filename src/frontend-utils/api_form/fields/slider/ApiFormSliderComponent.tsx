@@ -18,21 +18,26 @@ export default function ApiFormSliderComponent({
   }
 
   let choices: ApiFormSliderChoice[] = [];
-  if (field.discrete) {
-    choices = field.choices.map((c, index) => ({
-      label: c.label,
-      id: c.value,
-      value: index,
-      count: 0,
-    }));
-    // TODO: filter by aggs
-    // usar el cálculo de aggs en continuo e iterar sobre el mismo en vez de un for por sus limites
-  } else {
-    let lowLimit = 0;
-    let limit = 0;
-    let aggsValues = [];
-    const step = field.step !== null ? field.step : 1;
-    if (context.currentResult !== null) {
+  let aggsValues: { id: number; doc_count: number }[] = [];
+  if (context.currentResult !== null) {
+    if (field.discrete) {
+      let aggsCount = 0;
+      aggsValues = context.currentResult.aggs[field.name];
+      choices = field.choices.map((c, index) => {
+        const doc = aggsValues.filter((a) => a.id == c.value);
+        if (doc.length !== 0) aggsCount += doc[0].doc_count;
+        return {
+          label: c.label,
+          id: c.value,
+          value: index,
+          count: aggsCount,
+        };
+      });
+    } else {
+      let lowLimit = 0;
+      let limit = 0;
+      const step = field.step !== null ? field.step : 1;
+
       aggsValues = context.currentResult.aggs[field.name].sort(
         (a: { id: number }, b: { id: number }) => a.id - b.id
       );
@@ -42,9 +47,7 @@ export default function ApiFormSliderComponent({
       }
 
       for (let i = lowLimit; i <= limit; i++) {
-        const doc_count = aggsValues.filter(
-          (a: { id: number }) => a.id <= step * i
-        );
+        const doc_count = aggsValues.filter((a) => a.id <= step * i);
         const count =
           doc_count.length !== 0
             ? doc_count.reduce(
@@ -76,23 +79,19 @@ export default function ApiFormSliderComponent({
       ? choices.filter((c) => c.id === field.cleanedData![1])
       : [];
   const minSelected =
-    minSelectedChoice.length !== 0
-      ? minSelectedChoice[0].value
-      : minChoice.value;
+    minSelectedChoice.length !== 0 ? minSelectedChoice[0] : minChoice;
   const maxSelected =
-    maxSelectedChoice.length !== 0
-      ? maxSelectedChoice[0].value
-      : maxChoice.value;
+    maxSelectedChoice.length !== 0 ? maxSelectedChoice[0] : maxChoice;
 
   const [cleanedData, setCleanedData] = useState<number | number[]>([
-    minSelected,
-    maxSelected,
+    minSelected.value,
+    maxSelected.value,
   ]);
   const [first, setFirst] = useState(true);
 
   useEffect(() => {
     if (typeof field.cleanedData !== "undefined" && first) {
-      setCleanedData([minSelected, maxSelected]);
+      setCleanedData([minSelected.value, maxSelected.value]);
       setFirst(false);
     }
   });
@@ -106,20 +105,27 @@ export default function ApiFormSliderComponent({
     _newValue: number | number[]
   ) => {
     if (Array.isArray(cleanedData)) {
-      const newIdStart = choices.filter((c) => c.value === cleanedData[0])[0]
-        .id;
-      const newIdEnd = choices.filter((c) => c.value === cleanedData[1])[0].id;
+      const newStart = choices.filter((c) => c.value === cleanedData[0]);
+      const newEnd = choices.filter((c) => c.value === cleanedData[1]);
 
-      if (newIdStart !== minSelected || newIdEnd !== maxSelected) {
-        if (minChoice.id === newIdStart || typeof newIdStart === "undefined") {
-          context.updateUrl({ [`${name}_min`]: [] });
-        } else {
-          context.updateUrl({ [`${name}_min`]: [newIdStart.toString()] });
-        }
-        if (maxChoice.id === newIdEnd || typeof newIdEnd === "undefined") {
-          context.updateUrl({ [`${name}_max`]: [] });
-        } else {
-          context.updateUrl({ [`${name}_max`]: [newIdEnd.toString()] });
+      if (newStart.length !== 0 && newEnd.length !== 0) {
+        const newIdStart = newStart[0].id;
+        const newIdEnd = newEnd[0].id;
+
+        if (newIdStart !== minSelected.id || newIdEnd !== maxSelected.id) {
+          if (
+            minChoice.id === newIdStart ||
+            typeof newIdStart === "undefined"
+          ) {
+            context.updateUrl({ [`${name}_min`]: [] });
+          } else {
+            context.updateUrl({ [`${name}_min`]: [newIdStart.toString()] });
+          }
+          if (maxChoice.id === newIdEnd || typeof newIdEnd === "undefined") {
+            context.updateUrl({ [`${name}_max`]: [] });
+          } else {
+            context.updateUrl({ [`${name}_max`]: [newIdEnd.toString()] });
+          }
         }
       }
     }
