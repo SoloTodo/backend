@@ -31,6 +31,8 @@ import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBro
 import { Brand } from "src/frontend-utils/types/banner";
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
+import ApiFormPriceRangeComponent from "src/frontend-utils/api_form/fields/price_range/ApiFormPriceRangeComponent";
+import { Currency } from "src/frontend-utils/redux/api_resources/types";
 
 // ----------------------------------------------------------------------
 
@@ -110,6 +112,10 @@ export default function CategoryBrowse({
       fieldType: "text" as "text",
       name: "search",
     },
+    {
+      fieldType: "price_range" as "price_range",
+      name: "offer_price_usd",
+    },
   ];
 
   const filterComponents: JSX.Element[] = [];
@@ -147,7 +153,6 @@ export default function CategoryBrowse({
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
-        // TODO: probar con start y end
         const fullName =
           filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
         fieldsMetadata.push({
@@ -240,6 +245,17 @@ export default function CategoryBrowse({
                 <CardHeader title="Filtros" />
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
+                    <Grid item xs={12}>
+                      <ApiFormPriceRangeComponent
+                        name="offer_price_usd"
+                        label="Precio oferta"
+                        currencyUsed={
+                          apiResourceObjects[
+                            "http://localhost:8000/currencies/1/"
+                          ] as Currency
+                        }
+                      />
+                    </Grid>
                     <Grid item xs={12}>
                       <ApiFormTextComponent
                         name="search"

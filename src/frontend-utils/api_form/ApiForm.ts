@@ -26,6 +26,10 @@ import {
   ApiFormSlider,
   ApiFormSliderProps,
 } from "./fields/slider/ApiFormSlider";
+import {
+  ApiFormPriceRange,
+  ApiFormPriceRangeProps,
+} from "./fields/price_range/ApiFormPriceRange";
 
 export type ApiFormFieldMetadata =
   | ApiFormSelectProps
@@ -34,7 +38,8 @@ export type ApiFormFieldMetadata =
   | ApiFormDateRangePickerProps
   | ApiFormSubmitProps
   | ApiFormRemoveListFieldProps
-  | ApiFormSliderProps;
+  | ApiFormSliderProps
+  | ApiFormPriceRangeProps;
 export type ApiFormField =
   | ApiFormSelect
   | ApiFormPagination
@@ -42,7 +47,8 @@ export type ApiFormField =
   | ApiFormDateRangePicker
   | ApiFormSubmit
   | ApiFormRemoveListField
-  | ApiFormSlider;
+  | ApiFormSlider
+  | ApiFormPriceRange;
 
 export class ApiForm {
   private fields: Record<string, ApiFormField> = {};
@@ -105,6 +111,12 @@ export class ApiForm {
             fieldMetadata.step,
             fieldMetadata.unit,
             fieldMetadata.discrete,
+            initialData && initialData[fieldMetadata.name]
+          );
+          break;
+        case "price_range":
+          this.fields[fieldMetadata.name] = new ApiFormPriceRange(
+            fieldMetadata.name,
             initialData && initialData[fieldMetadata.name]
           );
       }
