@@ -15,14 +15,12 @@ export default function ApiFormTextComponent({
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormText | undefined;
   const [first, setFirst] = useState(true);
+  const [pushUrl, setPushUrl] = useState(false);
   const [value, setValue] = useState<string>("");
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
   }
-
-  // const data =
-  // typeof field.cleanedData !== "undefined" ? field.cleanedData : "";
 
   useEffect(() => {
     if (typeof field.cleanedData !== "undefined" && first) {
@@ -31,19 +29,22 @@ export default function ApiFormTextComponent({
     }
   });
 
-  const handleChange = (newValue: string | null) => {
-    console.log(newValue)
-    console.log(value)
-    if (newValue !== value) {
+  const onChange = (value: string) => {
+    setValue(value);
+    setPushUrl(false);
+  }
+
+  const handleChange = () => {
+    if (!pushUrl) {
       if (value === "" || value === null) {
         context.updateUrl({ [name]: [] });
       } else {
         context.updateUrl({ [name]: [value] });
       }
+      setPushUrl(true);
     }
   };
 
-  // TODO: check actualización de search una sola vez
   return (
     <TextField
       id="outlined-basic"
@@ -51,9 +52,9 @@ export default function ApiFormTextComponent({
       variant="outlined"
       style={{ width: "100%" }}
       value={value}
-      onChange={(evt) => setValue(evt.target.value)}
-      onKeyPress={(e) => e.key === "Enter" && handleChange(null)}
-      onBlur={(e) => handleChange(e.target.value)}
+      onChange={(evt) => onChange(evt.target.value)}
+      onKeyPress={(e) => e.key === "Enter" && handleChange()}
+      onBlur={handleChange}
       type={inputType}
     />
   );
