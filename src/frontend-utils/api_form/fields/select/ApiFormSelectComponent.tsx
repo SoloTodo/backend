@@ -8,6 +8,11 @@ type ApiFormSelectComponentProps = {
   label: string;
 };
 
+type DocCount = {
+  id: string | number;
+  doc_count: number;
+};
+
 export const choicesYesNo = [
   { label: "Si", value: 1 },
   { label: "No", value: 0 },
@@ -65,16 +70,22 @@ export default function ApiFormSelectComponent(
     typeof context.currentResult.aggs !== "undefined" &&
     typeof context.currentResult.aggs[strictName] !== "undefined"
   ) {
-    choices = context.currentResult.aggs[strictName].reduce(
-      (
-        acc: { value: string | number; label: string }[],
-        a: { id: number; doc_count: number }
-      ) => {
-        const choice = field.choices.filter((c) => c.value === a.id)[0];
-        acc.push({
-          value: choice.value,
-          label: `${choice.label} (${a.doc_count})`,
-        });
+    let docCountTotal = context.currentResult.aggs[strictName].reduce(
+      (acc: number, a: DocCount) => (acc += a.doc_count),
+      0
+    );
+    choices = field.choices.reduce(
+      (acc: { value: string | number; label: string }[], a) => {
+        const choiceWithDoc = context.currentResult.aggs[strictName].filter(
+          (c: DocCount) => c.id === a.value
+        );
+        if (choiceWithDoc.length > 0) {
+          acc.push({
+            value: a.value,
+            label: `${a.label} (${docCountTotal})`,
+          });
+          docCountTotal -= choiceWithDoc[0].doc_count;
+        }
         return acc;
       },
       []
