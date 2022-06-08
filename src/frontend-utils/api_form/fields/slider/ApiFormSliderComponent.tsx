@@ -113,19 +113,21 @@ export default function ApiFormSliderComponent({
         const newIdEnd = newEnd[0].id;
 
         if (newIdStart !== minSelected.id || newIdEnd !== maxSelected.id) {
+          let minValue: string[] = [];
+          let maxValue: string[] = [];
           if (
-            minChoice.id === newIdStart ||
-            typeof newIdStart === "undefined"
+            minChoice.id !== newIdStart &&
+            typeof newIdStart !== "undefined"
           ) {
-            context.updateUrl({ [`${name}_min`]: [] });
-          } else {
-            context.updateUrl({ [`${name}_min`]: [newIdStart.toString()] });
+            minValue = [newIdStart.toString()];
           }
-          if (maxChoice.id === newIdEnd || typeof newIdEnd === "undefined") {
-            context.updateUrl({ [`${name}_max`]: [] });
-          } else {
-            context.updateUrl({ [`${name}_max`]: [newIdEnd.toString()] });
+          if (maxChoice.id !== newIdEnd && typeof newIdEnd !== "undefined") {
+            maxValue = [newIdEnd.toString()];
           }
+          context.updateUrl({
+            [`${name}_min`]: minValue,
+            [`${name}_max`]: maxValue,
+          });
         }
       }
     }
