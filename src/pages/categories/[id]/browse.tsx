@@ -8,7 +8,7 @@ import {
   Container,
   Grid,
 } from "@mui/material";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import Layout from "src/layouts";
@@ -76,9 +76,11 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 export default function CategoryBrowse({
   categorySpecsFormLayout,
   brands,
+  // initResults
 }: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
   brands: Brand[];
+  // initResults: any;
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
@@ -88,6 +90,17 @@ export default function CategoryBrowse({
     "categories",
     categoryId
   );
+
+  const [initResults, setInitResults] = useState<{price_ranges: any} | null>(null);
+
+  useEffect(() => {
+    jwtFetch(
+      null,
+      `${category.url}full_browse/`
+    ).then((data) => {
+      setInitResults(data);
+    });
+  }, []);
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
@@ -149,7 +162,7 @@ export default function CategoryBrowse({
         });
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
-            <ApiFormSelectComponent name={filter.name} label={filter.label} />
+            <ApiFormSelectComponent name={filter.name} label={filter.label} exact />
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
@@ -246,7 +259,7 @@ export default function CategoryBrowse({
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
                     <Grid item xs={12}>
-                      <ApiFormPriceRangeComponent
+                     { initResults !== null && <ApiFormPriceRangeComponent
                         name="offer_price_usd"
                         label="Precio oferta"
                         currencyUsed={
@@ -254,7 +267,8 @@ export default function CategoryBrowse({
                             "http://localhost:8000/currencies/1/"
                           ] as Currency
                         }
-                      />
+                        initPriceRanges={initResults.price_ranges}
+                      />}
                     </Grid>
                     <Grid item xs={12}>
                       <ApiFormTextComponent
@@ -298,10 +312,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       apiSettings.apiResourceEndpoints.brands
     );
+    // const initResults = await jwtFetch(
+    //   context,
+    //   `${apiSettings.apiResourceEndpoints.categories}${context.params?.id}/full_browse/`
+    // );
     return {
       props: {
         categorySpecsFormLayout: categorySpecsFormLayout,
         brands: brands,
+        // initResults: initResults
       },
     };
   } catch {

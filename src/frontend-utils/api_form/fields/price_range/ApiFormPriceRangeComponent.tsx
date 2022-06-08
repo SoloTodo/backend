@@ -16,70 +16,83 @@ export default function ApiFormPriceRangeComponent({
   name,
   label,
   currencyUsed,
+  initPriceRanges,
 }: {
   name: string;
   label: string;
   currencyUsed: Currency;
+  initPriceRanges: { [key: string]: PriceRanges };
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormPriceRange | undefined;
   const [cleanedData, setCleanedData] = useState([0, 0]);
   const [first, setFirst] = useState(true);
+  const [pushUrl, setPushUrl] = useState(true);
+  const [priceRanges, setPriceRanges] = useState<PriceRanges>(
+    initPriceRanges[name]
+  );
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
   }
 
-  const normalizeValue = (denormalizedValue: number, props: PriceRanges) => {
-    if (denormalizedValue <= props["80th"]) {
+  const normalizeValue = (denormalizedValue: number) => {
+    if (denormalizedValue <= priceRanges["80th"]) {
       return (
-        (800 * (denormalizedValue - props.min)) / (props["80th"] - props.min)
+        (800 * (denormalizedValue - priceRanges.min)) /
+        (priceRanges["80th"] - priceRanges.min)
       );
     } else {
       return (
         800 +
-        (200 * (denormalizedValue - props["80th"])) /
-          (props.max - props["80th"])
+        (200 * (denormalizedValue - priceRanges["80th"])) /
+          (priceRanges.max - priceRanges["80th"])
       );
     }
   };
 
-  const denormalizeValue = (value: number, props: PriceRanges) => {
+  const denormalizeValue = (value: number) => {
     if (value <= 800) {
-      return props.min + (value / 800) * (props["80th"] - props.min);
+      return (
+        priceRanges.min +
+        (value / 800) * (priceRanges["80th"] - priceRanges.min)
+      );
     } else {
       return (
-        props["80th"] + ((value - 800) / 200) * (props.max - props["80th"])
+        priceRanges["80th"] +
+        ((value - 800) / 200) * (priceRanges.max - priceRanges["80th"])
       );
     }
   };
-
-  // let min = 0;
-  // let max = 0;
-  // console.log(context.currentResult);
-  // if (context.currentResult !== null) {
-  //   const price_ranges = context.currentResult.price_ranges;
-  //   if (price_ranges !== null) {
-  //     const prices = price_ranges[name];
-  //     min = currency(prices.min, { precision: 0 }).intValue;
-  //     max = currency(prices.max, { precision: 0 }).intValue;
-  //   }
-  // }
 
   useEffect(() => {
     if (
       typeof field.cleanedData !== "undefined" &&
       context.currentResult !== null &&
+      context.currentResult.price_ranges !== null &&
+      JSON.stringify(context.currentResult.price_ranges) !==
+        JSON.stringify(priceRanges)
+    ) {
+      const price_ranges = context.currentResult.price_ranges[name];
+      if (
+        price_ranges.min < priceRanges.min ||
+        price_ranges.max > priceRanges.max
+      ) {
+        setPriceRanges(price_ranges);
+      }
+    }
+    if (
+      typeof field.cleanedData !== "undefined" &&
+      priceRanges["80th"] !== 0 &&
       first
     ) {
-      const price_ranges = context.currentResult.price_ranges;
       const minNorm =
         field.cleanedData[0] !== null
-          ? normalizeValue(field.cleanedData[0], price_ranges)
+          ? normalizeValue(field.cleanedData[0])
           : 0;
       const maxNorm =
         field.cleanedData[1] !== null
-          ? normalizeValue(field.cleanedData[1], price_ranges)
+          ? normalizeValue(field.cleanedData[1])
           : 1000;
       setCleanedData([
         currency(minNorm, { precision: 0 }).intValue,
@@ -91,30 +104,34 @@ export default function ApiFormPriceRangeComponent({
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setCleanedData(newValue as number[]);
+    setPushUrl(true);
   };
 
   const handleChangeSubmit = (
     _event: Event | SyntheticEvent<Element, Event>,
     _newValue: number | number[]
   ) => {
-    // if (Array.isArray(cleanedData)) {
-    //   if (cleanedData[0] !== min || cleanedData[1] !== max) {
-    //     if (cleanedData[0] === min) {
-    //       context.updateUrl({ [`${name}_min`]: [] });
-    //     } else {
-    //       context.updateUrl({ [`${name}_min`]: [cleanedData[0].toString()] });
-    //     }
-    //     if (cleanedData[1] === max) {
-    //       context.updateUrl({ [`${name}_max`]: [] });
-    //     } else {
-    //       context.updateUrl({ [`${name}_max`]: [cleanedData[1].toString()] });
-    //     }
-    //   }
-    // }
+    if (Array.isArray(cleanedData)) {
+      if (pushUrl) {
+        let minValue: string[] = [];
+        let maxValue: string[] = [];
+        if (cleanedData[0] !== 0) {
+          minValue = [denormalizeValue(cleanedData[0]).toString()];
+        }
+        if (cleanedData[1] !== 1000) {
+          maxValue = [denormalizeValue(cleanedData[1]).toString()];
+        }
+        context.updateUrl({
+          [`${name}_min`]: minValue,
+          [`${name}_max`]: maxValue,
+        });
+        setPushUrl(false);
+      }
+    }
   };
 
   const valueLabelFormat = (value: number) => {
-    return currency(value, { precision: 0 })
+    return currency(denormalizeValue(value), { precision: 0 })
       .multiply(currencyUsed.exchange_rate)
       .format();
   };
