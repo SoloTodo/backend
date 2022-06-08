@@ -6,6 +6,7 @@ import { ApiFormSelect, ApiFormSelectChoice } from "./ApiFormSelect";
 type ApiFormSelectComponentProps = {
   name: string;
   label: string;
+  exact?: boolean;
 };
 
 type DocCount = {
@@ -74,6 +75,7 @@ export default function ApiFormSelectComponent(
       (acc: number, a: DocCount) => (acc += a.doc_count),
       0
     );
+    let docCountZero = 0;
     choices = field.choices.reduce(
       (acc: { value: string | number; label: string }[], a) => {
         const choiceWithDoc = context.currentResult.aggs[strictName].filter(
@@ -82,9 +84,16 @@ export default function ApiFormSelectComponent(
         if (choiceWithDoc.length > 0) {
           acc.push({
             value: a.value,
-            label: `${a.label} (${docCountTotal})`,
+            label: `${a.label} (${
+              props.exact
+                ? choiceWithDoc[0].doc_count
+                : field.name.includes("_min")
+                ? docCountTotal
+                : docCountZero
+            })`,
           });
           docCountTotal -= choiceWithDoc[0].doc_count;
+          docCountZero += choiceWithDoc[0].doc_count;
         }
         return acc;
       },
@@ -132,6 +141,9 @@ export default function ApiFormSelectComponent(
       multiple={field.multiple}
       options={choices}
       renderInput={(params) => <TextField {...params} label={props.label} />}
+      renderOption={(props, option) => (
+        <li {...props} key={option.value}>{option.label}</li>
+      )}
       filterSelectedOptions
       onChange={(_evt, newValues) => handleChange(newValues)}
       value={cleanedData}
