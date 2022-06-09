@@ -14,7 +14,6 @@ export default function ApiFormTextComponent({
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormText | undefined;
-  const [pushUrl, setPushUrl] = useState(true);
   const [value, setValue] = useState<string>("");
 
   if (typeof field === "undefined") {
@@ -29,17 +28,15 @@ export default function ApiFormTextComponent({
 
   const onChange = (value: string) => {
     setValue(value);
-    setPushUrl(true);
   }
 
   const handleChange = () => {
-    if (pushUrl) {
+    if (value !== field.cleanedData) {
       if (value === "" || value === null) {
         context.updateUrl({ [name]: [] });
       } else {
         context.updateUrl({ [name]: [value] });
       }
-      setPushUrl(false);
     }
   };
 
