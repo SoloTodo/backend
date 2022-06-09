@@ -13,14 +13,12 @@ export type ApiFormSliderProps = {
   choices: ApiFormSliderChoice[];
   step: string | null;
   unit: string | null;
-  discrete?: boolean;
 };
 
 export class ApiFormSlider {
   readonly name: string;
   readonly choices: ApiFormSliderChoice[];
-  readonly discrete: boolean;
-  readonly step: number | null;
+  readonly step: string | null;
   readonly unit: string | null;
   cleanedData?: [number | null, number | null];
 
@@ -29,14 +27,12 @@ export class ApiFormSlider {
     choices: ApiFormSliderChoice[],
     step: string | null,
     unit: string | null,
-    discrete?: boolean,
     cleanedData?: [number | null, number | null]
   ) {
     this.name = name;
     this.choices = choices;
-    this.step = Number(step);
+    this.step = step;
     this.unit = unit;
-    this.discrete = discrete || false;
     this.cleanedData = cleanedData;
   }
 
@@ -44,10 +40,17 @@ export class ApiFormSlider {
     const start = query.get(`${this.name}_min`);
     const end = query.get(`${this.name}_max`);
 
-    const valueStart = start === null ? null : Number(start);
-    const valueEnd = end === null ? null : Number(end);
-
-    this.cleanedData = [valueStart, valueEnd];
+    if (this.step === null) {
+      const choiceStart = this.choices.filter((c) => c.value === Number(start));
+      const valueStart = choiceStart.length !== 0 ? choiceStart[0].value : null;
+      const choiceEnd = this.choices.filter((c) => c.value === Number(end));
+      const valueEnd = choiceEnd.length !== 0 ? choiceEnd[0].value : null;
+      this.cleanedData = [valueStart, valueEnd];
+    } else {
+      const valueStart = start === null ? null : Number(start);
+      const valueEnd = end === null ? null : Number(end);
+      this.cleanedData = [valueStart, valueEnd];
+    }
   }
 
   isValid() {

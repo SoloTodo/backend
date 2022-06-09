@@ -5,8 +5,11 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Grid,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -76,8 +79,8 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 export default function CategoryBrowse({
   categorySpecsFormLayout,
   brands,
-  // initResults
-}: {
+}: // initResults
+{
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
   brands: Brand[];
   // initResults: any;
@@ -91,13 +94,12 @@ export default function CategoryBrowse({
     categoryId
   );
 
-  const [initResults, setInitResults] = useState<{price_ranges: any} | null>(null);
+  const [initResults, setInitResults] = useState<{ price_ranges: any } | null>(
+    null
+  );
 
   useEffect(() => {
-    jwtFetch(
-      null,
-      `${category.url}full_browse/`
-    ).then((data) => {
+    jwtFetch(null, `${category.url}full_browse/`).then((data) => {
       setInitResults(data);
     });
   }, []);
@@ -162,7 +164,11 @@ export default function CategoryBrowse({
         });
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
-            <ApiFormSelectComponent name={filter.name} label={filter.label} exact />
+            <ApiFormSelectComponent
+              name={filter.name}
+              label={filter.label}
+              exact
+            />
           </AccordionDetails>
         );
       } else if (filter.type === "gte" || filter.type === "lte") {
@@ -185,7 +191,6 @@ export default function CategoryBrowse({
           name: filter.name,
           step: filter.continuous_range_step,
           unit: filter.continuous_range_unit,
-          discrete: filter.choices !== null,
           choices: filterChoices,
         });
         fieldFilters.push(
@@ -259,16 +264,25 @@ export default function CategoryBrowse({
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
                     <Grid item xs={12}>
-                     { initResults !== null && <ApiFormPriceRangeComponent
-                        name="offer_price_usd"
-                        label="Precio oferta"
-                        currencyUsed={
-                          apiResourceObjects[
-                            "http://localhost:8000/currencies/1/"
-                          ] as Currency
-                        }
-                        initPriceRanges={initResults.price_ranges}
-                      />}
+                      {initResults !== null ? (
+                        <ApiFormPriceRangeComponent
+                          name="offer_price_usd"
+                          label="Precio oferta"
+                          currencyUsed={
+                            apiResourceObjects[
+                              "http://localhost:8000/currencies/1/"
+                            ] as Currency
+                          }
+                          initPriceRanges={initResults.price_ranges}
+                        />
+                      ) : (
+                        <Stack direction="column">
+                          <Typography>{"Precio oferta"}</Typography>
+                          <div style={{ textAlign: "center" }}>
+                            <CircularProgress color="inherit" />
+                          </div>
+                        </Stack>
+                      )}
                     </Grid>
                     <Grid item xs={12}>
                       <ApiFormTextComponent

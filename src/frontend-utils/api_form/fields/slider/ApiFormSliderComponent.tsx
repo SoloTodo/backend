@@ -1,7 +1,28 @@
-import { Box, Slider, Stack, Typography } from "@mui/material";
-import { SyntheticEvent, useContext, useEffect, useState } from "react";
+import {
+  Box,
+  Slider,
+  Stack,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { SyntheticEvent, useContext, useState } from "react";
 import ApiFormContext from "../../ApiFormContext";
 import { ApiFormSlider, ApiFormSliderChoice } from "./ApiFormSlider";
+
+const Loading = (label: string, loading: boolean) => {
+  return (
+    <Stack direction="column">
+      <Typography>{label}</Typography>
+      <div style={{ textAlign: "center" }}>
+        {loading ? (
+          <CircularProgress color="inherit" />
+        ) : (
+          <Typography variant="caption">Sin opciones</Typography>
+        )}
+      </div>
+    </Stack>
+  );
+};
 
 export default function ApiFormSliderComponent({
   name,
@@ -12,89 +33,91 @@ export default function ApiFormSliderComponent({
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormSlider | undefined;
+  const [cleanedData, setCleanedData] = useState<number | number[]>([0, 0]);
+  const [first, setFirst] = useState(true);
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
   }
 
+  if (
+    context.currentResult === null ||
+    typeof field.cleanedData === "undefined"
+  ) {
+    return Loading(label, true);
+  }
+
   let choices: ApiFormSliderChoice[] = [];
   let aggsValues: { id: number; doc_count: number }[] = [];
-  if (context.currentResult !== null) {
-    if (field.discrete) {
-      let aggsCount = 0;
-      aggsValues = context.currentResult.aggs[field.name];
-      choices = field.choices.map((c, index) => {
-        const doc = aggsValues.filter((a) => a.id == c.value);
-        if (doc.length !== 0) aggsCount += doc[0].doc_count;
-        return {
-          label: c.label,
-          id: c.value,
-          value: index,
-          count: aggsCount,
-        };
+  if (field.step === null) {
+    let aggsCount = 0;
+    aggsValues = context.currentResult.aggs[field.name];
+    choices = field.choices.map((c, index) => {
+      const doc = aggsValues.filter((a) => a.id == c.value);
+      if (doc.length !== 0) aggsCount += doc[0].doc_count;
+      return {
+        label: c.label,
+        id: c.value,
+        value: index,
+        count: aggsCount,
+      };
+    });
+  } else {
+    let lowLimit = 0;
+    let limit = 0;
+    const step = Number(field.step);
+
+    aggsValues = context.currentResult.aggs[field.name].sort(
+      (a: { id: number }, b: { id: number }) => a.id - b.id
+    );
+    if (aggsValues.length !== 0) {
+      limit = Math.round(aggsValues[aggsValues.length - 1].id / step);
+      lowLimit = Math.round(aggsValues[0].id / step);
+    }
+
+    for (let i = lowLimit; i <= limit; i++) {
+      const doc_count = aggsValues.filter((a) => a.id <= step * i);
+      const count =
+        doc_count.length !== 0
+          ? doc_count.reduce(
+              (acc: number, a: { doc_count: number }) => acc + a.doc_count,
+              0
+            )
+          : 0;
+      choices.push({
+        count: count,
+        label: (step * i).toString(),
+        value: step * i,
+        id: step * i,
       });
-    } else {
-      let lowLimit = 0;
-      let limit = 0;
-      const step = field.step !== null ? field.step : 1;
-
-      aggsValues = context.currentResult.aggs[field.name].sort(
-        (a: { id: number }, b: { id: number }) => a.id - b.id
-      );
-      if (aggsValues.length !== 0) {
-        limit = Math.round(aggsValues[aggsValues.length - 1].id / step);
-        lowLimit = Math.round(aggsValues[0].id / step);
-      }
-
-      for (let i = lowLimit; i <= limit; i++) {
-        const doc_count = aggsValues.filter((a) => a.id <= step * i);
-        const count =
-          doc_count.length !== 0
-            ? doc_count.reduce(
-                (acc: number, a: { doc_count: number }) => acc + a.doc_count,
-                0
-              )
-            : 0;
-        choices.push({
-          count: count,
-          label: (step * i).toString(),
-          value: step * i,
-          id: step * i,
-        });
-      }
     }
   }
 
-  const defaultChoice = { value: 0, id: 0, label: "" };
-  const minChoice = choices.length !== 0 ? choices[0] : defaultChoice;
-  const maxChoice =
-    choices.length !== 0 ? choices[choices.length - 1] : defaultChoice;
+  if (choices.length === 0) {
+    return Loading(label, false);
+  }
 
-  const minSelectedChoice =
-    typeof field.cleanedData !== "undefined" && field.cleanedData[0] !== null
-      ? choices.filter((c) => c.id === field.cleanedData![0])
-      : [];
-  const maxSelectedChoice =
-    typeof field.cleanedData !== "undefined" && field.cleanedData[1] !== null
-      ? choices.filter((c) => c.id === field.cleanedData![1])
-      : [];
-  const minSelected =
-    minSelectedChoice.length !== 0 ? minSelectedChoice[0] : minChoice;
-  const maxSelected =
-    maxSelectedChoice.length !== 0 ? maxSelectedChoice[0] : maxChoice;
+  const minChoice = choices[0];
+  const maxChoice = choices[choices.length - 1];
 
-  const [cleanedData, setCleanedData] = useState<number | number[]>([
-    minSelected.value,
-    maxSelected.value,
-  ]);
-  const [first, setFirst] = useState(true);
-
-  useEffect(() => {
-    if (typeof field.cleanedData !== "undefined" && first) {
-      setCleanedData([minSelected.value, maxSelected.value]);
-      setFirst(false);
+  if (first) {
+    if (field.step === null) {
+      setCleanedData([
+        field.cleanedData[0] !== null
+          ? choices.filter((c) => c.id === field.cleanedData![0])[0].value
+          : minChoice.value,
+        field.cleanedData[1] !== null
+          ? choices.filter((c) => c.id === field.cleanedData![1])[0].value
+          : maxChoice.value,
+      ]);
+    } else {
+      setCleanedData([
+        field.cleanedData[0] !== null ? field.cleanedData[0] : minChoice.value,
+        field.cleanedData[1] !== null ? field.cleanedData[1] : maxChoice.value,
+      ]);
     }
-  });
+    setFirst(false);
+  }
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
     setCleanedData(newValue);
@@ -112,7 +135,10 @@ export default function ApiFormSliderComponent({
         const newIdStart = newStart[0].id;
         const newIdEnd = newEnd[0].id;
 
-        if (newIdStart !== minSelected.id || newIdEnd !== maxSelected.id) {
+        if (
+          newIdStart !== field.cleanedData![0] ||
+          newIdEnd !== field.cleanedData![1]
+        ) {
           let minValue: string[] = [];
           let maxValue: string[] = [];
           if (
@@ -155,11 +181,11 @@ export default function ApiFormSliderComponent({
       <Box sx={{ width: "100%" }}>
         <Slider
           value={cleanedData}
-          marks={field.discrete ? choices : []}
+          marks={field.step === null ? choices : []}
           valueLabelDisplay={"auto"}
-          step={field.step}
-          max={choices.length !== 0 ? choices[choices.length - 1].value : 100}
-          min={choices.length !== 0 ? choices[0].value : 0}
+          step={Number(field.step)}
+          max={choices[choices.length - 1].value}
+          min={choices[0].value}
           onChange={handleChange}
           onChangeCommitted={handleChangeSubmit}
           valueLabelFormat={valueLabelFormat}

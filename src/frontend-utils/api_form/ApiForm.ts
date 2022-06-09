@@ -110,7 +110,6 @@ export class ApiForm {
             fieldMetadata.choices,
             fieldMetadata.step,
             fieldMetadata.unit,
-            fieldMetadata.discrete,
             initialData && initialData[fieldMetadata.name]
           );
           break;
