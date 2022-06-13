@@ -186,13 +186,26 @@ export default function CategoryBrowse({
           </AccordionDetails>
         );
       } else if (filter.type === "range") {
-        fieldsMetadata.push({
-          fieldType: "slider" as "slider",
-          name: filter.name,
-          step: filter.continuous_range_step,
-          unit: filter.continuous_range_unit,
-          choices: filterChoices,
-        });
+        if (
+          filter.continuous_range_step !== null &&
+          filter.continuous_range_unit !== null
+        ) {
+          fieldsMetadata.push({
+            fieldType: "slider" as "slider",
+            name: filter.name,
+            step: filter.continuous_range_step,
+            unit: filter.continuous_range_unit,
+            choices: [],
+          });
+        } else {
+          fieldsMetadata.push({
+            fieldType: "slider" as "slider",
+            name: filter.name,
+            step: null,
+            unit: null,
+            choices: filterChoices.map((c) => ({ ...c, index: c.value })),
+          });
+        }
         fieldFilters.push(
           <AccordionDetails key={filter.id}>
             <ApiFormSliderComponent name={filter.name} label={filter.label} />

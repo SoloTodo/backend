@@ -1,19 +1,31 @@
 import { ApiFormApiParams } from "../../types";
 
 export type ApiFormSliderChoice = {
+  index: number;
   value: number;
   label: string;
-  id?: number;
   count?: number;
 };
 
-export type ApiFormSliderProps = {
+type ApiFormSliderBaseProps = {
   fieldType: "slider";
   name: string;
-  choices: ApiFormSliderChoice[];
-  step: string | null;
-  unit: string | null;
 };
+
+type ApiFormSliderDiscreteProps = {
+  choices: ApiFormSliderChoice[];
+  step: null;
+  unit: null;
+};
+
+type ApiFormSliderContinuousProps = {
+  choices: [];
+  step: string;
+  unit: string;
+};
+
+export type ApiFormSliderProps = ApiFormSliderBaseProps &
+  (ApiFormSliderDiscreteProps | ApiFormSliderContinuousProps);
 
 export class ApiFormSlider {
   readonly name: string;
