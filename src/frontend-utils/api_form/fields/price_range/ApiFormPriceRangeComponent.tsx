@@ -21,13 +21,11 @@ export default function ApiFormPriceRangeComponent({
   name: string;
   label: string;
   currencyUsed: Currency;
-  initPriceRanges: { [key: string]: PriceRanges };
+  initPriceRanges: Record<string, PriceRanges>;
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormPriceRange | undefined;
   const [cleanedData, setCleanedData] = useState([0, 0]);
-  const [first, setFirst] = useState(true);
-  const [pushUrl, setPushUrl] = useState(true);
   const [priceRanges, setPriceRanges] = useState<PriceRanges>(
     initPriceRanges[name]
   );
@@ -36,7 +34,12 @@ export default function ApiFormPriceRangeComponent({
     throw `Invalid field name: ${name}`;
   }
 
-  const normalizeValue = (denormalizedValue: number) => {
+  const normalizeValue = (
+    denormalizedValue: number | null,
+    baseOption: number
+  ) => {
+    if (denormalizedValue === null) return baseOption;
+
     if (denormalizedValue <= priceRanges["80th"]) {
       return (
         (800 * (denormalizedValue - priceRanges.min)) /
@@ -81,53 +84,45 @@ export default function ApiFormPriceRangeComponent({
         setPriceRanges(price_ranges);
       }
     }
-    if (
-      typeof field.cleanedData !== "undefined" &&
-      priceRanges["80th"] !== 0 &&
-      first
-    ) {
-      const minNorm =
-        field.cleanedData[0] !== null
-          ? normalizeValue(field.cleanedData[0])
-          : 0;
-      const maxNorm =
-        field.cleanedData[1] !== null
-          ? normalizeValue(field.cleanedData[1])
-          : 1000;
+  }, []);
+
+  useEffect(() => {
+    if (typeof field.cleanedData !== "undefined" && priceRanges["80th"] !== 0) {
+      const minNorm = normalizeValue(field.cleanedData[0], 0);
+      const maxNorm = normalizeValue(field.cleanedData[1], 1000);
       setCleanedData([
         currency(minNorm, { precision: 0 }).intValue,
         currency(maxNorm, { precision: 0 }).intValue,
       ]);
-      setFirst(false);
     }
-  });
+  }, [field.cleanedData, priceRanges["80th"]]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setCleanedData(newValue as number[]);
-    setPushUrl(true);
   };
 
   const handleChangeSubmit = (
     _event: Event | SyntheticEvent<Element, Event>,
     _newValue: number | number[]
   ) => {
-    if (Array.isArray(cleanedData)) {
-      if (pushUrl) {
-        let minValue: string[] = [];
-        let maxValue: string[] = [];
-        if (cleanedData[0] !== 0) {
-          minValue = [denormalizeValue(cleanedData[0]).toString()];
-        }
-        if (cleanedData[1] !== 1000) {
-          maxValue = [denormalizeValue(cleanedData[1]).toString()];
-        }
-        context.updateUrl({
-          [`${name}_min`]: minValue,
-          [`${name}_max`]: maxValue,
-        });
-        setPushUrl(false);
-      }
+    if (
+      cleanedData[0] === normalizeValue(field.cleanedData![0], 0) &&
+      cleanedData[1] === normalizeValue(field.cleanedData![1], 1000)
+    )
+      return;
+
+    let minValue: string[] = [];
+    let maxValue: string[] = [];
+    if (cleanedData[0] !== 0) {
+      minValue = [denormalizeValue(cleanedData[0]).toString()];
     }
+    if (cleanedData[1] !== 1000) {
+      maxValue = [denormalizeValue(cleanedData[1]).toString()];
+    }
+    context.updateUrl({
+      [`${name}_min`]: minValue,
+      [`${name}_max`]: maxValue,
+    });
   };
 
   const valueLabelFormat = (value: number) => {
