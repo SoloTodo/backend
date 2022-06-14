@@ -48,7 +48,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
         />
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <AssociateInformation entity={entity} />
+            <AssociateInformation entity={entity} setEntity={setEntity} />
           </Grid>
           <Grid item xs={12}>
             <AssociateForm entity={entity} setEntity={setEntity} />

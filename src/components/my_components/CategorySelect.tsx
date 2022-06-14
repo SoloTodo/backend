@@ -13,9 +13,11 @@ import { WtbEntity } from "src/frontend-utils/types/wtb";
 
 export default function CategorySelect({
   entity,
+  setEntity,
   hasStaffPermission,
 }: {
   entity: Entity | WtbEntity;
+  setEntity?: Function;
   hasStaffPermission: boolean;
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -36,7 +38,10 @@ export default function CategorySelect({
         body: JSON.stringify({ category: apiResourceObjects[value].id }),
       }
     )
-      .then((entity) => setCategory(entity.category))
+      .then((entity) => {
+        setCategory(entity.category);
+        if (setEntity) setEntity(entity);
+      })
       .catch((err) => console.log(err));
   };
 

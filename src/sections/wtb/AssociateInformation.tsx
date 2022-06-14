@@ -30,9 +30,11 @@ AssociateInformation.getLayout = function getLayout(page: ReactElement) {
 
 export default function AssociateInformation({
   entity,
+  setEntity,
   brand
 }: {
   entity: WtbEntity;
+  setEntity: Function;
   brand: Brand;
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
@@ -54,6 +56,7 @@ export default function AssociateInformation({
             <Typography variant="h6">Categoría</Typography>
             <CategorySelect
               entity={entity}
+              setEntity={setEntity}
               hasStaffPermission={hasStaffPermission}
             />
           </Grid>
