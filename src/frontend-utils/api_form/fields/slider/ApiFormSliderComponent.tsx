@@ -150,7 +150,6 @@ export default function ApiFormSliderComponent({
     const infIdx = choices.findIndex(
       (choice) => choice.value === cleanedData[0]
     );
-    if (field.step !== null) console.log(choices)
     const inf = infIdx > 0 ? choices[infIdx - 1] : minChoice;
 
     const docCountDif = Number(sup.count) - Number(inf.count);
