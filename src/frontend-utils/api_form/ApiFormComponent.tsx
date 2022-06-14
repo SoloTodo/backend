@@ -34,11 +34,12 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
+    let cancel = false;
     form.initialize();
     if (!props.requiresSubmit) {
       form.submit().then((results) => {
-        if (isMounted) setCurrentResult(results);
+        if (cancel) return;
+        setCurrentResult(results);
         setIsLoading(false);
       });
     } else {
@@ -53,7 +54,8 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
       setIsLoading(true);
       if (!props.requiresSubmit || submitReady(parseUrl.query.submit)) {
         form.submit().then((results) => {
-          if (isMounted) setCurrentResult(results);
+          if (cancel) return;
+          setCurrentResult(results);
           if (props.requiresSubmit)
             updateUrl({ ...parseUrl.query, submit: [] });
           props.onResultsChange && props.onResultsChange(results);
@@ -67,7 +69,7 @@ export default function ApiFormComponent(props: ApiFormComponentProps) {
     router.events.on("routeChangeComplete", handleRouteChange);
 
     return () => {
-      isMounted = false;
+      cancel = true;
       router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, []);
