@@ -5,13 +5,10 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CircularProgress,
   Container,
   Grid,
-  Stack,
-  Typography,
 } from "@mui/material";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import Layout from "src/layouts";
@@ -94,15 +91,15 @@ export default function CategoryBrowse({
     categoryId
   );
 
-  const [initResults, setInitResults] = useState<{ price_ranges: any } | null>(
-    null
-  );
+  // const [initResults, setInitResults] = useState<{ price_ranges: any } | null>(
+  //   null
+  // );
 
-  useEffect(() => {
-    jwtFetch(null, `${category.url}full_browse/`).then((data) => {
-      setInitResults(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   jwtFetch(null, `${category.url}full_browse/`).then((data) => {
+  //     setInitResults(data);
+  //   });
+  // }, []);
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
@@ -277,25 +274,15 @@ export default function CategoryBrowse({
                 <CardContent>
                   <Grid container spacing={{ xs: 2, md: 3 }}>
                     <Grid item xs={12}>
-                      {initResults !== null ? (
-                        <ApiFormPriceRangeComponent
-                          name="offer_price_usd"
-                          label="Precio oferta"
-                          currencyUsed={
-                            apiResourceObjects[
-                              `${apiSettings.apiResourceEndpoints.currencies}1/`
-                            ] as Currency
-                          }
-                          initPriceRanges={initResults.price_ranges}
-                        />
-                      ) : (
-                        <Stack direction="column">
-                          <Typography>{"Precio oferta"}</Typography>
-                          <div style={{ textAlign: "center" }}>
-                            <CircularProgress color="inherit" />
-                          </div>
-                        </Stack>
-                      )}
+                      <ApiFormPriceRangeComponent
+                        name="offer_price_usd"
+                        label="Precio oferta"
+                        currencyUsed={
+                          apiResourceObjects[
+                            `${apiSettings.apiResourceEndpoints.currencies}1/`
+                          ] as Currency
+                        }
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <ApiFormTextComponent
