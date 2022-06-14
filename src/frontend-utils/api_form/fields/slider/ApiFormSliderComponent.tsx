@@ -109,10 +109,8 @@ export default function ApiFormSliderComponent({
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
     if (Array.isArray(newValue)) {
-      const newMinValue = choices.filter((c) => c.index === newValue[0])[0]
-        .value;
-      const newMaxValue = choices.filter((c) => c.index === newValue[1])[0]
-        .value;
+      const newMinValue = choices.find((c) => c.index === newValue[0])!.value;
+      const newMaxValue = choices.find((c) => c.index === newValue[1])!.value;
       setCleanedData([
         newMinValue === minChoice.value ? null : newMinValue,
         newMaxValue === maxChoice.value ? null : newMaxValue,
@@ -125,9 +123,8 @@ export default function ApiFormSliderComponent({
     _newValue: number | number[]
   ) => {
     if (
-      typeof field.cleanedData !== "undefined" &&
-      cleanedData[0] === field.cleanedData[0] &&
-      cleanedData[1] === field.cleanedData[1]
+      cleanedData[0] === field.cleanedData![0] &&
+      cleanedData[1] === field.cleanedData![1]
     ) {
       return;
     }
@@ -148,27 +145,26 @@ export default function ApiFormSliderComponent({
 
   const valueLabelFormat = (value: number) => {
     const unit = field.unit !== null ? field.unit : "";
-    let sup = choices.filter((choice) => choice.value === cleanedData[1]);
-    if (sup.length === 0) sup = [maxChoice];
-    let inf = choices.filter((choice) => choice.value === cleanedData[0]);
-    if (inf.length === 0) inf = [minChoice];
+    let sup = choices.find((choice) => choice.value === cleanedData[1]);
+    if (typeof sup === "undefined") sup = maxChoice;
+    const infIdx = choices.findIndex(
+      (choice) => choice.value === cleanedData[0]
+    );
+    if (field.step !== null) console.log(choices)
+    const inf = infIdx > 0 ? choices[infIdx - 1] : minChoice;
 
-    if (sup.length !== 0 && inf.length !== 0) {
-      const docCountDif = Number(sup[0].count) - Number(inf[0].count);
-      return `${inf[0].label} - ${sup[0].label} ${unit} (${docCountDif} resultados)`;
-    } else {
-      return value;
-    }
+    const docCountDif = Number(sup.count) - Number(inf.count);
+    return `${inf.label} - ${sup.label} ${unit} (${docCountDif} resultados)`;
   };
 
   let sliderValues = [0, 0];
   if (field.step === null) {
     sliderValues = [
       cleanedData[0] !== null
-        ? choices.filter((c) => c.value === cleanedData[0])[0].index
+        ? choices.find((c) => c.value === cleanedData[0])!.index
         : minChoice.index,
       cleanedData[1] !== null
-        ? choices.filter((c) => c.value === cleanedData[1])[0].index
+        ? choices.find((c) => c.value === cleanedData[1])!.index
         : maxChoice.index,
     ];
   } else {
