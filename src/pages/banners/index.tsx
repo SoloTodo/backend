@@ -116,7 +116,7 @@ export default function Banners({
       renderCell: (row: Banner) => (
         <NextLink href={`${PATH_BANNERS.assets}/${row.asset.id}`} passHref>
           <Link>
-            <Image src={row.asset.picture_url} />
+            <Image src={row.asset.picture_url} style={{ minWidth: '20rem' }} />
           </Link>
         </NextLink>
       ),
@@ -243,22 +243,28 @@ export default function Banners({
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="brands" label="Marcas"/>
+                    <ApiFormSelectComponent name="brands" label="Marcas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="categories" label="Categorías"/>
+                    <ApiFormSelectComponent
+                      name="categories"
+                      label="Categorías"
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="stores" label="Tiendas"/>
+                    <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="types" label="Tipos"/>
+                    <ApiFormSelectComponent name="types" label="Tipos" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="is_active" label="¿Activa?"/>
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormDateRangePickerComponent name="creation_date" label="Fecha creación" />
+                    <ApiFormDateRangePickerComponent
+                      name="creation_date"
+                      label="Fecha creación"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
@@ -273,16 +279,16 @@ export default function Banners({
                     columns={{ xs: 6, md: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormRemoveListFieldComponent name="update_id" label="Banner Update" />
+                      <ApiFormRemoveListFieldComponent
+                        name="update_id"
+                        label="Banner Update"
+                      />
                     </Grid>
                   </Grid>
                 </CardContent>
               </Card>
             ) : null}
-            <ApiFormPaginationTable
-              columns={columns}
-              title="Banners"
-            />
+            <ApiFormPaginationTable columns={columns} title="Banners" />
           </Stack>
         </ApiFormComponent>
       </Container>
