@@ -7,17 +7,14 @@ import {
   Paper,
   Table,
   TableBody,
-  TableCell,
-  tableCellClasses,
   TableContainer,
   TableHead,
-  TableRow,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { GridColumns } from "@mui/x-data-grid";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 // components
 import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
+import { StyledTableCell, StyledTableRow } from "../my_components/StyledTable";
 
 export type PagintationData = {
   count: number;
@@ -25,22 +22,6 @@ export type PagintationData = {
   previous: string;
   results: any[];
 };
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    boxShadow: "0 0 0 0",
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
 
 export default function BasicTableWithPagination({
   title,

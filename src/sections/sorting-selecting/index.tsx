@@ -3,11 +3,7 @@ import { useState } from "react";
 import {
   Box,
   Table,
-  styled,
-  TableRow,
   TableBody,
-  TableCell,
-  tableCellClasses,
   TableContainer,
   TablePagination,
 } from "@mui/material";
@@ -15,28 +11,13 @@ import {
 import Scrollbar from "../../components/Scrollbar";
 //
 import SortingSelectingHead, { TableHead } from "./SortingSelectingHead";
+import { StyledTableCell, StyledTableRow } from "src/components/my_components/StyledTable";
 
 // ----------------------------------------------------------------------
 
 type SortItem = {
   [id: string]: any;
 };
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    boxShadow: "0 0 0 0",
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
 
 // ----------------------------------------------------------------------
 
@@ -149,13 +130,13 @@ export default function SortingSelecting({
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow
+                <StyledTableRow
                   style={{
                     height: 53 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} />
-                </TableRow>
+                  <StyledTableCell colSpan={6} />
+                </StyledTableRow>
               )}
             </TableBody>
           </Table>
