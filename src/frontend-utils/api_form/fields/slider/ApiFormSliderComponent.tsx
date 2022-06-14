@@ -33,7 +33,10 @@ export default function ApiFormSliderComponent({
 }) {
   const context = useContext(ApiFormContext);
   const field = context.getField(name) as ApiFormSlider | undefined;
-  const [cleanedData, setCleanedData] = useState<(number | null)[]>([0, 0]);
+  const [cleanedData, setCleanedData] = useState<(number | null)[]>([
+    null,
+    null,
+  ]);
 
   if (typeof field === "undefined") {
     throw `Invalid field name: ${name}`;
@@ -105,37 +108,42 @@ export default function ApiFormSliderComponent({
   const maxChoice = choices[choices.length - 1];
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
-    // if (Array.isArray(newValue)) setCleanedData([
-    //   choices.filter((c) => c.value === newValue[0])[0].
-    // ]);
+    if (Array.isArray(newValue)) {
+      const newMinValue = choices.filter((c) => c.index === newValue[0])[0]
+        .value;
+      const newMaxValue = choices.filter((c) => c.index === newValue[1])[0]
+        .value;
+      setCleanedData([
+        newMinValue === minChoice.value ? null : newMinValue,
+        newMaxValue === maxChoice.value ? null : newMaxValue,
+      ]);
+    }
   };
 
   const handleChangeSubmit = (
     _event: Event | SyntheticEvent<Element, Event>,
     _newValue: number | number[]
   ) => {
-    // const newStart = choices.filter((c) => c.value === cleanedData[0]);
-    // const newEnd = choices.filter((c) => c.value === cleanedData[1]);
-    // if (newStart.length === 0 || newEnd.length === 0) return;
-    // const newIdStart = newStart[0].index;
-    // const newIdEnd = newEnd[0].index;
-    // if (
-    //   newIdStart === field.cleanedData![0] &&
-    //   newIdEnd === field.cleanedData![1]
-    // )
-    //   return;
-    // let minValue: string[] = [];
-    // let maxValue: string[] = [];
-    // if (minChoice.index !== newIdStart) {
-    //   minValue = [newIdStart.toString()];
-    // }
-    // if (maxChoice.index !== newIdEnd) {
-    //   maxValue = [newIdEnd.toString()];
-    // }
-    // context.updateUrl({
-    //   [`${name}_min`]: minValue,
-    //   [`${name}_max`]: maxValue,
-    // });
+    if (
+      typeof field.cleanedData !== "undefined" &&
+      cleanedData[0] === field.cleanedData[0] &&
+      cleanedData[1] === field.cleanedData[1]
+    ) {
+      return;
+    }
+
+    let minValue: string[] = [];
+    let maxValue: string[] = [];
+    if (cleanedData[0] !== null && minChoice.value !== cleanedData[0]) {
+      minValue = [cleanedData[0].toString()];
+    }
+    if (cleanedData[1] !== null && maxChoice.value !== cleanedData[1]) {
+      maxValue = [cleanedData[1].toString()];
+    }
+    context.updateUrl({
+      [`${name}_min`]: minValue,
+      [`${name}_max`]: maxValue,
+    });
   };
 
   const valueLabelFormat = (value: number) => {
@@ -143,7 +151,7 @@ export default function ApiFormSliderComponent({
     let sup = choices.filter((choice) => choice.value === cleanedData[1]);
     if (sup.length === 0) sup = [maxChoice];
     let inf = choices.filter((choice) => choice.value === cleanedData[0]);
-    if (inf.length === 0) sup = [minChoice];
+    if (inf.length === 0) inf = [minChoice];
 
     if (sup.length !== 0 && inf.length !== 0) {
       const docCountDif = Number(sup[0].count) - Number(inf[0].count);
@@ -156,17 +164,17 @@ export default function ApiFormSliderComponent({
   let sliderValues = [0, 0];
   if (field.step === null) {
     sliderValues = [
-      field.cleanedData[0] !== null
-        ? choices.filter((c) => c.value === field.cleanedData![0])[0].index
+      cleanedData[0] !== null
+        ? choices.filter((c) => c.value === cleanedData[0])[0].index
         : minChoice.index,
-      field.cleanedData[1] !== null
-        ? choices.filter((c) => c.value === field.cleanedData![1])[0].index
+      cleanedData[1] !== null
+        ? choices.filter((c) => c.value === cleanedData[1])[0].index
         : maxChoice.index,
     ];
   } else {
     sliderValues = [
-      field.cleanedData[0] !== null ? field.cleanedData[0] : minChoice.index,
-      field.cleanedData[1] !== null ? field.cleanedData[1] : maxChoice.index,
+      cleanedData[0] !== null ? cleanedData[0] : minChoice.index,
+      cleanedData[1] !== null ? cleanedData[1] : maxChoice.index,
     ];
   }
 
