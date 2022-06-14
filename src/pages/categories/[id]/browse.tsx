@@ -283,7 +283,7 @@ export default function CategoryBrowse({
                           label="Precio oferta"
                           currencyUsed={
                             apiResourceObjects[
-                              "http://localhost:8000/currencies/1/"
+                              `${apiSettings.apiResourceEndpoints.currencies}1/`
                             ] as Currency
                           }
                           initPriceRanges={initResults.price_ranges}
