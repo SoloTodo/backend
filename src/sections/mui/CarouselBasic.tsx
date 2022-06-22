@@ -25,12 +25,12 @@ export default function CarouselBasic({ images, ratio }: { images: string[], rat
   return (
     <Card>
       <Image
-        alt={images !== null ? images[currentIndex] : ""}
-        src={images !== null ? images[currentIndex] : ""}
+        alt={images.length !== 0 ? images[currentIndex] : ""}
+        src={images.length !== 0 ? images[currentIndex] : ""}
         ratio={ratio ? ratio : "1/1"}
       />
 
-      {images !== null && (
+      {images.length !== 0 && (
         <CarouselArrowIndex
           index={currentIndex}
           total={images.length}
