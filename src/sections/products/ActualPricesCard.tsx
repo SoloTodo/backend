@@ -71,12 +71,10 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       renderCell: (row: {
         store: string | number;
         external_url: string | undefined;
+        id: number;
       }) => (
         <Stack alignItems={"center"}>
-          <NextLink
-            href={`${PATH_ENTITY.root}/${apiResourceObjects[row.store].id}`}
-            passHref
-          >
+          <NextLink href={`${PATH_ENTITY.root}/${row.id}`} passHref>
             <Link>{apiResourceObjects[row.store].name}</Link>
           </NextLink>
           <Link
@@ -176,6 +174,7 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       id: "active_registry.cell_monthly_payment",
       renderSort: (row: Entity) =>
         row.active_registry &&
+        row.active_registry.cell_monthly_payment !== null &&
         currency(row.active_registry.cell_monthly_payment).value,
       renderCell: (row: {
         active_registry: { cell_monthly_payment: currency.Any };
@@ -191,6 +190,7 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
       sortField: "active_registry.cell_monthly_payment",
       renderSort: (row: Entity) =>
         row.active_registry &&
+        row.active_registry.cell_monthly_payment !== null &&
         currency(row.active_registry.cell_monthly_payment).value,
       renderCell: (row: {
         active_registry: { cell_monthly_payment: currency.Any };
@@ -256,7 +256,8 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
             TABLE_HEAD={columns}
             SORTING_SELECTING_TABLE={active_entities}
             initialOrder={"active_registry.offer_price"}
-            initialRenderSort={() => (row: Entity) => row.active_registry && parseInt(row.active_registry.offer_price)}
+            initialRenderSort={() => (row: Entity) =>
+              row.active_registry && parseInt(row.active_registry.offer_price)}
           />
         )}
       </CardContent>
