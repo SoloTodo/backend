@@ -64,9 +64,9 @@ export default function PricingInformation({
   };
 
   useEffect(() => {
-    jwtFetch(
+    entity.active_registry && jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entity_histories}${entity.id}/stock/`
+      `${entity.active_registry.url}stock/`
     ).then((data) => {
       setStock(data.stock);
     });
