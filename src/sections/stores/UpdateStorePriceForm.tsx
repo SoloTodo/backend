@@ -21,9 +21,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // types
-import {
-  StoreScrapingOptions as FormValuesProps,
-} from "src/frontend-utils/types/store";
+import { StoreScrapingOptions as FormValuesProps } from "src/frontend-utils/types/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_STORE } from "src/routes/paths";
@@ -65,6 +63,7 @@ export default function UpdateStorePricingForm({
       categories: data.categories.map((c) => c.id.toString()),
     };
 
+    let count = 1;
     for (const id of storeIds) {
       await jwtFetch(
         null,
@@ -75,9 +74,13 @@ export default function UpdateStorePricingForm({
         }
       )
         .then((res) => {
-          console.log(res);
-          enqueueSnackbar("Actualización de tienda encolada exitosamente");
-          if (!multi) router.push(`${PATH_STORE.root}/${id}/update_logs`);
+          if (!multi) {
+            enqueueSnackbar("Actualización de tienda encolada exitosamente");
+            router.push(`${PATH_STORE.root}/${id}/update_logs`);
+          } else {
+            enqueueSnackbar(`Actualización de tienda encolada exitosamente (${count} de ${storeIds.length})`);
+            count++;
+          }
         })
         .catch((err) => {
           console.log(err);
