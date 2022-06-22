@@ -134,7 +134,7 @@ export default function ConflictEntities() {
   ];
 
   return (
-    <Page title="Pendientes">
+    <Page title="Conflictos | Entidades">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

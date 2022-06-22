@@ -167,7 +167,7 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
   ];
 
   return (
-    <Page title="Entidades">
+    <Page title="Entidades | Donde Comprar">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""

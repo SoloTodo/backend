@@ -55,7 +55,7 @@ export default function RatingsPending() {
   ];
 
   return (
-    <Page title="Ratings">
+    <Page title="Pendientes | Ratings">
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
