@@ -1,8 +1,8 @@
 import NextLink from "next/link";
-import { Button, Link } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { PATH_ENTITY, PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
+import { PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
@@ -79,6 +79,11 @@ export default function PendingRatingssTable() {
       flex: 1,
     },
     {
+      headerName: "Comentarios product",
+      field: "product_comments",
+      flex: 1,
+    },
+    {
       headerName: "Tienda",
       field: "store",
       flex: 1,
@@ -96,6 +101,25 @@ export default function PendingRatingssTable() {
       field: "store_rating",
       flex: 1,
     },
+    {
+      headerName: "Comentarios tienda",
+      field: "store_comments",
+      flex: 1,
+    },
+    {
+      headerName: "Prueba de compra",
+      field: "purchase_proof",
+      flex: 1,
+      renderCell: (row: Rating) => (
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href={row.purchase_proof}
+        >
+          Descargar
+        </Link>
+      ),
+    },
   ];
 
   if (user && user.permissions.includes("solotodo.is_ratings_staff")) {
@@ -104,6 +128,12 @@ export default function PendingRatingssTable() {
         headerName: "IP",
         field: "ip",
         flex: 1,
+        renderCell: (row: Rating) =>
+          row.ip.length <= 15 ? (
+            <Typography>{row.ip}</Typography>
+          ) : (
+            <Typography>{row.ip.substring(0, 12)}...</Typography>
+          ),
       },
       {
         headerName: "Usuario",
@@ -140,10 +170,5 @@ export default function PendingRatingssTable() {
     );
   }
 
-  return (
-    <ApiFormPaginationTable
-      columns={columns}
-      title="Ratings"
-    />
-  );
+  return <ApiFormPaginationTable columns={columns} title="Ratings" />;
 }
