@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import LinkIcon from "@mui/icons-material/Link";
-import { Button, Link, Stack } from "@mui/material";
+import { Button, Link, Stack, styled } from "@mui/material";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_ENTITY, PATH_STORE } from "src/routes/paths";
@@ -9,6 +9,12 @@ import { Store } from "src/frontend-utils/types/store";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+
+const BootstrapButton = styled(Button)({
+  "&:focus": {
+    boxShadow: "0 0 0 0.3rem rgba(24, 144, 255, .5)",
+  },
+});
 
 export default function PendingEntitiesTable() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
@@ -77,14 +83,15 @@ export default function PendingEntitiesTable() {
       field: "id",
       flex: 1,
       renderCell: (row: any) => (
-          <NextLink href={`${PATH_ENTITY.root}/${row.id}/associate`} passHref>
-        <Button
-          variant="contained"
-          href={`${PATH_ENTITY.root}/${row.id}/associate`}
-        >
-          Asociar
-        </Button>
-          </NextLink>
+        <NextLink href={`${PATH_ENTITY.root}/${row.id}/associate`} passHref>
+          <BootstrapButton
+            variant="contained"
+            href={`${PATH_ENTITY.root}/${row.id}/associate`}
+            disableRipple
+          >
+            Asociar
+          </BootstrapButton>
+        </NextLink>
       ),
     },
     {
@@ -99,10 +106,5 @@ export default function PendingEntitiesTable() {
     },
   ];
 
-  return (
-    <ApiFormPaginationTable
-      columns={columns}
-      title="Entidades"
-    />
-  );
+  return <ApiFormPaginationTable columns={columns} title="Entidades" />;
 }
