@@ -92,7 +92,7 @@ export default function EntityPriceHistory() {
               <Card>
                 <CardHeader title="Resultado" />
                 <CardContent>
-                  <EntityPriceHistoryChart />
+                  <EntityPriceHistoryChart name="timestamp" />
                 </CardContent>
               </Card>
             </Stack>
