@@ -90,9 +90,9 @@ export default function RatingPage({ rating }: { rating: Rating }) {
   if (user && user.permissions.includes("solotodo.is_ratings_staff")) {
     details.push(
       {
-        key: "user",
-        label: "Usuario",
-        renderData: (rating: Rating) => rating.user.email,
+        key: "contact",
+        label: "Contacto",
+        renderData: (rating: Rating) => rating.email_or_phone,
       },
       {
         key: "ip",

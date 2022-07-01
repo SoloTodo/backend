@@ -126,10 +126,10 @@ export default function Ratings() {
         flex: 1,
       },
       {
-        headerName: "Usuario",
-        field: "usuario",
+        headerName: "Contacto",
+        field: "email_or_phone",
         flex: 1,
-        renderCell: (row: Rating) => row.user.email,
+        renderCell: (row: Rating) => row.email_or_phone || <em>N/A</em>,
       }
     );
   }

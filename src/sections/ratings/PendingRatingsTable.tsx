@@ -76,11 +76,17 @@ export default function PendingRatingssTable() {
     {
       headerName: "Rating producto",
       field: "product_rating",
+      renderCell: (row: Rating) => (
+        row.product_rating || <em>N/A</em>
+      ),
       flex: 1,
     },
     {
       headerName: "Comentarios product",
       field: "product_comments",
+      renderCell: (row: Rating) => (
+        row.product_comments || <em>N/A</em>
+      ),
       flex: 1,
     },
     {
@@ -136,10 +142,10 @@ export default function PendingRatingssTable() {
           ),
       },
       {
-        headerName: "Usuario",
-        field: "usuario",
+        headerName: "Contacto",
+        field: "email_or_phone",
         flex: 1,
-        renderCell: (row: Rating) => row.user.email,
+        renderCell: (row: Rating) => row.email_or_phone || <em>N/A</em>,
       },
       {
         headerName: "Aprobar",
