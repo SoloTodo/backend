@@ -60,7 +60,10 @@ export default function AssociateForm({
     selectedProduct &&
       jwtFetch(
         null,
-        `${apiSettings.apiResourceEndpoints.products}${selectedProduct.id}/clone/`
+        `${apiSettings.apiResourceEndpoints.products}${selectedProduct.id}/clone/`,
+        {
+          method: "POST",
+        }
       ).then((data) => {
         const clonedInstanceId = data.instance_id;
         const clonedInstanceUrl = `${apiSettings.endpoint}metamodel/instances/${clonedInstanceId}`;
