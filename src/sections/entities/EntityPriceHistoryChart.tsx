@@ -1,10 +1,20 @@
+import currency from "currency.js";
 import { addDays } from "date-fns";
 import merge from "lodash/merge";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { ApiFormDateRangePicker } from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePicker";
+import { fDate } from "src/utils/formatTime";
 // components
 import ReactApexChart, { BaseOptionChart } from "../../components/chart";
+
+type PricingHistory = {
+  timestamp: string;
+  normal_price: string;
+  offer_price: string;
+  stock: number;
+  is_available: boolean;
+};
 
 // ----------------------------------------------------------------------
 
@@ -22,94 +32,99 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
   const cleanedData =
     typeof field.cleanedData !== "undefined" ? field.cleanedData : [null, null];
 
-  let datesBefore = [];
-  if (cleanedData[0] !== null && pricing_history.length > 0) {
-    var currentDate = cleanedData[0];
-    const initDate = new Date(pricing_history[0].timestamp);
-    initDate.setHours(0, 0, 0);
-    while (currentDate < initDate) {
-      datesBefore.push(new Date(currentDate));
-      currentDate = addDays(currentDate, 1);
+  let days = [];
+  if (cleanedData[0] !== null && cleanedData[1] !== null) {
+    var day = cleanedData[0];
+    day.setHours(0, 0, 0);
+    while (day <= cleanedData[1]) {
+      days.push(day);
+      day = addDays(day, 1);
     }
   }
-  let datesAfter = [];
-  if (cleanedData[1] !== null && pricing_history.length > 0) {
-    var currentDate = addDays(
-      new Date(pricing_history[pricing_history.length - 1].timestamp),
-      1
-    );
-    const finalDate = cleanedData[1];
-    while (currentDate < finalDate) {
-      datesAfter.push(new Date(currentDate));
-      currentDate = addDays(currentDate, 1);
-    }
-  }
+
+  const pricing_history_dict: Record<string, PricingHistory> = {};
+  pricing_history.map((p: PricingHistory) => {
+    const d = new Date(p.timestamp);
+    pricing_history_dict[fDate(d)] = p;
+  });
+
+  console.log(pricing_history);
 
   const CHART_DATA = [
     {
       name: "Precio normal",
-      data: [
-        ...datesBefore.map((_) => null),
-        ...pricing_history.map((p: { normal_price: string }) => p.normal_price),
-        ...datesAfter.map((_) => null),
-      ],
+      data: days.map((day) => {
+        const pricing = pricing_history_dict[fDate(day)];
+        if (pricing) {
+          return Number(pricing.normal_price);
+        } else {
+          return null;
+        }
+      }),
       type: "line",
     },
     {
       name: "Precio oferta",
-      data: [
-        ...datesBefore.map((_) => null),
-        ...pricing_history.map((p: { offer_price: string }) => p.offer_price),
-        ...datesAfter.map((_) => null),
-      ],
+      data: days.map((day) => {
+        const pricing = pricing_history_dict[fDate(day)];
+        if (pricing) {
+          return Number(pricing.offer_price);
+        } else {
+          return null;
+        }
+      }),
       type: "line",
     },
     {
       name: "Stock",
-      data: [
-        ...datesBefore.map((_) => null),
-        ...pricing_history.map((p: { stock: number }) =>
-          p.stock > 0 ? p.stock : NaN
-        ),
-        ...datesAfter.map((_) => null),
-      ],
+      data: days.map((day) => {
+        const pricing = pricing_history_dict[fDate(day)];
+        if (pricing) {
+          return pricing.stock > 0 ? pricing.stock : null;
+        } else {
+          return null;
+        }
+      }),
       type: "line",
     },
     {
       name: "No disponible",
-      data: [
-        ...datesBefore.map((_) => null),
-        ...pricing_history.map((p: { is_available: boolean }) =>
-          p.is_available ? null : 1
-        ),
-        ...datesAfter.map((_) => null),
-      ],
+      data: days.map((day) => {
+        const pricing = pricing_history_dict[fDate(day)];
+        if (pricing) {
+          return pricing.is_available ? null : 1;
+        } else {
+          return null;
+        }
+      }),
       type: "area",
     },
   ];
 
   const chartOptions = merge(BaseOptionChart(), {
     markers: {
-      size: 3,
+      size: [3, 3, 3, 0],
     },
     xaxis: {
       type: "datetime",
-      categories: [
-        ...datesBefore.map((d) => d.toISOString()),
-        ...pricing_history.map((p: { timestamp: string }) =>
-          p.timestamp
-        ),
-        ...datesAfter.map((d) => d.toISOString()),
-      ],
+      categories: days.map((d) => d.toISOString()),
     },
     yaxis: [
       {
         title: {
           text: "Precio",
         },
+        labels: {
+          formatter: (value: number) =>
+            currency(value, { precision: 0 }).format(),
+        },
       },
       {
         show: false,
+        labels: {
+          formatter: (value: number) =>
+            currency(value, { precision: 0 }).format(),
+        },
       },
       {
         opposite: true,
@@ -119,6 +134,9 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
       },
       {
         show: false,
+        labels: {
+          formatter: (_) => null,
+        },
       },
     ],
     fill: {
