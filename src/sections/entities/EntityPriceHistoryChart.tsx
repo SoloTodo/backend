@@ -48,8 +48,6 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     pricing_history_dict[fDate(d)] = p;
   });
 
-  console.log(pricing_history);
-
   const CHART_DATA = [
     {
       name: "Precio normal",
