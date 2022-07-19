@@ -4,7 +4,7 @@ import merge from "lodash/merge";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { ApiFormDateRangePicker } from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePicker";
-import { fDate } from "src/utils/formatTime";
+import { fDate, fDateTime } from "src/utils/formatTime";
 // components
 import ReactApexChart, { BaseOptionChart } from "../../components/chart";
 
@@ -32,7 +32,7 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
   const cleanedData =
     typeof field.cleanedData !== "undefined" ? field.cleanedData : [null, null];
 
-  let days = [];
+  let days: Date[] = [];
   if (cleanedData[0] !== null && cleanedData[1] !== null) {
     var day = cleanedData[0];
     day.setHours(0, 0, 0);
@@ -45,14 +45,22 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
   const pricing_history_dict: Record<string, PricingHistory> = {};
   pricing_history.map((p: PricingHistory) => {
     const d = new Date(p.timestamp);
-    pricing_history_dict[fDate(d)] = p;
+    if (pricing_history_dict[fDate(d)]) {
+      pricing_history_dict[fDateTime(d)] = p;
+      const dayIndex = days.findIndex((v) => fDate(v) === fDate(d));
+      days.splice(dayIndex + 1, 0, d);
+    } else {
+      pricing_history_dict[fDate(d)] = p;
+    }
   });
 
   const CHART_DATA = [
     {
       name: "Precio normal",
       data: days.map((day) => {
-        const pricing = pricing_history_dict[fDate(day)];
+        const pricing = pricing_history_dict[fDateTime(day)]
+          ? pricing_history_dict[fDateTime(day)]
+          : pricing_history_dict[fDate(day)];
         if (pricing) {
           return Number(pricing.normal_price);
         } else {
@@ -64,7 +72,9 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     {
       name: "Precio oferta",
       data: days.map((day) => {
-        const pricing = pricing_history_dict[fDate(day)];
+        const pricing = pricing_history_dict[fDateTime(day)]
+          ? pricing_history_dict[fDateTime(day)]
+          : pricing_history_dict[fDate(day)];
         if (pricing) {
           return Number(pricing.offer_price);
         } else {
@@ -76,7 +86,9 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     {
       name: "Stock",
       data: days.map((day) => {
-        const pricing = pricing_history_dict[fDate(day)];
+        const pricing = pricing_history_dict[fDateTime(day)]
+          ? pricing_history_dict[fDateTime(day)]
+          : pricing_history_dict[fDate(day)];
         if (pricing) {
           return pricing.stock > 0 ? pricing.stock : null;
         } else {
@@ -88,11 +100,13 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     {
       name: "No disponible",
       data: days.map((day) => {
-        const pricing = pricing_history_dict[fDate(day)];
+        const pricing = pricing_history_dict[fDateTime(day)]
+          ? pricing_history_dict[fDateTime(day)]
+          : pricing_history_dict[fDate(day)];
         if (pricing) {
           return pricing.is_available ? null : 1;
         } else {
-          return null;
+          return 1;
         }
       }),
       type: "area",
@@ -140,14 +154,22 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     fill: {
       opacity: [1, 1, 1, 0.5],
     },
+    tooltip: {
+      x: {
+        show: true,
+        formatter: (value: number) => {
+          const d = new Date(value);
+          if (d.getHours() !== 0 || d.getMinutes() !== 0) {
+            return fDateTime(value);
+          } else {
+            return fDate(value);
+          }
+        },
+      },
+    },
   });
 
   return (
-    <ReactApexChart
-      type="line"
-      series={CHART_DATA}
-      options={chartOptions}
-      // height={400}
-    />
+    <ReactApexChart type="line" series={CHART_DATA} options={chartOptions} />
   );
 }
