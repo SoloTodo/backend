@@ -41,7 +41,7 @@ export default function OptionsMenu({ store }: { store: Store }) {
     {
       text: "Registros de actualización",
       path: `${baseRoute}/update_logs`,
-      hasPermission: store.permissions.includes('view_store_update_logs')
+      hasPermission: store.permissions.includes('view_store_update_logs') || user?.permissions.includes('solotodo.view_store_update_logs')
     },
     {
       text: "Entidades en conflicto",
