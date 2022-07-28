@@ -120,6 +120,9 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     xaxis: {
       type: "datetime",
       categories: days.map((d) => d.toISOString()),
+      tooltip: {
+        enabled: false,
+      },
     },
     yaxis: [
       {
@@ -162,7 +165,11 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
           if (d.getHours() !== 0 || d.getMinutes() !== 0) {
             return fDateTime(value);
           } else {
-            return fDate(value);
+            if (pricing_history_dict[fDate(value)]) {
+              return fDateTime(pricing_history_dict[fDate(value)].timestamp);
+            } else {
+              return fDate(value);
+            }
           }
         },
       },
