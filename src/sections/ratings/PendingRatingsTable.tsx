@@ -19,13 +19,13 @@ export default function PendingRatingssTable() {
   const context = useContext(ApiFormContext);
 
   const handleRatingApprove = (ratingUrl: string) => {
-    jwtFetch(null, `${ratingUrl}`, { method: "POST" }).then(
+    jwtFetch(null, `${ratingUrl}approve/`, { method: "POST" }).then(
       (approvedRating) => {
         context.setCurrentResult({
           ...context.currentResult,
           count: context.currentResult.count - 1,
           results: context.currentResult.results.filter(
-            (e: { url: string }) => e.url !== approvedRating.url
+            (e: Rating) => e.url !== approvedRating.url
           ),
         });
         enqueueSnackbar("Rating aprobado");
@@ -39,7 +39,7 @@ export default function PendingRatingssTable() {
         ...context.currentResult,
         count: context.currentResult.count - 1,
         results: context.currentResult.results.filter(
-          (e: { url: string }) => e.url !== ratingUrl
+          (e: Rating) => e.url !== ratingUrl
         ),
       });
       enqueueSnackbar("Rating borrado");
