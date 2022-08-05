@@ -92,7 +92,7 @@ export default function RatingPage({ rating }: { rating: Rating }) {
       {
         key: "contact",
         label: "Contacto",
-        renderData: (rating: Rating) => rating.email_or_phone,
+        renderData: (rating: Rating) => rating.email_or_phone || <em>N/A</em>,
       },
       {
         key: "ip",
