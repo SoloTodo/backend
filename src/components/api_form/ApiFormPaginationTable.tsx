@@ -16,13 +16,6 @@ import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
 import { StyledTableCell, StyledTableRow } from "../my_components/StyledTable";
 
-export type PagintationData = {
-  count: number;
-  next: string;
-  previous: string;
-  results: any[];
-};
-
 export default function BasicTableWithPagination({
   title,
   columns,
@@ -31,7 +24,7 @@ export default function BasicTableWithPagination({
   columns: GridColumns;
 }) {
   const context = useContext(ApiFormContext);
-  const data = context.currentResult as PagintationData;
+  const data = context.currentResult ? context.currentResult.results : [];
   return (
     <Card>
       <CardHeader title={title} />
@@ -53,7 +46,7 @@ export default function BasicTableWithPagination({
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {data.results.map((row) => (
+                {data.map((row: any) => (
                   <StyledTableRow key={row.id}>
                     {columns.map((col) => (
                       <StyledTableCell key={col.field}>
