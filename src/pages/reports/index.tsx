@@ -34,8 +34,8 @@ export default function Reports({ reports }: { reports: Report[] }) {
     },
   ];
 
-  const whitelist = ['soicos_conversions', 'pc_factory_sku_analysis']
-  const activeReports = reports.filter((r) => !whitelist.includes(r.slug) )
+  const whitelist = ["soicos_conversions", "pc_factory_sku_analysis"];
+  const activeReports = reports.filter((r) => !whitelist.includes(r.slug));
 
   return (
     <Page title="Reportes">
