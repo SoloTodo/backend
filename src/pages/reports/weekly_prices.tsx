@@ -15,6 +15,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_REPORTS } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
+import {useSnackbar} from "notistack";
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +27,7 @@ WeeklyPrices.getLayout = function getLayout(page: ReactElement) {
 
 export default function WeeklyPrices() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
@@ -88,9 +90,11 @@ export default function WeeklyPrices() {
           fieldsMetadata={fieldsMetadata}
           endpoint={`${apiSettings.apiResourceEndpoints.reports}weekly_prices/`}
           requiresSubmit={true}
-          onResultsChange={(json: { url: string }) => {
-            if (json) window.location.href = json.url;
-          }}
+          onResultsChange={() =>
+            enqueueSnackbar(
+              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
+            )
+          }
         >
           <Card>
             <CardHeader title="Filtros" />
