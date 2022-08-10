@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next/types";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Page from "src/components/Page";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
@@ -44,7 +44,7 @@ export default function ProductPage(props: ProductProps) {
     body: "",
   });
 
-  useMemo(() => {
+  useEffect(() => {
     jwtFetch(
       null,
       `${
