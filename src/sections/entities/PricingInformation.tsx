@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 // utils
@@ -52,7 +53,7 @@ export default function PricingInformation({
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
   ).permissions.includes("is_category_staff");
-  
+
   const [stock, setStock] = useState(0);
 
   const [reason, setReason] = useState("");
@@ -64,12 +65,10 @@ export default function PricingInformation({
   };
 
   useEffect(() => {
-    entity.active_registry && jwtFetch(
-      null,
-      `${entity.active_registry.url}stock/`
-    ).then((data) => {
-      setStock(data.stock);
-    });
+    entity.active_registry &&
+      jwtFetch(null, `${entity.active_registry.url}stock/`).then((data) => {
+        setStock(data.stock);
+      });
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,9 +96,21 @@ export default function PricingInformation({
       label: "Producto",
       renderData: (entity: Entity) =>
         entity.product ? (
-          <NextLink href={`${PATH_PRODUCT.root}/${entity.product.id}`} passHref>
-            <Link>{entity.product.name}</Link>
-          </NextLink>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <NextLink
+              href={`${PATH_PRODUCT.root}/${entity.product.id}`}
+              passHref
+            >
+              <Link>{entity.product.name}</Link>
+            </NextLink>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={entity.external_url}
+            >
+              <LinkIcon fontSize="small" />
+            </Link>
+          </Stack>
         ) : (
           "N/A"
         ),
@@ -146,6 +157,16 @@ export default function PricingInformation({
           : "N/A",
     },
     {
+      key: "cell_monthly_payment",
+      label: "Precio mensual celular",
+      renderData: (entity: Entity) =>
+        entity.active_registry && entity.active_registry.cell_monthly_payment
+          ? currency(entity.active_registry.cell_monthly_payment, {
+              precision: 0,
+            }).format()
+          : "N/A",
+    },
+    {
       key: "currency",
       label: "Moneda",
       renderData: (entity: Entity) => apiResourceObjects[entity.currency].name,
@@ -168,6 +189,18 @@ export default function PricingInformation({
       renderData: (entity: Entity) =>
         entity.active_registry
           ? currency(entity.active_registry.offer_price)
+              .divide(
+                (apiResourceObjects[entity.currency] as Currency).exchange_rate
+              )
+              .format()
+          : "N/A",
+    },
+    {
+      key: "cell_monthly_payment_usd",
+      label: "Precio mensual celular (USD)",
+      renderData: (entity: Entity) =>
+        entity.active_registry && entity.active_registry.cell_monthly_payment
+          ? currency(entity.active_registry.cell_monthly_payment)
               .divide(
                 (apiResourceObjects[entity.currency] as Currency).exchange_rate
               )
