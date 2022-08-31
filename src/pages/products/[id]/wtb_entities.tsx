@@ -1,4 +1,5 @@
 import { Container, Link } from "@mui/material";
+import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -8,7 +9,7 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Product } from "src/frontend-utils/types/product";
 import Layout from "src/layouts";
-import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_PRODUCT, PATH_WTB } from "src/routes/paths";
 import PaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useAppSelector } from "src/store/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
@@ -27,7 +28,7 @@ ProductWtbEntities.getLayout = function getLayout(page: ReactElement) {
 
 export default function ProductWtbEntities({ product }: { product: Product }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  
+
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
@@ -40,6 +41,11 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
       headerName: "ID",
       field: "id",
       flex: 1,
+      renderCell: (row: WtbEntity) => (
+        <NextLink href={`${PATH_WTB.entities}/${row.id}`} passHref>
+          <Link>{row.product.name}</Link>
+        </NextLink>
+      ),
     },
     {
       headerName: "Llave",
@@ -60,9 +66,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
       headerName: "Categoría",
       field: "category",
       flex: 1,
-      renderCell: (row: WtbEntity) => (
-        apiResourceObjects[row.category].name
-      ),
+      renderCell: (row: WtbEntity) => apiResourceObjects[row.category].name,
     },
     {
       headerName: "Marca",
@@ -76,13 +80,15 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
       headerName: "¿Visible?",
       field: "is_visible",
       flex: 1,
-      renderCell: (row: WtbEntity) => row.is_visible ? <CheckIcon /> : <ClearIcon />,
+      renderCell: (row: WtbEntity) =>
+        row.is_visible ? <CheckIcon /> : <ClearIcon />,
     },
     {
       headerName: "¿Activo?",
       field: "is_active",
       flex: 1,
-      renderCell: (row: WtbEntity) => row.is_active ? <CheckIcon /> : <ClearIcon />,
+      renderCell: (row: WtbEntity) =>
+        row.is_active ? <CheckIcon /> : <ClearIcon />,
     },
     {
       headerName: "Fecha creación",
@@ -114,10 +120,7 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
           fieldsMetadata={fieldMetadata}
           endpoint={`${apiSettings.apiResourceEndpoints.wtb_entities}?products=${product.id}`}
         >
-          <PaginationTable
-            title="Entidades"
-            columns={columns}
-          />
+          <PaginationTable title="Entidades" columns={columns} />
         </ApiFormComponent>
       </Container>
     </Page>

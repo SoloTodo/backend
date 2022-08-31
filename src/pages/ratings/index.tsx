@@ -18,7 +18,7 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import { PATH_DASHBOARD, PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import Page from "src/components/Page";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
@@ -104,7 +104,7 @@ export default function Ratings() {
       flex: 1,
       renderCell: (row: Rating) => (
         <NextLink
-          href={`${PATH_PRODUCT.root}/${apiResourceObjects[row.store].id}`}
+          href={`${PATH_STORE.root}/${apiResourceObjects[row.store].id}`}
           passHref
         >
           <Link>{apiResourceObjects[row.store].name}</Link>

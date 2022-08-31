@@ -11,7 +11,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { Detail } from "src/frontend-utils/types/extras";
 import { Rating } from "src/frontend-utils/types/ratings";
 import Layout from "src/layouts";
-import { PATH_DASHBOARD, PATH_RATING, PATH_STORE } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { useAppSelector } from "src/store/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -58,7 +58,7 @@ export default function RatingPage({ rating }: { rating: Rating }) {
       key: "product",
       label: "Producto",
       renderData: (rating: Rating) => (
-        <NextLink href={`${PATH_STORE.root}/${rating.product.id}`} passHref>
+        <NextLink href={`${PATH_PRODUCT.root}/${rating.product.id}`} passHref>
           <Link>{rating.product.name}</Link>
         </NextLink>
       ),

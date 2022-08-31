@@ -2,7 +2,7 @@ import NextLink from "next/link";
 import { Button, Link, Typography } from "@mui/material";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { PATH_PRODUCT, PATH_RATING } from "src/routes/paths";
+import { PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import { useAppSelector } from "src/store/hooks";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
@@ -95,7 +95,7 @@ export default function PendingRatingssTable() {
       flex: 1,
       renderCell: (row: Rating) => (
         <NextLink
-          href={`${PATH_PRODUCT.root}/${apiResourceObjects[row.store].id}`}
+          href={`${PATH_STORE.root}/${apiResourceObjects[row.store].id}`}
           passHref
         >
           <Link>{apiResourceObjects[row.store].name}</Link>
