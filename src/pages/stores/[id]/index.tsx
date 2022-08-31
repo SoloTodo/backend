@@ -8,9 +8,7 @@ import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { Detail } from "src/frontend-utils/types/extras";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import {
-  useApiResourceObjects,
-} from "src/frontend-utils/redux/api_resources/apiResources";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { useAppSelector } from "src/store/hooks";
 import { getStore } from "src/frontend-utils/nextjs/utils";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
@@ -47,7 +45,10 @@ export default function StorePage(props: { store: Store }) {
     {
       key: "last_activation",
       label: "Última Activación",
-      renderData: (store: Store) => fDateTimeSuffix(store.last_activation),
+      renderData: (store: Store) =>
+        store.last_activation === null
+          ? ""
+          : fDateTimeSuffix(store.last_activation),
     },
     {
       key: "storescraper_class",
@@ -79,6 +80,8 @@ export default function StorePage(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
   return await getStore(context);
 };
