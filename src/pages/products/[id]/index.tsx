@@ -32,19 +32,28 @@ ProductPage.getLayout = function getLayout(page: ReactElement) {
 
 type ProductProps = {
   product: Product;
-  entities: Entity[];
 };
 
 // ----------------------------------------------------------------------
 
 export default function ProductPage(props: ProductProps) {
-  const { product, entities } = props;
+  const { product } = props;
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const [loading, setLoading] = useState(false);
+  const [entities, setEntities] = useState<Entity[]>([]);
   const [renderSpecs, setRenderSpecs] = useState({
     body: "",
   });
 
   useEffect(() => {
+    setLoading(true);
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`
+    ).then((response) => {
+      setEntities(response);
+      setLoading(false);
+    });
     jwtFetch(
       null,
       `${
@@ -83,7 +92,7 @@ export default function ProductPage(props: ProductProps) {
             <OptionsMenu product={product} />
           </Grid>
           <Grid item xs={12}>
-            <ActualPricesCard entities={entities} />
+            <ActualPricesCard entities={entities} loading={loading} />
           </Grid>
           <Grid item xs={12}>
             <Card>
@@ -122,14 +131,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
-    const entities = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
-    );
     return {
       props: {
         product: product,
-        entities: entities,
       },
     };
   } catch {

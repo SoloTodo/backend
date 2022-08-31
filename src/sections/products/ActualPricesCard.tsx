@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Link,
   Stack,
   Tab,
@@ -52,7 +53,13 @@ function a11yProps(index: number) {
   };
 }
 
-export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
+export default function ActualPricesCard({
+  entities,
+  loading,
+}: {
+  entities: Entity[];
+  loading: boolean;
+}) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const active_entities = entities.filter(
     (entity) => entity.active_registry && entity.active_registry.is_available
@@ -205,62 +212,70 @@ export default function ActualPricesCard({ entities }: { entities: Entity[] }) {
   return (
     <Card>
       <CardHeader title="Precios actuales" />
-      <CardContent>
-        {Object.keys(mobile_network_operators_entities).length !== 0 ? (
-          <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs current price"
-              >
-                <Tab label="Retail" {...a11yProps(0)} />
-                {Object.keys(mobile_network_operators_entities).map(
-                  (storeUrl, index) => (
-                    <Tab
-                      key={storeUrl}
-                      label={apiResourceObjects[storeUrl].name}
-                      {...a11yProps(index + 1)}
+
+      {loading ? (
+        <CardContent style={{ textAlign: "center" }}>
+          <CircularProgress color="inherit" />
+        </CardContent>
+      ) : (
+        <CardContent>
+          {Object.keys(mobile_network_operators_entities).length !== 0 ? (
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs current price"
+                >
+                  <Tab label="Retail" {...a11yProps(0)} />
+                  {Object.keys(mobile_network_operators_entities).map(
+                    (storeUrl, index) => (
+                      <Tab
+                        key={storeUrl}
+                        label={apiResourceObjects[storeUrl].name}
+                        {...a11yProps(index + 1)}
+                      />
+                    )
+                  )}
+                </Tabs>
+              </Box>
+              <br />
+              <TabPanel value={value} index={0}>
+                <SortingSelecting
+                  TABLE_HEAD={columnsRetail}
+                  SORTING_SELECTING_TABLE={retail_and_wholesaler_entities}
+                  initialOrder={"active_registry.offer_price"}
+                />
+              </TabPanel>
+              {Object.keys(mobile_network_operators_entities).map(
+                (storeUrl, index) => (
+                  <TabPanel key={storeUrl} value={value} index={index + 1}>
+                    <SortingSelecting
+                      TABLE_HEAD={columnsStores}
+                      SORTING_SELECTING_TABLE={
+                        mobile_network_operators_entities[storeUrl]
+                      }
+                      initialOrder={"active_registry.offer_price"}
+                      initialRenderSort={() => (row: Entity) =>
+                        row.active_registry &&
+                        parseInt(row.active_registry.offer_price)}
                     />
-                  )
-                )}
-              </Tabs>
+                  </TabPanel>
+                )
+              )}
             </Box>
-            <br />
-            <TabPanel value={value} index={0}>
-              <SortingSelecting
-                TABLE_HEAD={columnsRetail}
-                SORTING_SELECTING_TABLE={retail_and_wholesaler_entities}
-                initialOrder={"active_registry.offer_price"}
-              />
-            </TabPanel>
-            {Object.keys(mobile_network_operators_entities).map(
-              (storeUrl, index) => (
-                <TabPanel key={storeUrl} value={value} index={index + 1}>
-                  <SortingSelecting
-                    TABLE_HEAD={columnsStores}
-                    SORTING_SELECTING_TABLE={
-                      mobile_network_operators_entities[storeUrl]
-                    }
-                    initialOrder={"active_registry.offer_price"}
-                    initialRenderSort={() => (row: Entity) =>
-                      row.active_registry &&
-                      parseInt(row.active_registry.offer_price)}
-                  />
-                </TabPanel>
-              )
-            )}
-          </Box>
-        ) : (
-          <SortingSelecting
-            TABLE_HEAD={columns}
-            SORTING_SELECTING_TABLE={active_entities}
-            initialOrder={"active_registry.offer_price"}
-            initialRenderSort={() => (row: Entity) =>
-              row.active_registry && parseInt(row.active_registry.offer_price)}
-          />
-        )}
-      </CardContent>
+          ) : (
+            <SortingSelecting
+              TABLE_HEAD={columns}
+              SORTING_SELECTING_TABLE={active_entities}
+              initialOrder={"active_registry.offer_price"}
+              initialRenderSort={() => (row: Entity) =>
+                row.active_registry &&
+                parseInt(row.active_registry.offer_price)}
+            />
+          )}
+        </CardContent>
+      )}
     </Card>
   );
 }
