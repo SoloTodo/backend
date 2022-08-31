@@ -1,3 +1,4 @@
+import { Box, CircularProgress } from "@mui/material";
 import currency from "currency.js";
 import { addDays } from "date-fns";
 import merge from "lodash/merge";
@@ -176,7 +177,11 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     },
   });
 
-  return (
+  return context.isLoading ? (
+    <Box style={{ textAlign: "center" }}>
+      <CircularProgress color="inherit" />
+    </Box>
+  ) : (
     <ReactApexChart type="line" series={CHART_DATA} options={chartOptions} />
   );
 }
