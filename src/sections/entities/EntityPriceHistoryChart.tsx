@@ -177,11 +177,17 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     },
   });
 
-  return context.isLoading ? (
-    <Box style={{ textAlign: "center" }}>
-      <CircularProgress color="inherit" />
+  return (
+    <Box margin="auto" textAlign="center" maxWidth={1000}>
+      {context.isLoading ? (
+        <CircularProgress color="inherit" />
+      ) : (
+        <ReactApexChart
+          type="line"
+          series={CHART_DATA}
+          options={chartOptions}
+        />
+      )}
     </Box>
-  ) : (
-    <ReactApexChart type="line" series={CHART_DATA} options={chartOptions} />
   );
 }
