@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next/types";
 import { ReactElement, useEffect, useState } from "react";
 import Page from "src/components/Page";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -19,8 +18,10 @@ import OptionsMenu from "src/sections/products/OptionsMenu";
 import CarouselBasic from "src/sections/mui/CarouselBasic";
 import ActualPricesCard from "src/sections/products/ActualPricesCard";
 import { Entity } from "src/frontend-utils/types/entity";
-import { useAppSelector } from "src/store/hooks";
-import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import Handlebars from "handlebars";
+import { Category } from "src/frontend-utils/types/store";
+import { wrapper } from "src/store/store";
+import styles from "../../../css/ProductPage.module.css";
 
 // ----------------------------------------------------------------------
 
@@ -32,18 +33,15 @@ ProductPage.getLayout = function getLayout(page: ReactElement) {
 
 type ProductProps = {
   product: Product;
+  renderHtml: string;
 };
 
 // ----------------------------------------------------------------------
 
 export default function ProductPage(props: ProductProps) {
-  const { product } = props;
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const { product, renderHtml } = props;
   const [loading, setLoading] = useState(false);
   const [entities, setEntities] = useState<Entity[]>([]);
-  const [renderSpecs, setRenderSpecs] = useState({
-    body: "",
-  });
 
   useEffect(() => {
     setLoading(true);
@@ -53,18 +51,6 @@ export default function ProductPage(props: ProductProps) {
     ).then((response) => {
       setEntities(response);
       setLoading(false);
-    });
-    jwtFetch(
-      null,
-      `${
-        apiSettings.apiResourceEndpoints.category_templates
-      }?website=1&purpose=1&category=${apiResourceObjects[product.category].id}`
-    ).then((category_template) => {
-      category_template.length !== 0 &&
-        jwtFetch(
-          null,
-          `${apiSettings.apiResourceEndpoints.category_templates}${category_template[0].id}/render/?product=${product.id}`
-        ).then((data) => setRenderSpecs(data));
     });
   }, []);
 
@@ -104,10 +90,10 @@ export default function ProductPage(props: ProductProps) {
                 </Typography>
                 <br />
                 <Container>
-                  {renderSpecs.body !== "" ? (
+                  {renderHtml !== "" ? (
                     <div
-                      className="product_specs"
-                      dangerouslySetInnerHTML={{ __html: renderSpecs.body }}
+                      className={styles.product_specs}
+                      dangerouslySetInnerHTML={{ __html: renderHtml }}
                     />
                   ) : (
                     <Typography>
@@ -125,20 +111,33 @@ export default function ProductPage(props: ProductProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const product = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
-    );
-    return {
-      props: {
-        product: product,
-      },
-    };
-  } catch {
-    return {
-      notFound: true,
-    };
+export const getServerSideProps = wrapper.getServerSideProps(
+  (st) => async (context) => {
+    try {
+      const product = await jwtFetch(
+        context,
+        `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
+      );
+
+      const apiResourceObjects = st.getState().apiResourceObjects;
+      const category = apiResourceObjects[product.category] as Category;
+      const template = category.detail_template;
+      let html = "";
+      if (template) {
+        const templateHandler = Handlebars.compile(template);
+        html = templateHandler(product.specs);
+      }
+
+      return {
+        props: {
+          product: product,
+          renderHtml: html,
+        },
+      };
+    } catch {
+      return {
+        notFound: true,
+      };
+    }
   }
-};
+);
