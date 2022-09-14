@@ -26,23 +26,25 @@ export default function StaffInformation({
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   useEffect(() => {
+    const myAbortController = new AbortController();
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/staff_info/`
+      `${apiSettings.apiResourceEndpoints.entities}${entity.id}/staff_info/`,
+      { signal: myAbortController.signal }
     )
       .then((data) => {
         setStaffInfo(data);
       })
-      .catch((err) => console.log(err));
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
-  const userDict = users.reduce(
-    (acc: Record<string, User>, a: User) => {
-      acc[a.url] = a;
-      return acc;
-    },
-    {}
-  );
+  const userDict = users.reduce((acc: Record<string, User>, a: User) => {
+    acc[a.url] = a;
+    return acc;
+  }, {});
 
   const staffDetails: Detail[] = [
     {
@@ -103,7 +105,7 @@ export default function StaffInformation({
   ];
 
   if (!staffInfo) {
-    return null
+    return null;
   }
 
   return (

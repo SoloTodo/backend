@@ -58,36 +58,47 @@ export default function UpdatePricing() {
   const stores = getApiResourceObjects(apiResourceObjects, "stores") as Store[];
 
   useEffect(() => {
+    const myAbortController = new AbortController();
+
     setLoading(true);
     jwtFetch(
       null,
-      apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
-    ).then((latest) => {
-      const latestActive = stores.reduce((acc: ExtendedUpdate[], a: Store) => {
-        if (a.last_activation) {
-          const l = latest[a.url];
-          return [
-            ...acc,
-            {
-              ...l,
-              id: a.id,
-              store: a.name,
-              updateId: l.id,
-              statusText:
-                l.status === 3 && !l.available_products_count
-                  ? "Error"
-                  : STATUS[l.status as 1 | 2 | 3 | 4],
-              result: l.available_products_count
-                ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
-                : "N/A",
-            },
-          ];
-        }
-        return acc;
-      }, []);
-      setLatestActive(latestActive);
-      setLoading(false);
-    });
+      apiSettings.apiResourceEndpoints.store_update_logs + "latest/",
+      { signal: myAbortController.signal }
+    )
+      .then((latest) => {
+        const latestActive = stores.reduce(
+          (acc: ExtendedUpdate[], a: Store) => {
+            if (a.last_activation) {
+              const l = latest[a.url];
+              return [
+                ...acc,
+                {
+                  ...l,
+                  id: a.id,
+                  store: a.name,
+                  updateId: l.id,
+                  statusText:
+                    l.status === 3 && !l.available_products_count
+                      ? "Error"
+                      : STATUS[l.status as 1 | 2 | 3 | 4],
+                  result: l.available_products_count
+                    ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+                    : "N/A",
+                },
+              ];
+            }
+            return acc;
+          },
+          []
+        );
+        setLatestActive(latestActive);
+        setLoading(false);
+      })
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   const columns: GridColDef[] = [

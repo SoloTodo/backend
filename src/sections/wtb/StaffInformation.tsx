@@ -53,14 +53,17 @@ export default function StaffInformation({
   ];
 
   useEffect(() => {
-    jwtFetch(
-      null,
-      `${entity.url}staff_info/`
-    )
+    const myAbortController = new AbortController();
+    jwtFetch(null, `${entity.url}staff_info/`, {
+      signal: myAbortController.signal,
+    })
       .then((data) => {
         setStaffInfo(data);
       })
-      .catch((err) => console.log(err));
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   return (

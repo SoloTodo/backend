@@ -31,15 +31,23 @@ export default function UpdateStorePricing(props: { store: Store }) {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    const myAbortController = new AbortController();
+
     setLoading(true);
-    jwtFetch(null, `${store.url}scraper/`).then((res) => {
-      const data = {
-        ...res,
-        categories: res.categories.map((c: string) => apiResourceObjects[c]),
-      };
-      setStoreScrapingOptions(data);
-      setLoading(false);
-    });
+    jwtFetch(null, `${store.url}scraper/`, { signal: myAbortController.signal })
+      .then((res) => {
+        const data = {
+          ...res,
+          categories: res.categories.map((c: string) => apiResourceObjects[c]),
+        };
+        setStoreScrapingOptions(data);
+        setLoading(false);
+      })
+      .catch((_) => {});
+
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   return (

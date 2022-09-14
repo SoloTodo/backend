@@ -45,13 +45,20 @@ export default function EntityPriceHistory() {
   ];
 
   useEffect(() => {
+    const myAbortController = new AbortController();
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`
-    ).then((data) => {
-      setEntity(data);
-      setLoading(false);
-    });
+      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`,
+      { signal: myAbortController.signal }
+    )
+      .then((data) => {
+        setEntity(data);
+        setLoading(false);
+      })
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   return (

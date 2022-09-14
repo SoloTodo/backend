@@ -65,10 +65,18 @@ export default function PricingInformation({
   };
 
   useEffect(() => {
+    const myAbortController = new AbortController();
     entity.active_registry &&
-      jwtFetch(null, `${entity.active_registry.url}stock/`).then((data) => {
-        setStock(data.stock);
-      });
+      jwtFetch(null, `${entity.active_registry.url}stock/`, {
+        signal: myAbortController.signal,
+      })
+        .then((data) => {
+          setStock(data.stock);
+        })
+        .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

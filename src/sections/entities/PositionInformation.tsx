@@ -4,16 +4,29 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import BasicTable from "../BasicTable";
 
-export default function PositionInformation({ entityId }: { entityId: number }) {
+export default function PositionInformation({
+  entityId,
+}: {
+  entityId: number;
+}) {
   const [positions, setPositions] = useState([]);
 
   useEffect(() => {
+    const myAbortController = new AbortController();
+
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entity_section_positions}?entities=${entityId}&is_active=1`
-    ).then((data) => {
-      setPositions(data.results);
-    });
+      `${apiSettings.apiResourceEndpoints.entity_section_positions}?entities=${entityId}&is_active=1`,
+      { signal: myAbortController.signal }
+    )
+      .then((data) => {
+        setPositions(data.results);
+      })
+      .catch((_) => {});
+
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   const positionsColumns: GridColDef[] = [

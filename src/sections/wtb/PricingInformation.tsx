@@ -50,7 +50,7 @@ export default function PricingInformation({
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
   ).permissions.includes("is_category_staff");
-  
+
   const [stock, setStock] = useState(0);
 
   const [reason, setReason] = useState("");
@@ -62,12 +62,19 @@ export default function PricingInformation({
   };
 
   useEffect(() => {
+    const myAbortController = new AbortController();
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.entity_histories}${entity.id}/stock/`
-    ).then((data) => {
-      setStock(data.stock);
-    });
+      `${apiSettings.apiResourceEndpoints.entity_histories}${entity.id}/stock/`,
+      { signal: myAbortController.signal }
+    )
+      .then((data) => {
+        setStock(data.stock);
+      })
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,14 +82,10 @@ export default function PricingInformation({
   };
 
   const handleDissociate = async () => {
-    await jwtFetch(
-      null,
-      `${entity.url}/dissociate/`,
-      {
-        method: "post",
-        body: JSON.stringify({ reason: reason }),
-      }
-    )
+    await jwtFetch(null, `${entity.url}/dissociate/`, {
+      method: "post",
+      body: JSON.stringify({ reason: reason }),
+    })
       .then((data) => {
         setEntity(data);
       })
@@ -112,7 +115,11 @@ export default function PricingInformation({
       key: "price",
       label: "Precio",
       renderData: (entity: WtbEntity) =>
-          entity.price ? currency(entity.price, { precision: 0 }).format() : <em>N/A</em>,
+        entity.price ? (
+          currency(entity.price, { precision: 0 }).format()
+        ) : (
+          <em>N/A</em>
+        ),
     },
   ];
 

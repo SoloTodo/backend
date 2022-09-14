@@ -44,14 +44,23 @@ export default function ProductPage(props: ProductProps) {
   const [entities, setEntities] = useState<Entity[]>([]);
 
   useEffect(() => {
+    const myAbortController = new AbortController();
+
     setLoading(true);
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`
-    ).then((response) => {
-      setEntities(response);
-      setLoading(false);
-    });
+      `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`,
+      { signal: myAbortController.signal }
+    )
+      .then((response) => {
+        setEntities(response);
+        setLoading(false);
+      })
+      .catch((_) => {});
+
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   return (
