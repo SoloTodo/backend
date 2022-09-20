@@ -78,7 +78,7 @@ class MyApp extends App<MyAppProps> {
       } catch (err) {
         // Invalid token or some other network error, invalidate the
         // possible auth cookie
-          ctx.res?.setHeader('error', err.message)
+        ctx.res?.setHeader("error", err.message);
         deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
       }
 
@@ -95,16 +95,10 @@ class MyApp extends App<MyAppProps> {
             apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
           );
         } catch (err) {
-            ctx.res?.setHeader('error', err.message)
+          ctx.res?.setHeader("error", err.message);
         }
 
         store.dispatch(userSlice.actions.setUser(user));
-        const resultProps = {
-          user,
-          initialReduxState: store.getState(),
-        };
-
-        return { pageProps: resultProps, settings };
       } else {
         ctx.res &&
           ctx.res.setHeader(
@@ -113,8 +107,8 @@ class MyApp extends App<MyAppProps> {
           );
         ctx.res && (ctx.res.statusCode = 302);
         ctx.res && ctx.res.end();
-        return { pageProps: {}, settings };
       }
+      return { pageProps: {}, settings };
     }
   );
 
@@ -126,11 +120,10 @@ class MyApp extends App<MyAppProps> {
     return (
       <>
         <Head>
-            <title>SoloTodo Backend</title>
+          <title>SoloTodo Backend</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
 
-        {/* <Provider store={store}> */}
         <SettingsProvider defaultSettings={settings}>
           <ThemeProvider>
             <NotistackProvider>
@@ -151,7 +144,6 @@ class MyApp extends App<MyAppProps> {
             </NotistackProvider>
           </ThemeProvider>
         </SettingsProvider>
-        {/* </Provider> */}
       </>
     );
   }
