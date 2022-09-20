@@ -27,6 +27,7 @@
     "@mui/x-data-grid": "^5.2.1",
     "@reduxjs/toolkit": "^1.7.1",
     "@types/atob": "^2.1.2",
+    "@types/handlebars": "^4.1.0",
     "@types/numeral": "^2.0.2",
     "apexcharts": "3.32.0",
     "atob": "^2.1.2",
