@@ -34,21 +34,22 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const { logout } = useAuth();
   const user = useAppSelector(useUser);
-  if (!user) return null;
-  const full_name = `${user.first_name} ${user.last_name}`;
-
+  
   const router = useRouter();
-
+  
   const [open, setOpen] = useState<HTMLElement | null>(null);
-
+  
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
   };
-
+  
   const handleClose = (linkTo: string) => {
     router.push(linkTo)
     setOpen(null);
   };
+  
+  if (!user) return null;
+  const full_name = `${user.first_name} ${user.last_name}`;
 
   return (
     <>
