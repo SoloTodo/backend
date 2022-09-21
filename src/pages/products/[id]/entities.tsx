@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Link,
   Stack,
@@ -9,7 +10,7 @@ import {
 import NextLink from "next/link";
 import { GridColDef } from "@mui/x-data-grid";
 import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -41,14 +42,31 @@ ProductEntities.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function ProductEntities({
-  product,
-  entities,
-}: {
-  product: Product;
-  entities: Entity[];
-}) {
+export default function ProductEntities({ product }: { product: Product }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+
+  const [loading, setLoading] = useState(false);
+  const [entities, setEntities] = useState<Entity[]>([]);
+
+  useEffect(() => {
+    const myAbortController = new AbortController();
+
+    setLoading(true);
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`,
+      { signal: myAbortController.signal }
+    )
+      .then((response) => {
+        setEntities(response);
+        setLoading(false);
+      })
+      .catch((_) => {});
+
+    return () => {
+      myAbortController.abort();
+    };
+  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -89,6 +107,11 @@ export default function ProductEntities({
           </Link>
         </Stack>
       ),
+    },
+    {
+      headerName: "Vendedor",
+      field: "seller",
+      flex: 1,
     },
     {
       headerName: "SKU",
@@ -210,9 +233,15 @@ export default function ProductEntities({
         />
         <Card>
           <CardHeader title="Entidades" />
-          <CardContent>
-            <CustomTable data={entities} columns={columns} />
-          </CardContent>
+          {loading ? (
+            <CardContent style={{ textAlign: "center" }}>
+              <CircularProgress color="inherit" />
+            </CardContent>
+          ) : (
+            <CardContent>
+              <CustomTable data={entities} columns={columns} />
+            </CardContent>
+          )}
         </Card>
       </Container>
     </Page>
@@ -225,14 +254,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
-    const entities = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.products}${context.params?.id}/entities/`
-    );
     return {
       props: {
         product: product,
-        entities: entities,
       },
     };
   } catch {
