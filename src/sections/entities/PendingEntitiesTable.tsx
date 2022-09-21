@@ -65,6 +65,11 @@ export default function PendingEntitiesTable() {
       ),
     },
     {
+      headerName: "Vendedor",
+      field: "seller",
+      flex: 1,
+    },
+    {
       headerName: "País",
       field: "country",
       flex: 1,

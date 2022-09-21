@@ -95,6 +95,10 @@ export default function ActualPricesCard({
       ),
     },
     {
+      label: "Vendedor",
+      id: "seller",
+    },
+    {
       label: "Precio normal",
       id: "active_registry.normal_price",
       renderSort: (row: Entity) =>

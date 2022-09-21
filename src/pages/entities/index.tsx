@@ -134,6 +134,11 @@ export default function Entities() {
       ),
     },
     {
+      headerName: "Vendedor",
+      field: "seller",
+      flex: 1,
+    },
+    {
       headerName: "SKU",
       field: "sku",
       flex: 1,
