@@ -112,6 +112,7 @@ export default function ProductEntities({ product }: { product: Product }) {
       headerName: "Vendedor",
       field: "seller",
       flex: 1,
+      renderCell: (params) => params.row.seller || "N/A"
     },
     {
       headerName: "SKU",

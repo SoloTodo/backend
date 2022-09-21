@@ -68,6 +68,7 @@ export default function PendingEntitiesTable() {
       headerName: "Vendedor",
       field: "seller",
       flex: 1,
+      renderCell: (row: any) => row.seller || "N/A"
     },
     {
       headerName: "País",

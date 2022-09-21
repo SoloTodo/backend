@@ -137,6 +137,7 @@ export default function Entities() {
       headerName: "Vendedor",
       field: "seller",
       flex: 1,
+      renderCell: (row: Entity) => row.seller || "N/A"
     },
     {
       headerName: "SKU",
