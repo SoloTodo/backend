@@ -282,12 +282,14 @@ export default function Entities() {
                     <ApiFormSelectComponent
                       name="categories"
                       label="Categorías"
+                      selectOnly
                     />
                   </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
                       name="is_available"
                       label="¿Disponible?"
+                      selectOnly
                     />
                   </Grid>
                   <Grid item xs={2}>
@@ -297,12 +299,14 @@ export default function Entities() {
                     <ApiFormSelectComponent
                       name="is_visible"
                       label="¿Visible?"
+                      selectOnly
                     />
                   </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
                       name="is_associated"
                       label="¿Asociada?"
+                      selectOnly
                     />
                   </Grid>
                   <Grid item xs={4}>
