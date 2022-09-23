@@ -40,6 +40,7 @@ export default function EntityPriceHistoryChart({ name }: { name: string }) {
     while (day <= cleanedData[1]) {
       days.push(day);
       day = addDays(day, 1);
+      day.setHours(0, 0, 0);
     }
   }
 
