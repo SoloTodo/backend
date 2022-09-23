@@ -282,7 +282,6 @@ export default function Entities() {
                     <ApiFormSelectComponent
                       name="categories"
                       label="Categorías"
-                      selectOnly
                     />
                   </Grid>
                   <Grid item xs={2}>
