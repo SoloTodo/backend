@@ -292,7 +292,7 @@ export default function Entities() {
                     />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_active" label="¿Activa?" />
+                    <ApiFormSelectComponent name="is_active" label="¿Activa?" selectOnly />
                   </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
