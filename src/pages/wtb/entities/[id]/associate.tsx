@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 // layout
 import Layout from "src/layouts";
@@ -17,6 +17,8 @@ import { PATH_DASHBOARD, PATH_WTB } from "src/routes/paths";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { Brand, WtbEntity } from "src/frontend-utils/types/wtb";
+import { useSnackbar } from "notistack";
+import { useRouter } from "next/router";
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +34,20 @@ type EntityAssociateProps = {
 };
 
 export default function EntityAssociate(props: EntityAssociateProps) {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
   const [entity, setEntity] = useState(props.entity);
+
+  useEffect(() => {
+    if (!entity.is_visible) {
+      enqueueSnackbar(
+        "Esta entidad no está visible, así que no puede ser asociada. Márquela como visible si desea asociarla.",
+        { persist: true, variant: "warning" }
+      );
+      router.push(`${PATH_WTB.entities}/${entity.id}`);
+      return;
+    }
+  });
 
   return (
     <Page title={`${entity.name} | Asociar`}>
@@ -49,7 +64,11 @@ export default function EntityAssociate(props: EntityAssociateProps) {
         />
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <AssociateInformation entity={entity} setEntity={setEntity} brand={props.brand} />
+            <AssociateInformation
+              entity={entity}
+              setEntity={setEntity}
+              brand={props.brand}
+            />
           </Grid>
           <Grid item xs={12}>
             <AssociateForm entity={entity} setEntity={setEntity} />

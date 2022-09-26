@@ -79,7 +79,7 @@ export default function EntityPage(props: EntityProps) {
             <PositionInformation entityId={entity.id} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <StaffInformation entity={entity} users={users} />
+            <StaffInformation entity={entity} setEntity={setEntity} users={users} />
           </Grid>
           <Grid item xs={24}>
             <Card>

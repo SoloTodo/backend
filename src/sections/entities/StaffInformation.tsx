@@ -14,16 +14,27 @@ import { Detail } from "src/frontend-utils/types/extras";
 import { User } from "src/frontend-utils/types/user";
 // components
 import Details from "../Details";
+import { Category } from "src/frontend-utils/types/store";
+import { useSnackbar } from "notistack";
+import { differenceInMilliseconds, millisecondsToMinutes } from "date-fns";
+import { useUser } from "src/frontend-utils/redux/user";
 
 export default function StaffInformation({
   entity,
+  setEntity,
   users,
 }: {
   entity: Entity;
+  setEntity: Function;
   users: User[];
 }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const user = useAppSelector(useUser);
   const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const hasStaffPermission = (
+    apiResourceObjects[entity.category] as Category
+  ).permissions.includes("is_category_staff");
 
   useEffect(() => {
     const myAbortController = new AbortController();
@@ -33,6 +44,34 @@ export default function StaffInformation({
       { signal: myAbortController.signal }
     )
       .then((data) => {
+        let registerStaffAccess = false;
+
+        if (data.last_staff_access) {
+          const durationSinceLastStaffAccess = differenceInMilliseconds(
+            new Date(),
+            new Date(data.last_staff_access),
+          );
+          if (millisecondsToMinutes(durationSinceLastStaffAccess) < 10) {
+            if (data.last_staff_access_user !== user?.detail_url) {
+              enqueueSnackbar(
+                "Alguien ha estado trabajando en esta entidad hace poco. ¡Cuidado!",
+                { persist: true, variant: "warning" }
+              );
+            }
+          } else {
+            registerStaffAccess = true;
+          }
+        } else {
+          registerStaffAccess = true;
+        }
+
+        if (registerStaffAccess) {
+          jwtFetch(null, `${entity.url}register_staff_access/`, {
+            method: "POST",
+          }).then((json) => {
+            setEntity(json);
+          });
+        }
         setStaffInfo(data);
       })
       .catch((_) => {});
@@ -108,11 +147,13 @@ export default function StaffInformation({
     return null;
   }
 
-  return (
+  return hasStaffPermission ? (
     <Details
       title="Información staff"
       data={{ ...entity, ...staffInfo }}
       details={staffDetails}
     />
+  ) : (
+    <></>
   );
 }
