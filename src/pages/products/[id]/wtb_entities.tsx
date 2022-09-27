@@ -16,7 +16,7 @@ import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/ap
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { fDateTimeSuffix } from "src/utils/formatTime";
-import { WtbEntity } from "src/frontend-utils/types/wtb";
+import { Brand, WtbEntity } from "src/frontend-utils/types/wtb";
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ ProductWtbEntities.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function ProductWtbEntities({ product }: { product: Product }) {
+export default function ProductWtbEntities({ product, brands }: { product: Product, brands: Brand[] }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const fieldMetadata = [
@@ -72,9 +72,9 @@ export default function ProductWtbEntities({ product }: { product: Product }) {
       headerName: "Marca",
       field: "brand",
       flex: 1,
-      // renderCell: (row: WtbEntity) => (
-      //   apiResourceObjects[row.brand].name
-      // ),
+      renderCell: (row: WtbEntity) => (
+        brands.find((b) => b.url == row.brand)?.name
+      ),
     },
     {
       headerName: "¿Visible?",
@@ -133,9 +133,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.products}${context.params?.id}`
     );
+    const brands = await jwtFetch(
+      context,
+      `${apiSettings.apiResourceEndpoints.wtb_brands}`
+    )
     return {
       props: {
         product: product,
+        brands: brands
       },
     };
   } catch {
