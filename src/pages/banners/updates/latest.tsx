@@ -39,9 +39,7 @@ export default function BannerUpdatesLatest({
       headerName: "Estado",
       field: "status",
       renderCell: (params) =>
-        params.row.status
-          ? statusCodes[params.row.status]
-          : "N/A",
+        params.row.status ? statusCodes[params.row.status] : "N/A",
     },
     {
       headerName: "Fecha",
@@ -70,7 +68,10 @@ export default function BannerUpdatesLatest({
         <Card>
           <CardHeader title="Últimas actualizaciones" />
           <CardContent>
-            <CustomTable data={latest} columns={columns} />
+            <CustomTable
+              data={latest.filter((x) => x != null)}
+              columns={columns}
+            />
           </CardContent>
         </Card>
       </Container>
