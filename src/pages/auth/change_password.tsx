@@ -5,7 +5,14 @@ import { useSnackbar } from "notistack";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 // @mui
-import { Stack, Card, Container, Typography, InputAdornment, IconButton } from "@mui/material";
+import {
+  Stack,
+  Card,
+  Container,
+  Typography,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // components
 import { FormProvider, RHFTextField } from "../../components/hook-form";
@@ -44,7 +51,11 @@ export default function ChangePassword() {
   const ChangePassWordSchema = Yup.object().shape({
     old_password: Yup.string().required("Contraseña antigua requerida"),
     new_password1: Yup.string()
-      .required("Nueva contraseña requerida"),
+      .required("Nueva contraseña requerida")
+      .min(8, "La contraseña debe tener un largo mínimo de 8 caracteres")
+      .matches(/^(?=.*[A-Z])/, "Debe contener al menos una mayúscula")
+      .matches(/^(?=.*[0-9])/, "Debe contener al menos un número")
+      .matches(/^(?=.*[!@#%&])/, "Debe contener al menos un símbolo"),
     new_password2: Yup.string().oneOf(
       [Yup.ref("new_password1"), null],
       "Nueva contraseña debe coincidir"
@@ -101,66 +112,72 @@ export default function ChangePassword() {
                 name="old_password"
                 label="Antigua Contraseña"
                 type={showPasswordOld ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPasswordOld(!showPasswordOld)}
-                          edge="end"
-                        >
-                          <Iconify
-                            icon={
-                              showPasswordOld ? "eva:eye-fill" : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPasswordOld(!showPasswordOld)}
+                        edge="end"
+                      >
+                        <Iconify
+                          icon={
+                            showPasswordOld
+                              ? "eva:eye-fill"
+                              : "eva:eye-off-fill"
+                          }
+                        />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <RHFTextField
                 name="new_password1"
                 label="Nueva Contraseña"
                 type={showPasswordNew1 ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPasswordNew1(!showPasswordNew1)}
-                          edge="end"
-                        >
-                          <Iconify
-                            icon={
-                              showPasswordNew1 ? "eva:eye-fill" : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPasswordNew1(!showPasswordNew1)}
+                        edge="end"
+                      >
+                        <Iconify
+                          icon={
+                            showPasswordNew1
+                              ? "eva:eye-fill"
+                              : "eva:eye-off-fill"
+                          }
+                        />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <RHFTextField
                 name="new_password2"
                 label="Confirmar Nueva Contraseña"
                 type={showPasswordNew2 ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPasswordNew2(!showPasswordNew2)}
-                          edge="end"
-                        >
-                          <Iconify
-                            icon={
-                              showPasswordNew2 ? "eva:eye-fill" : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPasswordNew2(!showPasswordNew2)}
+                        edge="end"
+                      >
+                        <Iconify
+                          icon={
+                            showPasswordNew2
+                              ? "eva:eye-fill"
+                              : "eva:eye-off-fill"
+                          }
+                        />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <LoadingButton
