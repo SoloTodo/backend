@@ -83,15 +83,18 @@ export default function StoreUpdateLogs(props: { store: Store }) {
       headerName: "Registro",
       field: "registry_file",
       flex: 1,
-      renderCell: (params: Update) => (
-        <Link
-          target="_blank"
-          rel="noopener noreferrer"
-          href={params.registry_file}
-        >
-          Descargar
-        </Link>
-      ),
+      renderCell: (params: Update) =>
+        params.registry_file ? (
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={params.registry_file}
+          >
+            Descargar
+          </Link>
+        ) : (
+          "No disponible"
+        ),
     },
   ];
 
