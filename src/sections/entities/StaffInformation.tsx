@@ -23,14 +23,17 @@ export default function StaffInformation({
   entity,
   setEntity,
   users,
+  staffInfo,
+  setStaffInfo,
 }: {
   entity: Entity;
   setEntity: Function;
   users: User[];
+  staffInfo: StaffInfo | null;
+  setStaffInfo: Function;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const user = useAppSelector(useUser);
-  const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
@@ -49,7 +52,7 @@ export default function StaffInformation({
         if (data.last_staff_access) {
           const durationSinceLastStaffAccess = differenceInMilliseconds(
             new Date(),
-            new Date(data.last_staff_access),
+            new Date(data.last_staff_access)
           );
           if (millisecondsToMinutes(durationSinceLastStaffAccess) < 10) {
             if (data.last_staff_access_user !== user?.detail_url) {

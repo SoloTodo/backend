@@ -1,12 +1,6 @@
 import { ReactElement, useState } from "react";
 import { GetServerSideProps } from "next/types";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Grid,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Container, Grid } from "@mui/material";
 import Layout from "src/layouts";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -23,7 +17,7 @@ import PositionInformation from "src/sections/entities/PositionInformation";
 import StaffInformation from "src/sections/entities/StaffInformation";
 import ReactMarkdown from "react-markdown";
 // types
-import { Entity } from "src/frontend-utils/types/entity";
+import { Entity, StaffInfo } from "src/frontend-utils/types/entity";
 import { User } from "src/frontend-utils/types/user";
 import UpdatePricingInformation from "src/sections/entities/UpdatePricingInformation";
 
@@ -45,6 +39,7 @@ type EntityProps = {
 export default function EntityPage(props: EntityProps) {
   const { users } = props;
   const [entity, setEntity] = useState<Entity>(props.entity);
+  const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
 
   return (
     <Page title={entity.name}>
@@ -73,13 +68,19 @@ export default function EntityPage(props: EntityProps) {
             <GeneralInformation entity={entity} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <PricingInformation entity={entity} setEntity={setEntity} />
+            <PricingInformation entity={entity} setEntity={setEntity} staffInfo={staffInfo} />
           </Grid>
           <Grid item xs={12} md={6}>
             <PositionInformation entityId={entity.id} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <StaffInformation entity={entity} setEntity={setEntity} users={users} />
+            <StaffInformation
+              entity={entity}
+              setEntity={setEntity}
+              users={users}
+              staffInfo={staffInfo}
+              setStaffInfo={setStaffInfo}
+            />
           </Grid>
           <Grid item xs={24}>
             <Card>

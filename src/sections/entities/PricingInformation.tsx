@@ -21,7 +21,7 @@ import { fDateTimeSuffix } from "src/utils/formatTime";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 // types
 import { Detail } from "src/frontend-utils/types/extras";
-import { Entity } from "src/frontend-utils/types/entity";
+import { Entity, StaffInfo } from "src/frontend-utils/types/entity";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
 import { Category } from "src/frontend-utils/types/store";
 // paths
@@ -29,6 +29,8 @@ import { PATH_PRODUCT } from "src/routes/paths";
 import { apiSettings } from "src/frontend-utils/settings";
 // section
 import Details from "../Details";
+import { useUser } from "src/frontend-utils/redux/user";
+import { LoadingButton } from "@mui/lab";
 
 const style = {
   position: "absolute" as "absolute",
@@ -42,13 +44,22 @@ const style = {
   p: 4,
 };
 
+const DISSOCIATING_STATES = {
+  STAND_BY: 1,
+  CONFIRMING: 2,
+  EXECUTING: 3,
+};
+
 export default function PricingInformation({
   entity,
   setEntity,
+  staffInfo,
 }: {
   entity: Entity;
   setEntity: Function;
+  staffInfo: StaffInfo | null;
 }) {
+  const user = useAppSelector(useUser);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
@@ -56,13 +67,10 @@ export default function PricingInformation({
 
   const [stock, setStock] = useState(0);
 
+  const [dissociatingState, setDissociatingState] = useState(
+    DISSOCIATING_STATES.STAND_BY
+  );
   const [reason, setReason] = useState("");
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    setReason("");
-  };
 
   useEffect(() => {
     const myAbortController = new AbortController();
@@ -84,16 +92,21 @@ export default function PricingInformation({
   };
 
   const handleDissociate = async () => {
+    setDissociatingState(DISSOCIATING_STATES.EXECUTING);
+    const requestBody: { reason?: string } = {};
+    if (reason) requestBody.reason = reason;
     await jwtFetch(
       null,
       `${apiSettings.apiResourceEndpoints.entities}${entity.id}/dissociate/`,
       {
         method: "post",
-        body: JSON.stringify({ reason: reason }),
+        body: JSON.stringify(requestBody),
       }
     )
       .then((data) => {
         setEntity(data);
+        setDissociatingState(DISSOCIATING_STATES.CONFIRMING);
+        setReason("");
       })
       .catch((err) => console.log(err));
   };
@@ -250,12 +263,17 @@ export default function PricingInformation({
       label: "",
       renderData: (_entity: Entity) => (
         <>
-          <Button variant="contained" color="error" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => setDissociatingState(DISSOCIATING_STATES.CONFIRMING)}
+            disabled={dissociatingState !== DISSOCIATING_STATES.STAND_BY}
+          >
             Disociar
           </Button>
           <Modal
-            open={open}
-            onClose={handleClose}
+            open={dissociatingState !== DISSOCIATING_STATES.STAND_BY}
+            onClose={() => setDissociatingState(DISSOCIATING_STATES.STAND_BY)}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
@@ -266,22 +284,26 @@ export default function PricingInformation({
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Por favor confirme la disociación de la entidad
               </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Esta entidad fue asociada por un usuario distinto. Si es posible
-                por favor deje un mensaje para el/ella especificando el motivo
-                para disociar la entidad.
-              </Typography>
-              <br />
-              <TextField
-                id="reasons"
-                label="Motivo de la disociación (opcional)"
-                multiline
-                rows={3}
-                value={reason}
-                onChange={handleChange}
-                style={{ width: "100%" }}
-              />
-              <br />
+              {staffInfo?.last_association_user !== user?.detail_url && (
+                <>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Esta entidad fue asociada por un usuario distinto. Si es
+                    posible por favor deje un mensaje para el/ella especificando
+                    el motivo para disociar la entidad.
+                  </Typography>
+                  <br />
+                  <TextField
+                    id="reasons"
+                    label="Motivo de la disociación (opcional)"
+                    multiline
+                    rows={3}
+                    value={reason}
+                    onChange={handleChange}
+                    style={{ width: "100%" }}
+                  />
+                  <br />
+                </>
+              )}
               <br />
               <Stack
                 direction="row"
@@ -289,14 +311,23 @@ export default function PricingInformation({
                 divider={<Divider orientation="vertical" flexItem />}
                 spacing={2}
               >
-                <Button
+                <LoadingButton
                   variant="contained"
                   color="error"
                   onClick={handleDissociate}
+                  loading={dissociatingState === DISSOCIATING_STATES.EXECUTING}
                 >
-                  Disociar
-                </Button>
-                <Button variant="contained" onClick={handleClose}>
+                  {dissociatingState === DISSOCIATING_STATES.EXECUTING
+                    ? "Disociando"
+                    : "Disociar"}
+                </LoadingButton>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    setDissociatingState(DISSOCIATING_STATES.STAND_BY)
+                  }
+                  disabled={dissociatingState === DISSOCIATING_STATES.EXECUTING}
+                >
                   Cancelar
                 </Button>
               </Stack>
