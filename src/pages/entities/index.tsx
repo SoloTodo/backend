@@ -95,6 +95,12 @@ export default function Entities() {
       choices: choicesYesNo,
     },
     {
+      fieldType: "select" as "select",
+      name: "is_marketplace",
+      multiple: false,
+      choices: choicesYesNo,
+    },
+    {
       fieldType: "text" as "text",
       name: "search",
     },
@@ -309,6 +315,13 @@ export default function Entities() {
                     />
                   </Grid>
                   <Grid item xs={4}>
+                    <ApiFormSelectComponent
+                      name="is_marketplace"
+                      label="¿Marketplace?"
+                      selectOnly
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <ApiFormTextComponent
                       name="search"
                       label="Palabras clave"

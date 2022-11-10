@@ -10,7 +10,7 @@ import {
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
-import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
+import ApiFormSelectComponent, { choicesYesNo } from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import {
   selectApiResourceObjects,
@@ -73,6 +73,12 @@ export default function PendingEntities({
       choices: selectApiResourceObjects(apiResourceObjects, "countries"),
     },
     {
+      fieldType: "select" as "select",
+      name: "is_marketplace",
+      multiple: false,
+      choices: choicesYesNo,
+    },
+    {
       fieldType: "text" as "text",
       name: "search",
     },
@@ -115,6 +121,13 @@ export default function PendingEntities({
                     <ApiFormSelectComponent name="countries" label="Países" />
                   </Grid>
                   <Grid item xs={6}>
+                    <ApiFormSelectComponent
+                      name="is_marketplace"
+                      label="¿Marketplace?"
+                      selectOnly
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <ApiFormTextComponent
                       name="search"
                       label="Palabras clave"
