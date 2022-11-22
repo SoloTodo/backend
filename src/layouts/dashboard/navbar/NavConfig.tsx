@@ -6,11 +6,13 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ExploreIcon from "@mui/icons-material/Explore";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import StorageIcon from '@mui/icons-material/Storage';
 // routes
 import {
   PATH_BANNERS,
   PATH_CATEGORY,
   PATH_ENTITY,
+  PATH_METAMODEL,
   PATH_PRODUCT,
   PATH_RATING,
   PATH_REPORTS,
@@ -37,6 +39,7 @@ const ICONS = {
   explore: <ExploreIcon />,
   fileDownload: <FileDownloadIcon />,
   visibility: <VisibilityIcon />,
+  storage: <StorageIcon />,
 };
 
 const sidebarConfig = [
@@ -195,6 +198,11 @@ const sidebarConfig = [
             hasPermission: "banners.is_staff_of_banner_assets",
           },
         ],
+      },
+      {
+        title: "Metamodel",
+        path: PATH_METAMODEL.models,
+        icon: ICONS.storage,
       },
     ],
   },
