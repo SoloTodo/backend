@@ -81,7 +81,7 @@ export default function AssetContents(props: {
   const defaultValues = {
     brand: "",
     category: "",
-    percentage: undefined,
+    percentage: 0,
   };
 
   const NewContentSchema = Yup.object().shape({
