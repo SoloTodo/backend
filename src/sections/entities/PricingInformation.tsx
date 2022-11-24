@@ -127,7 +127,7 @@ export default function PricingInformation({
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href={entity.external_url}
+              href={`${PATH_PRODUCT.root}/${entity.product.id}`}
             >
               <LinkIcon fontSize="small" />
             </Link>
