@@ -1,15 +1,24 @@
-import { Autocomplete, Checkbox, TextField } from "@mui/material";
+import { Autocomplete, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Control, Controller, FieldValues } from "react-hook-form";
+import { RHFCheckbox, RHFTextField } from "src/components/hook-form";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import {
   InstanceMetaModel,
   MetaField,
 } from "src/frontend-utils/types/metamodel";
+import MetaModalInstanceModal from "./MetaModelInstanceModal";
 
 type InstanceChoices = InstanceMetaModel[] | null;
 
-export default function InstanceInput({ metaField }: { metaField: MetaField }) {
+export default function InstanceInput({
+  metaField,
+  control,
+}: {
+  metaField: MetaField;
+  control: Control<FieldValues, any>;
+}) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
 
   useEffect(() => {
@@ -37,7 +46,6 @@ export default function InstanceInput({ metaField }: { metaField: MetaField }) {
     }
   }, []);
 
-  console.log(metaField);
   const options =
     instanceChoices !== null
       ? instanceChoices.map((i) => ({
@@ -46,31 +54,60 @@ export default function InstanceInput({ metaField }: { metaField: MetaField }) {
         }))
       : [];
 
-  // INPUTS
-  const newFileInput = <input type="file" />;
-  const booleanInput = <Checkbox />;
-  const generalInput = <TextField sx={{ width: "100%" }} variant="outlined" />;
-  const selectInput = (
-    <Autocomplete
-      options={options}
-      multiple={metaField.multiple}
-      sx={{ width: "100%" }}
-      renderInput={(params) => <TextField {...params} label="" />}
-    />
-  );
+  const isOptionEqualToValue = (
+    option: { label: string; value: number },
+    value: { label: string; value: number }
+  ) => {
+    return option.value === value.value;
+  };
 
   const componentToRender = () => {
     if (metaField.model.is_primitive) {
       if (metaField.model.name === "FileField") {
-        return newFileInput;
+        return <input type="file" />;
       } else if (metaField.model.name === "BooleanField") {
-        return booleanInput;
+        return <RHFCheckbox name={metaField.name} label="" />;
       } else {
-        return generalInput;
+        return (
+          <RHFTextField
+            type={metaField.model.name === "CharField" ? "text" : "number"}
+            sx={{ width: "100%" }}
+            variant="outlined"
+            name={metaField.name}
+            required={!metaField.nullable}
+          />
+        );
       }
     } else {
-      return selectInput;
+      return (
+        <Controller
+          name={metaField.name}
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              multiple={metaField.multiple}
+              isOptionEqualToValue={isOptionEqualToValue}
+              onChange={(_, newValue) => field.onChange(newValue)}
+              options={options}
+              renderInput={(params) => <TextField label="" {...params} />}
+              fullWidth
+            />
+          )}
+        />
+      );
     }
   };
-  return componentToRender();
+
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      {componentToRender()}
+      {!metaField.model.is_primitive && (
+        <>
+          <MetaModalInstanceModal metaField={metaField} />
+          {/* <p>Editar</p> */}
+        </>
+      )}
+    </Stack>
+  );
 }
