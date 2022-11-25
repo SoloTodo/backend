@@ -1,7 +1,11 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
-import { RHFCheckbox, RHFTextField } from "src/components/hook-form";
+import {
+  RHFCheckbox,
+  RHFTextField,
+  RHFUploadSingleFile,
+} from "src/components/hook-form";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import {
@@ -20,6 +24,9 @@ export default function InstanceInput({
   control: Control<FieldValues, any>;
 }) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
+  const [selectedInstanceId, setSelectedIsntanceId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     if (!metaField.model.is_primitive) {
@@ -64,7 +71,7 @@ export default function InstanceInput({
   const componentToRender = () => {
     if (metaField.model.is_primitive) {
       if (metaField.model.name === "FileField") {
-        return <input type="file" />;
+        return <RHFUploadSingleFile name={metaField.name} />;
       } else if (metaField.model.name === "BooleanField") {
         return <RHFCheckbox name={metaField.name} label="" />;
       } else {
@@ -88,7 +95,11 @@ export default function InstanceInput({
               {...field}
               multiple={metaField.multiple}
               isOptionEqualToValue={isOptionEqualToValue}
-              onChange={(_, newValue) => field.onChange(newValue)}
+              onChange={(_, newValue) => {
+                field.onChange(newValue);
+                !Array.isArray(newValue) &&
+                  setSelectedIsntanceId(newValue && newValue.value);
+              }}
               options={options}
               renderInput={(params) => <TextField label="" {...params} />}
               fullWidth
@@ -105,7 +116,12 @@ export default function InstanceInput({
       {!metaField.model.is_primitive && (
         <>
           <MetaModalInstanceModal metaField={metaField} />
-          {/* <p>Editar</p> */}
+          {selectedInstanceId && !metaField.multiple && (
+            <MetaModalInstanceModal
+              metaField={metaField}
+              instanceId={selectedInstanceId}
+            />
+          )}
         </>
       )}
     </Stack>

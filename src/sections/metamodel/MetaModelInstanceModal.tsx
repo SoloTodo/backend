@@ -8,7 +8,11 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { MetaField, MetaModel } from "src/frontend-utils/types/metamodel";
+import {
+  InstanceMetaModel,
+  MetaField,
+  MetaModel,
+} from "src/frontend-utils/types/metamodel";
 import MetaModelInstanceForm from "./MetaModelInstanceForm";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -26,11 +30,14 @@ const style = {
 
 export default function MetaModelInstanceModal({
   metaField,
+  instanceId,
 }: {
   metaField: MetaField;
+  instanceId?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [metaModel, setMetaModel] = useState<MetaModel>();
+  const [instanceModel, setInstanceModel] = useState<InstanceMetaModel>();
 
   useEffect(() => {
     jwtFetch(null, `metamodels/meta_models/${metaField.model.id}/`).then(
@@ -38,19 +45,24 @@ export default function MetaModelInstanceModal({
         setMetaModel(json);
       }
     );
-    // if (instanceModelId) {
-    //   jwtFetch(null, `metamodels/instance_models/${instanceModelId}/`).then(
-    //     (json) => {
-    //       setInstanceModel(json);
-    //     }
-    //   );
-    // }
+    if (instanceId) {
+      jwtFetch(null, `metamodels/instance_models/${instanceId}/`).then(
+        (json) => {
+          setInstanceModel(json);
+        }
+      );
+    }
   }, [open]);
 
+  const text = !instanceId ? "Agregar" : "Editar";
   return (
     <>
-      <Button variant="contained" onClick={() => setOpen(true)}>
-        Agregar
+      <Button
+        variant="contained"
+        color={!instanceId ? "primary" : "info"}
+        onClick={() => setOpen(true)}
+      >
+        {text}
       </Button>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Box sx={style}>
@@ -59,13 +71,21 @@ export default function MetaModelInstanceModal({
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="h5">Agregar Instancia</Typography>
+            <Typography variant="h5">{text} Instancia</Typography>
             <IconButton onClick={() => setOpen(false)}>
               <CloseIcon />
             </IconButton>
           </Stack>
           <br />
-          {metaModel && <MetaModelInstanceForm metaModel={metaModel} />}
+          {metaModel &&
+            (instanceModel ? (
+              <MetaModelInstanceForm
+                metaModel={metaModel}
+                instanceModel={instanceModel}
+              />
+            ) : (
+              <MetaModelInstanceForm metaModel={metaModel} />
+            ))}
         </Box>
       </Modal>
     </>

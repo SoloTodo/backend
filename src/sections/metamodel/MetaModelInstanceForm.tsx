@@ -2,12 +2,17 @@ import { LoadingButton } from "@mui/lab";
 import { capitalize, Grid, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "src/components/hook-form";
-import { MetaModel } from "src/frontend-utils/types/metamodel";
+import {
+  InstanceMetaModel,
+  MetaModel,
+} from "src/frontend-utils/types/metamodel";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import InstanceInput from "./InstanceInput";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useRouter } from "next/router";
+import { BaseSyntheticEvent } from "react";
 
 type FormProps = {
   [key: string]: any;
@@ -15,8 +20,10 @@ type FormProps = {
 
 export default function MetaModelInstanceForm({
   metaModel,
+  instanceModel,
 }: {
   metaModel: MetaModel;
+  instanceModel?: InstanceMetaModel;
 }) {
   const router = useRouter();
 
@@ -35,6 +42,9 @@ export default function MetaModelInstanceForm({
     return acc;
   }, {});
 
+  console.log(defaultValues)
+  console.log(instanceModel)
+
   const methods = useForm({
     defaultValues: defaultValues,
   });
@@ -45,9 +55,17 @@ export default function MetaModelInstanceForm({
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = (data: FormProps, e: any) => {
-    console.log(metaModel.id);
-    console.log(e);
+  const onSubmit = (
+    data: FormProps,
+    e: BaseSyntheticEvent<object, any, any> | undefined
+  ) => {
+    if (
+      e?.target.getElementsByClassName("metaModelId")[0].id !==
+      metaModel.id.toString()
+    ) {
+      e?.stopPropagation();
+      return;
+    }
     const payload = Object.keys(data).reduce((acc: FormProps, a) => {
       if (Array.isArray(data[a])) {
         acc[a] = data[a].map((v: { value: any }) => v.value);
@@ -79,6 +97,7 @@ export default function MetaModelInstanceForm({
       methods={methods}
       onSubmit={handleSubmit(onSubmit)}
     >
+      <div id={metaModel.id.toString()} className="metaModelId" />
       <Stack spacing={3}>
         {metaModel.fields?.map((f, index) => (
           <Grid key={index} container alignItems="center">
@@ -96,7 +115,8 @@ export default function MetaModelInstanceForm({
       </Stack>
       <br />
       <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-        <AddIcon /> Agregar Instancia
+        {!instanceModel ? <AddIcon /> : <EditIcon />}{" "}
+        {!instanceModel ? "Agregar" : "Editar"} Instancia
       </LoadingButton>
     </FormProvider>
   );
