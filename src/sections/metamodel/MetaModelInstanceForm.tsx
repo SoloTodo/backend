@@ -12,7 +12,8 @@ import InstanceInput from "./InstanceInput";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useRouter } from "next/router";
-import { BaseSyntheticEvent } from "react";
+import { BaseSyntheticEvent, useEffect } from "react";
+import { PATH_METAMODEL } from "src/routes/paths";
 
 type FormProps = {
   [key: string]: any;
@@ -21,9 +22,13 @@ type FormProps = {
 export default function MetaModelInstanceForm({
   metaModel,
   instanceModel,
+  addChoice,
+  editChoice,
 }: {
   metaModel: MetaModel;
   instanceModel?: InstanceMetaModel;
+  addChoice?: Function;
+  editChoice?: Function;
 }) {
   const router = useRouter();
 
@@ -42,9 +47,6 @@ export default function MetaModelInstanceForm({
     return acc;
   }, {});
 
-  console.log(defaultValues)
-  console.log(instanceModel)
-
   const methods = useForm({
     defaultValues: defaultValues,
   });
@@ -53,7 +55,35 @@ export default function MetaModelInstanceForm({
     control,
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods;
+
+  useEffect(() => {
+    instanceModel?.fields?.map((f) => {
+      if (!f.field.model.is_primitive) {
+        if (f.field.multiple) {
+          // TODO: FIX MULTIPLE VALUES PER FIELD
+          setValue(f.field.name, [
+            {
+              value: f.value.id,
+              label: f.value.unicode_representation,
+            },
+          ]);
+        } else {
+          setValue(f.field.name, {
+            value: f.value.id,
+            label: f.value.unicode_representation,
+          });
+        }
+      } else if (
+        ["IntegerField", "DecimalField"].includes(f.field.model.name)
+      ) {
+        setValue(f.field.name, f.value.decimal_value);
+      } else {
+        setValue(f.field.name, f.value.unicode_value);
+      }
+    });
+  }, []);
 
   const onSubmit = (
     data: FormProps,
@@ -66,29 +96,39 @@ export default function MetaModelInstanceForm({
       e?.stopPropagation();
       return;
     }
-    const payload = Object.keys(data).reduce((acc: FormProps, a) => {
+    console.log(data);
+    const formData = new FormData();
+    Object.keys(data).map((a) => {
       if (Array.isArray(data[a])) {
-        acc[a] = data[a].map((v: { value: any }) => v.value);
-      } else if (typeof data[a] === "object" && data[a] !== null) {
-        acc[a] = data[a].value;
+        data[a].map((v: { value: string | Blob }) =>
+          formData.append(a, v.value)
+        );
+      } else if (data[a] !== null && data[a].value) {
+        formData.append(a, data[a].value);
       } else {
-        acc[a] = data[a] !== null ? data[a] : "";
+        if (data[a] !== null) {
+          formData.append(a, data[a]);
+        }
       }
-      return acc;
     }, {});
-    console.log(payload);
-    // jwtFetch(
-    //   null,
-    //   `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModel.id}/add_instance/`,
-    //   {
-    //     method: "post",
-    //     body: JSON.stringify(payload),
-    //   }
-    // ).then((_) =>
-    //   router.push(
-    //     `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModel.id}`
-    //   )
-    // );
+    const path = instanceModel
+      ? `${apiSettings.apiResourceEndpoints.metamodel_instance_models}${instanceModel.id}/edit/`
+      : `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModel.id}/add_instance/`;
+    jwtFetch(null, path, {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": null,
+      },
+    }).then((json) => {
+      if (addChoice) {
+        addChoice(json);
+      } else if (editChoice) {
+        editChoice(json);
+      } else {
+        router.push(`${PATH_METAMODEL.models}/${metaModel.id}`);
+      }
+    });
   };
 
   return (
@@ -108,7 +148,11 @@ export default function MetaModelInstanceForm({
               </Typography>
             </Grid>
             <Grid key={`field-${index}`} item xs={8}>
-              <InstanceInput metaField={f} control={control} />
+              <InstanceInput
+                metaField={f}
+                control={control}
+                setValue={setValue}
+              />
             </Grid>
           </Grid>
         ))}

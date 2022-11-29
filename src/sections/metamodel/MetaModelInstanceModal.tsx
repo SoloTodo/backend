@@ -31,9 +31,13 @@ const style = {
 export default function MetaModelInstanceModal({
   metaField,
   instanceId,
+  addChoice,
+  editChoice
 }: {
   metaField: MetaField;
   instanceId?: number;
+  addChoice?: Function;
+  editChoice?: Function;
 }) {
   const [open, setOpen] = useState(false);
   const [metaModel, setMetaModel] = useState<MetaModel>();
@@ -53,6 +57,16 @@ export default function MetaModelInstanceModal({
       );
     }
   }, [open]);
+
+  const addChoiceAndCloseModal = (json: InstanceMetaModel) => {
+    addChoice && addChoice(json);
+    setOpen(false);
+  }
+
+  const editChoiceAndCloseModal = (json: InstanceMetaModel) => {
+    editChoice && editChoice(json);
+    setOpen(false);
+  }
 
   const text = !instanceId ? "Agregar" : "Editar";
   return (
@@ -82,9 +96,10 @@ export default function MetaModelInstanceModal({
               <MetaModelInstanceForm
                 metaModel={metaModel}
                 instanceModel={instanceModel}
+                editChoice={editChoiceAndCloseModal}
               />
             ) : (
-              <MetaModelInstanceForm metaModel={metaModel} />
+              <MetaModelInstanceForm metaModel={metaModel} addChoice={addChoiceAndCloseModal} />
             ))}
         </Box>
       </Modal>

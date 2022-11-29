@@ -1,5 +1,5 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import {
   RHFCheckbox,
@@ -19,11 +19,16 @@ type InstanceChoices = InstanceMetaModel[] | null;
 export default function InstanceInput({
   metaField,
   control,
+  setValue,
 }: {
   metaField: MetaField;
   control: Control<FieldValues, any>;
+  setValue: Function;
 }) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
+  const [selectedInstances, setSelectedIsntances] = useState<
+    { label: string; value: number }[]
+  >([]);
   const [selectedInstanceId, setSelectedIsntanceId] = useState<number | null>(
     null
   );
@@ -53,6 +58,48 @@ export default function InstanceInput({
     }
   }, []);
 
+  const addChoice = (json: InstanceMetaModel) => {
+    setInstanceChoices([...instanceChoices!, json]);
+    if (!metaField.model.is_primitive) {
+      if (metaField.multiple) {
+        setValue(metaField.name, [
+          ...selectedInstances,
+          {
+            value: json.id,
+            label: json.unicode_representation,
+          },
+        ]);
+      } else {
+        setValue(metaField.name, {
+          value: json.id,
+          label: json.unicode_representation,
+        });
+      }
+    } else if (
+      ["IntegerField", "DecimalField"].includes(metaField.model.name)
+    ) {
+      setValue(metaField.name, json.decimal_value);
+    } else {
+      setValue(metaField.name, json.unicode_value);
+    }
+    setSelectedIsntanceId(json.id);
+  };
+
+  const editChoice = (json: InstanceMetaModel) => {
+    const editedInstanceChoices = instanceChoices?.map((i) => {
+      if (i.id === json.id) {
+        return json;
+      } else {
+        return i;
+      }
+    });
+    setInstanceChoices(editedInstanceChoices || []);
+    setValue(metaField.name, {
+      value: json.id,
+      label: json.unicode_representation,
+    });
+  };
+
   const options =
     instanceChoices !== null
       ? instanceChoices.map((i) => ({
@@ -68,10 +115,28 @@ export default function InstanceInput({
     return option.value === value.value;
   };
 
+  const handleDrop = useCallback(
+    (acceptedFiles, name) => {
+      const file = acceptedFiles[0];
+      setValue(
+        name,
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
+    },
+    [setValue]
+  );
+
   const componentToRender = () => {
     if (metaField.model.is_primitive) {
       if (metaField.model.name === "FileField") {
-        return <RHFUploadSingleFile name={metaField.name} />;
+        return (
+          <RHFUploadSingleFile
+            name={metaField.name}
+            onDrop={(t) => handleDrop(t, metaField.name)}
+          />
+        );
       } else if (metaField.model.name === "BooleanField") {
         return <RHFCheckbox name={metaField.name} label="" />;
       } else {
@@ -94,11 +159,13 @@ export default function InstanceInput({
             <Autocomplete
               {...field}
               multiple={metaField.multiple}
+              disableClearable={!metaField.nullable}
               isOptionEqualToValue={isOptionEqualToValue}
               onChange={(_, newValue) => {
                 field.onChange(newValue);
                 !Array.isArray(newValue) &&
                   setSelectedIsntanceId(newValue && newValue.value);
+                Array.isArray(newValue) && setSelectedIsntances(newValue);
               }}
               options={options}
               renderInput={(params) => <TextField label="" {...params} />}
@@ -115,11 +182,12 @@ export default function InstanceInput({
       {componentToRender()}
       {!metaField.model.is_primitive && (
         <>
-          <MetaModalInstanceModal metaField={metaField} />
+          <MetaModalInstanceModal metaField={metaField} addChoice={addChoice} />
           {selectedInstanceId && !metaField.multiple && (
             <MetaModalInstanceModal
               metaField={metaField}
               instanceId={selectedInstanceId}
+              editChoice={editChoice}
             />
           )}
         </>
