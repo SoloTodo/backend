@@ -47,7 +47,7 @@ export default function AddMetaModel({ addNewModel }: { addNewModel: Function })
   };
 
   const NewModelSchema = Yup.object().shape({
-    name: Yup.string().required("Nombre requerida"),
+    name: Yup.string().required("Nombre requerido"),
     unicode_template: Yup.string().required("Unicode template requerido"),
     ordering_field: Yup.string().required("Orden requerido"),
   });
@@ -76,7 +76,7 @@ export default function AddMetaModel({ addNewModel }: { addNewModel: Function })
       .catch(async (error) => {
         const jsonError = await error.json();
         console.error(jsonError);
-        enqueueSnackbar(jsonError.errors.percentage[0], { variant: "error" });
+        enqueueSnackbar("Error al agregar el meta modelo", { variant: "error" });
       });
     setOpen(false);
   };
