@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { MetaModel } from "src/frontend-utils/types/metamodel";
@@ -35,7 +35,7 @@ type FormValuesProps = {
   ordering_field: string;
 };
 
-export default function EditmodelProperties({
+export default function EditModelProperties({
   metaModel,
   updateMetaModelProperties,
 }: {
@@ -46,14 +46,11 @@ export default function EditmodelProperties({
   const [open, setOpen] = useState(false);
 
   const defaultValues = {
-    name: metaModel.name,
-    unicode_template: metaModel.unicode_template
-      ? metaModel.unicode_template
-      : "",
-    ordering_field: metaModel.ordering_field ? metaModel.ordering_field : "",
+    name: "",
+    unicode_template: "",
+    ordering_field: "",
   };
 
-  // TODO: UPDATE DEFAULT VALUES
   const NewModelSchema = Yup.object().shape({
     name: Yup.string().required("Nombre requerido"),
     unicode_template: Yup.string().required("Unicode template requerido"),
@@ -68,8 +65,17 @@ export default function EditmodelProperties({
   const {
     handleSubmit,
     reset,
+    setValue,
     formState: { isSubmitting },
   } = methods;
+
+  useEffect(() => {
+    setValue("name", metaModel.name);
+    if (metaModel.unicode_template)
+      setValue("unicode_template", metaModel.unicode_template);
+    if (metaModel.ordering_field)
+      setValue("ordering_field", metaModel.ordering_field);
+  }, [open]);
 
   const onSubmit = (data: FormValuesProps) => {
     jwtFetch(null, metaModel.url, {
