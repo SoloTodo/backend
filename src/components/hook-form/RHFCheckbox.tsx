@@ -18,7 +18,7 @@ export function RHFCheckbox({ name, ...other }: RHFCheckboxProps) {
         <Controller
           name={name}
           control={control}
-          render={({ field }) => <Checkbox {...field} checked={field.value} />}
+          render={({ field }) => <Checkbox {...field} checked={field.value} disabled={other.disabled} />}
         />
       }
       {...other}
