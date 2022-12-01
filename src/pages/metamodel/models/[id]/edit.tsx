@@ -8,7 +8,6 @@ import {
   Link,
   Stack,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import NextLink from "next/link";
@@ -24,6 +23,7 @@ import { PATH_DASHBOARD, PATH_METAMODEL } from "src/routes/paths";
 import CustomTable from "src/sections/CustomTable";
 import { GridColDef } from "@mui/x-data-grid";
 import EditmodelProperties from "src/sections/metamodel/EditModelProperties";
+import AddOrEditMetaModelField from "src/sections/metamodel/AddOrEditMetaFieldForm";
 
 // ----------------------------------------------------------------------
 
@@ -69,14 +69,12 @@ export default function MetaModelEditStructure({
     {
       headerName: "Field",
       field: "name",
-      // renderCell: (params) => (
-      //   <NextLink
-      //     href={`${PATH_METAMODEL.models}/${params.row.id}/edit`}
-      //     passHref
-      //   >
-      //     <Link>{params.row.name}</Link>
-      //   </NextLink>
-      // ),
+      renderCell: (params) => (
+        <AddOrEditMetaModelField
+          updateMetaModel={addOrUpdateMetaModelField}
+          metaField={params.row}
+        />
+      ),
     },
     {
       headerName: "Type",
@@ -153,9 +151,9 @@ export default function MetaModelEditStructure({
                   />
                 </Grid>
                 <Grid item xs={6} sm={4} md={2.4}>
-                  <Button variant="contained" fullWidth>
-                    <AddIcon /> Agregar Field
-                  </Button>
+                  <AddOrEditMetaModelField
+                    updateMetaModel={addOrUpdateMetaModelField}
+                  />
                 </Grid>
                 <Grid item xs={6} sm={4} md={2.4}>
                   <Button variant="contained" fullWidth>
