@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  FormHelperText,
   IconButton,
   Link,
   Modal,
@@ -21,7 +22,11 @@ import {
 import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { MetaField, MetaModel } from "src/frontend-utils/types/metamodel";
+import {
+  InstanceMetaModel,
+  MetaField,
+  MetaModel,
+} from "src/frontend-utils/types/metamodel";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 
@@ -41,22 +46,27 @@ type FormValuesProps = {
   name: string;
   help_text: string;
   hidden: boolean;
-  model: { label: string; value: number } | null;
+  model: { label: string; value: number; is_primitive: boolean } | null;
   default: { label: string; value: number } | null;
+  defaultString: string;
   nullable?: boolean;
   multiple?: boolean;
 };
 
 export default function AddOrEditMetaModelField({
+  metaModelId,
   metaField,
   updateMetaModel,
 }: {
+  metaModelId?: number;
   metaField?: MetaField;
   updateMetaModel: Function;
 }) {
   const [open, setOpen] = useState(false);
   const [modelOptions, setModelOptions] = useState([]);
-  const [defaultOptions, setDefaultOptions] = useState([]);
+  const [defaultOptions, setDefaultOptions] = useState<
+    { label: string; value: number }[]
+  >([]);
 
   useEffect(() => {
     if (!metaField) {
@@ -67,6 +77,7 @@ export default function AddOrEditMetaModelField({
         const options = res.map((r: MetaModel) => ({
           label: r.name,
           value: r.id,
+          is_primitive: r.is_primitive,
         }));
         setModelOptions(options);
       });
@@ -81,6 +92,7 @@ export default function AddOrEditMetaModelField({
     multiple: false,
     model: null,
     default: null,
+    defaultString: "",
   };
 
   const NewModelSchema = Yup.object().shape({
@@ -98,7 +110,8 @@ export default function AddOrEditMetaModelField({
     reset,
     setValue,
     watch,
-    formState: { isSubmitting },
+    setError,
+    formState: { errors, isSubmitting },
   } = methods;
 
   const values = watch();
@@ -114,27 +127,68 @@ export default function AddOrEditMetaModelField({
   }, [open, metaField]);
 
   useEffect(() => {
-    // TODO: check conditions, model is not primitive and bring options
+    if (values.model !== null && !(values.multiple || values.nullable)) {
+      setDefaultOptions([]);
+      if (!values.model.is_primitive) {
+        jwtFetch(
+          null,
+          `${apiSettings.apiResourceEndpoints.metamodel_instance_models}?models=${values.model.value}`
+        ).then((res) => {
+          const options = res.map((r: InstanceMetaModel) => ({
+            label: r.unicode_representation,
+            value: r.id,
+          }));
+          setDefaultOptions(options);
+        });
+      } else {
+        if (values.model.label === "BooleanField") {
+          setDefaultOptions([
+            { label: "True", value: 1 },
+            { label: "False", value: 0 },
+          ]);
+        }
+      }
+    }
   }, [values.model]);
 
   const onSubmit = (data: FormValuesProps) => {
-    console.log(data);
-    // jwtFetch(null, metaModel.url, {
-    //   method: "PATCH",
-    //   body: JSON.stringify(data),
-    // })
-    //   .then((json) => {
-    //     updateMetaModelProperties(json);
-    //     reset();
-    //     enqueueSnackbar("Meta modelo creado exitosamente");
-    //   })
-    //   .catch(async (error) => {
-    //     const jsonError = await error.json();
-    //     console.error(jsonError);
-    //     enqueueSnackbar("Error al modifica el meta modelo", {
-    //       variant: "error",
-    //     });
-    //   });
+    if (typeof metaField === "undefined") {
+      // Add
+      console.log("ADD");
+      if (
+        data.model !== null &&
+        !data.nullable &&
+        !data.multiple &&
+        data.default === null
+      ) {
+        setError("default", { message: "Campo requerido" });
+        return;
+      }
+      const body: Record<string, any> = {
+        name: data.name,
+        help_text: data.help_text,
+        model: data.model ? data.model.value : "",
+        hidden: data.hidden,
+        nullable: data.nullable,
+        multiple: data.multiple,
+      };
+      if (data.model && !data.nullable && !data.multiple) {
+        if (!data.model.is_primitive || data.model.label === "BooleanField") {
+          body.default = data.default;
+        } else {
+          body.default = data.defaultString;
+        }
+      }
+      console.log(body);
+      // jwtFetch(null, `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModelId}/add_field/`, {
+      //   method: "post",
+      //   body: JSON.stringify(body),
+      // })
+      // TODO: then add field
+    } else {
+      // Edit
+      console.log(data);
+    }
     setOpen(false);
   };
 
@@ -191,6 +245,7 @@ export default function AddOrEditMetaModelField({
                       isOptionEqualToValue={isOptionEqualToValue}
                       onChange={(_, newValue) => {
                         field.onChange(newValue);
+                        setError("default", {});
                       }}
                       options={modelOptions}
                       renderInput={(params) => (
@@ -218,27 +273,58 @@ export default function AddOrEditMetaModelField({
                 labelPlacement="start"
                 disabled={typeof metaField !== "undefined"}
               />
-              {!metaField && !(values.nullable || values.multiple) && (
-                <Controller
-                  name="default"
-                  control={control}
-                  render={({ field }) => (
-                    <Autocomplete
-                      {...field}
-                      multiple={false}
-                      isOptionEqualToValue={isOptionEqualToValue}
-                      onChange={(_, newValue) => {
-                        field.onChange(newValue);
-                      }}
-                      options={defaultOptions}
-                      renderInput={(params) => (
-                        <TextField label="Default" {...params} />
+              {!metaField &&
+                !(values.nullable || values.multiple) &&
+                values.model &&
+                (values.model.is_primitive &&
+                values.model.label !== "BooleanField" ? (
+                  <RHFTextField
+                    name="defaultString"
+                    label="Default"
+                    type="string"
+                  />
+                ) : (
+                  <>
+                    <Controller
+                      name="default"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          multiple={false}
+                          disabled={defaultOptions.length === 0}
+                          // disableClearable={true}
+                          isOptionEqualToValue={isOptionEqualToValue}
+                          onChange={(_, newValue) => {
+                            field.onChange(newValue);
+                          }}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.value}>
+                              {option.label}
+                            </li>
+                          )}
+                          options={defaultOptions}
+                          renderInput={(params) => (
+                            <TextField
+                              label={
+                                defaultOptions.length === 0
+                                  ? "Cargando Default ..."
+                                  : "Default"
+                              }
+                              {...params}
+                            />
+                          )}
+                          fullWidth
+                        />
                       )}
-                      fullWidth
                     />
-                  )}
-                />
-              )}
+                    {errors.default && (
+                      <FormHelperText sx={{ px: 2, display: "block" }} error>
+                        {(errors.default as any).message}
+                      </FormHelperText>
+                    )}
+                  </>
+                ))}
             </Stack>
             <br />
             <Stack spacing={1} direction="row">
