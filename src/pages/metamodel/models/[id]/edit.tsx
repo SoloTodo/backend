@@ -7,12 +7,13 @@ import {
   Grid,
   Link,
   Stack,
+  Typography,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -40,6 +41,8 @@ export default function MetaModelEditStructure({
 }) {
   const [metaModel, setMetaModel] = useState(initialMetaModel);
 
+  useEffect(() => setMetaModel(initialMetaModel), [initialMetaModel]);
+
   const updateMetaModelProperties = (data: MetaModel) => {
     const newModel: MetaModel = {
       ...metaModel,
@@ -58,6 +61,7 @@ export default function MetaModelEditStructure({
     } else {
       newFields.push(data);
     }
+    newFields.sort((a, b) => a.ordering - b.ordering);
     const newModel = {
       ...metaModel,
       fields: newFields,
@@ -70,10 +74,14 @@ export default function MetaModelEditStructure({
       headerName: "Field",
       field: "name",
       renderCell: (params) => (
-        <AddOrEditMetaModelField
-          updateMetaModel={addOrUpdateMetaModelField}
-          metaField={params.row}
-        />
+        <Stack alignItems="start">
+          <AddOrEditMetaModelField
+            updateMetaModel={addOrUpdateMetaModelField}
+            setMetaModel={setMetaModel}
+            metaField={params.row}
+          />
+          <Typography variant="caption">{params.row.help_text}</Typography>
+        </Stack>
       ),
     },
     {
