@@ -29,6 +29,7 @@ import {
 } from "src/frontend-utils/types/metamodel";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
+import DeleteMetaField from "./DeleteMetaField";
 
 const style = {
   position: "absolute" as "absolute",
@@ -56,10 +57,12 @@ type FormValuesProps = {
 export default function AddOrEditMetaModelField({
   metaModelId,
   metaField,
+  setMetaModel,
   updateMetaModel,
 }: {
   metaModelId?: number;
   metaField?: MetaField;
+  setMetaModel?: Function;
   updateMetaModel: Function;
 }) {
   const [open, setOpen] = useState(false);
@@ -129,6 +132,7 @@ export default function AddOrEditMetaModelField({
   useEffect(() => {
     if (values.model !== null && !(values.multiple || values.nullable)) {
       setDefaultOptions([]);
+      setValue("default", null);
       if (!values.model.is_primitive) {
         jwtFetch(
           null,
@@ -154,15 +158,21 @@ export default function AddOrEditMetaModelField({
   const onSubmit = (data: FormValuesProps) => {
     if (typeof metaField === "undefined") {
       // Add
-      console.log("ADD");
-      if (
-        data.model !== null &&
-        !data.nullable &&
-        !data.multiple &&
-        data.default === null
-      ) {
-        setError("default", { message: "Campo requerido" });
-        return;
+      if (data.model !== null && !data.nullable && !data.multiple) {
+        if (
+          data.default === null &&
+          (!data.model.is_primitive || data.model.label === "BooleanField")
+        ) {
+          setError("default", { message: "Campo requerido" });
+          return;
+        } else if (
+          data.defaultString === "" &&
+          data.model.is_primitive &&
+          data.model.label !== "BooleanField"
+        ) {
+          setError("defaultString", { message: "Campo requerido aa" });
+          return;
+        }
       }
       const body: Record<string, any> = {
         name: data.name,
@@ -179,17 +189,32 @@ export default function AddOrEditMetaModelField({
           body.default = data.defaultString;
         }
       }
-      console.log(body);
-      // jwtFetch(null, `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModelId}/add_field/`, {
-      //   method: "post",
-      //   body: JSON.stringify(body),
-      // })
-      // TODO: then add field
+      jwtFetch(
+        null,
+        `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModelId}/add_field/`,
+        {
+          method: "post",
+          body: JSON.stringify(body),
+        }
+      ).then((res) => {
+        updateMetaModel(res);
+        setOpen(false);
+      });
     } else {
       // Edit
-      console.log(data);
+      const body: Record<string, any> = {
+        name: data.name,
+        help_text: data.help_text,
+        hidden: data.hidden,
+      };
+      jwtFetch(null, metaField.url!, {
+        method: "patch",
+        body: JSON.stringify(body),
+      }).then((res) => {
+        updateMetaModel(res);
+        setOpen(false);
+      });
     }
-    setOpen(false);
   };
 
   const closeModal = () => {
@@ -261,18 +286,34 @@ export default function AddOrEditMetaModelField({
                 label="Hidden"
                 labelPlacement="start"
               />
-              <RHFCheckbox
-                name="nullable"
-                label="Nullable"
-                labelPlacement="start"
-                disabled={typeof metaField !== "undefined"}
-              />
-              <RHFCheckbox
-                name="multiple"
-                label="Multiple"
-                labelPlacement="start"
-                disabled={typeof metaField !== "undefined"}
-              />
+              <Stack direction="row" spacing={3}>
+                <RHFCheckbox
+                  name="nullable"
+                  label="Nullable"
+                  labelPlacement="start"
+                  disabled={typeof metaField !== "undefined"}
+                  sx={{ marginLeft: 0 }}
+                />
+                {metaField && (
+                  <Button variant="outlined" color="info">
+                    {values.nullable ? "Hacer no nullable" : "Hacer nullable"}
+                  </Button>
+                )}
+              </Stack>
+              <Stack direction="row" spacing={3}>
+                <RHFCheckbox
+                  name="multiple"
+                  label="Multiple"
+                  labelPlacement="start"
+                  disabled={typeof metaField !== "undefined"}
+                  sx={{ marginLeft: 0 }}
+                />
+                {!values.multiple && metaField && (
+                  <Button variant="outlined" color="info">
+                    Hacer multiple
+                  </Button>
+                )}
+              </Stack>
               {!metaField &&
                 !(values.nullable || values.multiple) &&
                 values.model &&
@@ -332,12 +373,27 @@ export default function AddOrEditMetaModelField({
                 type="submit"
                 variant="contained"
                 loading={isSubmitting}
+                disabled={
+                  (!metaField &&
+                    !(values.nullable || values.multiple) &&
+                    values.model &&
+                    !values.model.is_primitive &&
+                    defaultOptions.length === 0) ||
+                  undefined
+                }
               >
                 {metaField ? "Guardar" : "Crear"}
               </LoadingButton>
-              <Button color="inherit" variant="outlined" onClick={closeModal}>
-                Cancelar
-              </Button>
+              {metaField && setMetaModel ? (
+                <DeleteMetaField
+                  metaField={metaField}
+                  setMetaModel={setMetaModel}
+                />
+              ) : (
+                <Button color="inherit" variant="outlined" onClick={closeModal}>
+                  Cancelar
+                </Button>
+              )}
             </Stack>
           </FormProvider>
           <br />
