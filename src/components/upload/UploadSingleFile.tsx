@@ -39,7 +39,7 @@ export default function UploadSingleFile({
   });
 
   return (
-    <Box sx={{ width: '100%', ...sx }}>
+    <Box sx={{ width: '50%', ...sx }}>
       <DropZoneStyle
         {...getRootProps()}
         sx={{
