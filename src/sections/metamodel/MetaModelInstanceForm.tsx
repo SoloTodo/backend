@@ -96,7 +96,6 @@ export default function MetaModelInstanceForm({
       e?.stopPropagation();
       return;
     }
-    console.log(data);
     const formData = new FormData();
     Object.keys(data).map((a) => {
       if (Array.isArray(data[a])) {

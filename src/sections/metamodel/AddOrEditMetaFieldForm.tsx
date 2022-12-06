@@ -13,11 +13,12 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FormProvider,
   RHFCheckbox,
   RHFTextField,
+  RHFUploadSingleFile,
 } from "src/components/hook-form";
 import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
@@ -30,6 +31,8 @@ import {
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import DeleteMetaField from "./DeleteMetaField";
+import UpdateMultipleMetaField from "./UpdateMultipleMetaField";
+import UpdateNullableMetaField from "./UpdateNullableMetaField";
 
 const style = {
   position: "absolute" as "absolute",
@@ -58,12 +61,12 @@ export default function AddOrEditMetaModelField({
   metaModelId,
   metaField,
   setMetaModel,
-  updateMetaModel,
+  updateMetaModelField,
 }: {
   metaModelId?: number;
   metaField?: MetaField;
   setMetaModel?: Function;
-  updateMetaModel: Function;
+  updateMetaModelField: Function;
 }) {
   const [open, setOpen] = useState(false);
   const [modelOptions, setModelOptions] = useState([]);
@@ -126,11 +129,18 @@ export default function AddOrEditMetaModelField({
       setValue("hidden", metaField.hidden);
       setValue("nullable", metaField.nullable);
       setValue("multiple", metaField.multiple);
+      if (metaField.model) {
+        setValue("model", {
+          label: metaField.model.name,
+          value: metaField.model.id,
+          is_primitive: metaField.model.is_primitive,
+        });
+      }
     }
   }, [open, metaField]);
 
   useEffect(() => {
-    if (values.model !== null && !(values.multiple || values.nullable)) {
+    if (values.model !== null && !values.multiple) {
       setDefaultOptions([]);
       setValue("default", null);
       if (!values.model.is_primitive) {
@@ -155,6 +165,11 @@ export default function AddOrEditMetaModelField({
     }
   }, [values.model]);
 
+  const closeModal = () => {
+    reset();
+    setOpen(false);
+  };
+
   const onSubmit = (data: FormValuesProps) => {
     if (typeof metaField === "undefined") {
       // Add
@@ -170,23 +185,22 @@ export default function AddOrEditMetaModelField({
           data.model.is_primitive &&
           data.model.label !== "BooleanField"
         ) {
-          setError("defaultString", { message: "Campo requerido aa" });
+          setError("defaultString", { message: "Campo requerido" });
           return;
         }
       }
-      const body: Record<string, any> = {
-        name: data.name,
-        help_text: data.help_text,
-        model: data.model ? data.model.value : "",
-        hidden: data.hidden,
-        nullable: data.nullable,
-        multiple: data.multiple,
-      };
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("help_text", data.help_text);
+      formData.append("model", data.model ? data.model.value.toString() : "");
+      formData.append("hidden", data.hidden.toString());
+      formData.append("nullable", data.nullable!.toString());
+      formData.append("multiple", data.multiple!.toString());
       if (data.model && !data.nullable && !data.multiple) {
         if (!data.model.is_primitive || data.model.label === "BooleanField") {
-          body.default = data.default;
+          formData.append("default", data.default!.value.toString());
         } else {
-          body.default = data.defaultString;
+          formData.append("default", data.defaultString);
         }
       }
       jwtFetch(
@@ -194,12 +208,16 @@ export default function AddOrEditMetaModelField({
         `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${metaModelId}/add_field/`,
         {
           method: "post",
-          body: JSON.stringify(body),
+          body: formData,
+          headers: {
+            "Content-Type": null,
+          },
         }
-      ).then((res) => {
-        updateMetaModel(res);
-        setOpen(false);
-      });
+      )
+        .then((res) => {
+          updateMetaModelField(res);
+        })
+        .finally(() => closeModal());
     } else {
       // Edit
       const body: Record<string, any> = {
@@ -210,16 +228,12 @@ export default function AddOrEditMetaModelField({
       jwtFetch(null, metaField.url!, {
         method: "patch",
         body: JSON.stringify(body),
-      }).then((res) => {
-        updateMetaModel(res);
-        setOpen(false);
-      });
+      })
+        .then((res) => {
+          updateMetaModelField(res);
+        })
+        .finally(() => closeModal());
     }
-  };
-
-  const closeModal = () => {
-    reset();
-    setOpen(false);
   };
 
   const isOptionEqualToValue = (
@@ -228,6 +242,19 @@ export default function AddOrEditMetaModelField({
   ) => {
     return option.value === value.value;
   };
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      setValue(
+        "defaultString",
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
+    },
+    [setValue]
+  );
 
   return (
     <>
@@ -295,9 +322,11 @@ export default function AddOrEditMetaModelField({
                   sx={{ marginLeft: 0 }}
                 />
                 {metaField && (
-                  <Button variant="outlined" color="info">
-                    {values.nullable ? "Hacer no nullable" : "Hacer nullable"}
-                  </Button>
+                  <UpdateNullableMetaField
+                    metaField={metaField}
+                    updateMetaModelField={updateMetaModelField}
+                    options={defaultOptions}
+                  />
                 )}
               </Stack>
               <Stack direction="row" spacing={3}>
@@ -309,9 +338,10 @@ export default function AddOrEditMetaModelField({
                   sx={{ marginLeft: 0 }}
                 />
                 {!values.multiple && metaField && (
-                  <Button variant="outlined" color="info">
-                    Hacer multiple
-                  </Button>
+                  <UpdateMultipleMetaField
+                    metaField={metaField}
+                    updateMetaModelField={updateMetaModelField}
+                  />
                 )}
               </Stack>
               {!metaField &&
@@ -319,11 +349,20 @@ export default function AddOrEditMetaModelField({
                 values.model &&
                 (values.model.is_primitive &&
                 values.model.label !== "BooleanField" ? (
-                  <RHFTextField
-                    name="defaultString"
-                    label="Default"
-                    type="string"
-                  />
+                  values.model.label === "FileField" ? (
+                    <RHFUploadSingleFile
+                      name="defaultString"
+                      onDrop={(t) => handleDrop(t)}
+                    />
+                  ) : (
+                    <RHFTextField
+                      name="defaultString"
+                      label="Default"
+                      type={
+                        values.model.label !== "CharField" ? "number" : "string"
+                      }
+                    />
+                  )
                 ) : (
                   <>
                     <Controller
@@ -334,7 +373,6 @@ export default function AddOrEditMetaModelField({
                           {...field}
                           multiple={false}
                           disabled={defaultOptions.length === 0}
-                          // disableClearable={true}
                           isOptionEqualToValue={isOptionEqualToValue}
                           onChange={(_, newValue) => {
                             field.onChange(newValue);

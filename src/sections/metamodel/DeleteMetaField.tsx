@@ -11,6 +11,7 @@ import { useState } from "react";
 import { MetaField } from "src/frontend-utils/types/metamodel";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
+import { LoadingButton } from "@mui/lab";
 
 const style = {
   position: "absolute" as "absolute",
@@ -32,15 +33,20 @@ export default function DeleteMetaField({
   setMetaModel: Function;
 }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = () => {
+    setLoading(true);
     jwtFetch(
       null,
       `${apiSettings.apiResourceEndpoints.metamodel_meta_fields}${metaField.id}/`,
       {
         method: "delete",
       }
-    ).then((res) => setMetaModel(res));
+    ).then((res) => {
+      setMetaModel(res);
+      setLoading(false);
+    });
   };
 
   return (
@@ -64,14 +70,19 @@ export default function DeleteMetaField({
           </Stack>
           <br />
           <Typography>
-            ¿Estás seguro que queires eliminar este MetaField? Este proceso es
+            ¿Estás seguro que quieres eliminar este MetaField? Este proceso es
             irreversible
           </Typography>
           <br />
           <Stack spacing={1} direction="row">
-            <Button variant="contained" color="error" onClick={handleDelete}>
+            <LoadingButton
+              onClick={handleDelete}
+              color="error"
+              variant="contained"
+              loading={loading}
+            >
               Eliminar
-            </Button>
+            </LoadingButton>
             <Button
               color="inherit"
               variant="outlined"
