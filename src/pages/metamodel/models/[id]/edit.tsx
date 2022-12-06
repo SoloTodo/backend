@@ -76,7 +76,7 @@ export default function MetaModelEditStructure({
       renderCell: (params) => (
         <Stack alignItems="start">
           <AddOrEditMetaModelField
-            updateMetaModel={addOrUpdateMetaModelField}
+            updateMetaModelField={addOrUpdateMetaModelField}
             setMetaModel={setMetaModel}
             metaField={params.row}
           />
@@ -161,7 +161,7 @@ export default function MetaModelEditStructure({
                 <Grid item xs={6} sm={4} md={2.4}>
                   <AddOrEditMetaModelField
                     metaModelId={metaModel.id}
-                    updateMetaModel={addOrUpdateMetaModelField}
+                    updateMetaModelField={addOrUpdateMetaModelField}
                   />
                 </Grid>
                 <Grid item xs={6} sm={4} md={2.4}>
