@@ -33,6 +33,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import DeleteMetaField from "./DeleteMetaField";
 import UpdateMultipleMetaField from "./UpdateMultipleMetaField";
 import UpdateNullableMetaField from "./UpdateNullableMetaField";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute" as "absolute",
@@ -68,6 +69,7 @@ export default function AddOrEditMetaModelField({
   setMetaModel?: Function;
   updateMetaModelField: Function;
 }) {
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [modelOptions, setModelOptions] = useState([]);
   const [defaultOptions, setDefaultOptions] = useState<
@@ -217,6 +219,11 @@ export default function AddOrEditMetaModelField({
         .then((res) => {
           updateMetaModelField(res);
         })
+        .catch((_) =>
+          enqueueSnackbar("Ocurrió un error creando el Meta Field", {
+            variant: "error",
+          })
+        )
         .finally(() => closeModal());
     } else {
       // Edit
@@ -232,6 +239,11 @@ export default function AddOrEditMetaModelField({
         .then((res) => {
           updateMetaModelField(res);
         })
+        .catch((_) =>
+          enqueueSnackbar("Ocurrió un error editando el Meta Field", {
+            variant: "error",
+          })
+        )
         .finally(() => closeModal());
     }
   };
