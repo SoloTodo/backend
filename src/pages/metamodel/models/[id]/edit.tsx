@@ -5,12 +5,15 @@ import {
   CardHeader,
   Container,
   Grid,
+  IconButton,
   Link,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
+import EditIcon from "@mui/icons-material/Edit";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
 import { ReactElement, useEffect, useState } from "react";
@@ -40,6 +43,8 @@ export default function MetaModelEditStructure({
   initialMetaModel: MetaModel;
 }) {
   const [metaModel, setMetaModel] = useState(initialMetaModel);
+  const [editOrderingRow, setEditOrderingRow] = useState<string | null>(null);
+  const [editOrderingValue, setEditOrderingValue] = useState("");
 
   useEffect(() => setMetaModel(initialMetaModel), [initialMetaModel]);
 
@@ -67,6 +72,30 @@ export default function MetaModelEditStructure({
       fields: newFields,
     };
     setMetaModel(newModel);
+  };
+
+  const closeEditOrdering = () => {
+    setEditOrderingRow(null);
+    setEditOrderingValue("");
+  };
+
+  const handleEditOrdering = () => {
+    if (editOrderingValue === "" || editOrderingRow === null) {
+      closeEditOrdering();
+    } else {
+      jwtFetch(
+        null,
+        `${apiSettings.apiResourceEndpoints.metamodel_meta_fields}${editOrderingRow}/`,
+        {
+          method: "patch",
+          body: JSON.stringify({ ordering: editOrderingValue }),
+        }
+      )
+        .then((res) => {
+          addOrUpdateMetaModelField(res);
+        })
+        .finally(closeEditOrdering);
+    }
   };
 
   const columns: GridColDef<MetaField>[] = [
@@ -120,6 +149,48 @@ export default function MetaModelEditStructure({
     {
       headerName: "Ordering",
       field: "ordering",
+      renderCell: (params) => {
+        if (!editOrderingRow || editOrderingRow !== params.row.id) {
+          return (
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography>{params.row.ordering}</Typography>
+              {!editOrderingRow && (
+                <IconButton
+                  onClick={() => {
+                    setEditOrderingRow(params.row.id);
+                    setEditOrderingValue(params.row.ordering.toString());
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              )}
+            </Stack>
+          );
+        } else {
+          return (
+            <Stack direction="row" alignItems="center">
+              <TextField
+                type="number"
+                size="small"
+                value={editOrderingValue}
+                onChange={(e) => setEditOrderingValue(e.target.value)}
+              />
+              <Stack direction="row">
+                <IconButton onClick={handleEditOrdering}>
+                  <CheckIcon />
+                </IconButton>
+                <IconButton onClick={closeEditOrdering}>
+                  <ClearIcon />
+                </IconButton>
+              </Stack>
+            </Stack>
+          );
+        }
+      },
     },
   ];
 
