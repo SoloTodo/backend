@@ -28,6 +28,7 @@ import CustomTable from "src/sections/CustomTable";
 import { GridColDef } from "@mui/x-data-grid";
 import EditmodelProperties from "src/sections/metamodel/EditModelProperties";
 import AddOrEditMetaModelField from "src/sections/metamodel/AddOrEditMetaFieldForm";
+import MetaModelFindUsages from "src/sections/metamodel/MetaModelFindUsages";
 
 // ----------------------------------------------------------------------
 
@@ -236,9 +237,7 @@ export default function MetaModelEditStructure({
                   />
                 </Grid>
                 <Grid item xs={6} sm={4} md={2.4}>
-                  <Button variant="contained" fullWidth>
-                    Encontrar Usos
-                  </Button>
+                  <MetaModelFindUsages metaModel={metaModel} />
                 </Grid>
                 <Grid item xs={6} sm={4} md={2.4}>
                   <Button variant="contained" fullWidth>
