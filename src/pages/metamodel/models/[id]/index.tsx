@@ -24,6 +24,7 @@ import {
 } from "src/frontend-utils/types/metamodel";
 import { GetServerSideProps } from "next/types";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 // ----------------------------------------------------------------------
 
@@ -72,7 +73,11 @@ export default function MetaModelinstanceList({
           href={`${PATH_METAMODEL.instances}/${params.row.id}`}
           passHref
         >
-          <Link>{params.row.unicode_representation}</Link>
+          <Link>
+            {params.row.unicode_representation
+              ? params.row.unicode_representation
+              : "[Sin Unicode Representation]"}
+          </Link>
         </NextLink>
       ),
     },
@@ -111,7 +116,7 @@ export default function MetaModelinstanceList({
                     passHref
                   >
                     <Button
-                      startIcon={<AddIcon />}
+                      startIcon={<EditIcon />}
                       variant="contained"
                       color="info"
                     >
