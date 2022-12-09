@@ -20,18 +20,17 @@ export default function InstanceInput({
   metaField,
   control,
   setValue,
+  values,
 }: {
   metaField: MetaField;
   control: Control<FieldValues, any>;
   setValue: Function;
+  values: Record<string, any>;
 }) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
   const [selectedInstances, setSelectedIsntances] = useState<
     { label: string; value: number }[]
   >([]);
-  const [selectedInstanceId, setSelectedIsntanceId] = useState<number | null>(
-    null
-  );
 
   useEffect(() => {
     if (!metaField.model.is_primitive) {
@@ -82,7 +81,6 @@ export default function InstanceInput({
     } else {
       setValue(metaField.name, json.unicode_value);
     }
-    setSelectedIsntanceId(json.id);
   };
 
   const editChoice = (json: InstanceMetaModel) => {
@@ -163,10 +161,13 @@ export default function InstanceInput({
               isOptionEqualToValue={isOptionEqualToValue}
               onChange={(_, newValue) => {
                 field.onChange(newValue);
-                !Array.isArray(newValue) &&
-                  setSelectedIsntanceId(newValue && newValue.value);
                 Array.isArray(newValue) && setSelectedIsntances(newValue);
               }}
+              renderOption={(props, option) => (
+                <li {...props} key={option.value}>
+                  {option.label}
+                </li>
+              )}
               options={options}
               renderInput={(params) => <TextField label="" {...params} />}
               fullWidth
@@ -183,10 +184,10 @@ export default function InstanceInput({
       {!metaField.model.is_primitive && (
         <>
           <MetaModalInstanceModal metaField={metaField} addChoice={addChoice} />
-          {selectedInstanceId && !metaField.multiple && (
+          {values[metaField.name] && !metaField.multiple && (
             <MetaModalInstanceModal
               metaField={metaField}
-              instanceId={selectedInstanceId}
+              instanceId={values[metaField.name].value}
               editChoice={editChoice}
             />
           )}

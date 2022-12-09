@@ -56,19 +56,25 @@ export default function MetaModelInstanceForm({
     handleSubmit,
     formState: { isSubmitting },
     setValue,
+    watch,
   } = methods;
 
+  const values = watch();
+
   useEffect(() => {
+    const multipleFields: Record<string, any> = {};
     instanceModel?.fields?.map((f) => {
       if (!f.field.model.is_primitive) {
         if (f.field.multiple) {
-          // TODO: FIX MULTIPLE VALUES PER FIELD
-          setValue(f.field.name, [
+          multipleFields[f.field.name] = [
+            ...(multipleFields[f.field.name]
+              ? multipleFields[f.field.name]
+              : []),
             {
               value: f.value.id,
               label: f.value.unicode_representation,
             },
-          ]);
+          ];
         } else {
           setValue(f.field.name, {
             value: f.value.id,
@@ -83,6 +89,8 @@ export default function MetaModelInstanceForm({
         setValue(f.field.name, f.value.unicode_value);
       }
     });
+
+    Object.keys(multipleFields).map((m) => setValue(m, multipleFields[m]));
   }, []);
 
   const onSubmit = (
@@ -151,6 +159,7 @@ export default function MetaModelInstanceForm({
                 metaField={f}
                 control={control}
                 setValue={setValue}
+                values={values}
               />
             </Grid>
           </Grid>
