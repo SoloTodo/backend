@@ -82,10 +82,11 @@ export default function MetaModelInstanceForm({
           });
         }
       } else if (
-        ["IntegerField", "DecimalField"].includes(f.field.model.name)
+        ["IntegerField", "DecimalField"].includes(f.field.model.name) &&
+        f.value.decimal_value !== null
       ) {
         setValue(f.field.name, f.value.decimal_value);
-      } else {
+      } else if (f.value.unicode_value !== null) {
         setValue(f.field.name, f.value.unicode_value);
       }
     });
