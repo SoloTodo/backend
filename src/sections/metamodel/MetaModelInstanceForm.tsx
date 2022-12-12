@@ -12,7 +12,7 @@ import InstanceInput from "./InstanceInput";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useRouter } from "next/router";
-import { BaseSyntheticEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { PATH_METAMODEL } from "src/routes/paths";
 
 type FormProps = {
@@ -31,6 +31,10 @@ export default function MetaModelInstanceForm({
   editChoice?: Function;
 }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [currentFileFields, setCurrentFileFields] = useState<
+    Record<string, string>
+  >({});
 
   const defaultValues = metaModel.fields?.reduce((acc: FormProps, a) => {
     if (!a.model.is_primitive) {
@@ -51,13 +55,7 @@ export default function MetaModelInstanceForm({
     defaultValues: defaultValues,
   });
 
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-    setValue,
-    watch,
-  } = methods;
+  const { control, handleSubmit, setValue, watch } = methods;
 
   const values = watch();
 
@@ -86,7 +84,21 @@ export default function MetaModelInstanceForm({
         f.value.decimal_value !== null
       ) {
         setValue(f.field.name, f.value.decimal_value);
+      } else if ("BooleanField" === f.field.model.name) {
+        setValue(
+          f.field.name,
+          f.value.decimal_value && f.value.decimal_value !== "0.00000"
+        );
       } else if (f.value.unicode_value !== null) {
+        if (
+          "FileField" === f.field.model.name &&
+          f.value.unicode_value !== null
+        ) {
+          setCurrentFileFields({
+            ...currentFileFields,
+            [f.field.name]: f.value.unicode_value,
+          });
+        }
         setValue(f.field.name, f.value.unicode_value);
       }
     });
@@ -105,6 +117,7 @@ export default function MetaModelInstanceForm({
       e?.stopPropagation();
       return;
     }
+    setLoading(true);
     const formData = new FormData();
     Object.keys(data).map((a) => {
       if (Array.isArray(data[a])) {
@@ -128,15 +141,17 @@ export default function MetaModelInstanceForm({
       headers: {
         "Content-Type": null,
       },
-    }).then((json) => {
-      if (addChoice) {
-        addChoice(json);
-      } else if (editChoice) {
-        editChoice(json);
-      } else {
-        router.push(`${PATH_METAMODEL.models}/${metaModel.id}`);
-      }
-    });
+    })
+      .then((json) => {
+        if (addChoice) {
+          addChoice(json);
+        } else if (editChoice) {
+          editChoice(json);
+        } else {
+          router.push(`${PATH_METAMODEL.models}/${metaModel.id}`);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -161,13 +176,14 @@ export default function MetaModelInstanceForm({
                 control={control}
                 setValue={setValue}
                 values={values}
+                currentFileFields={currentFileFields}
               />
             </Grid>
           </Grid>
         ))}
       </Stack>
       <br />
-      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton type="submit" variant="contained" loading={loading}>
         {!instanceModel ? <AddIcon /> : <EditIcon />}{" "}
         {!instanceModel ? "Agregar" : "Editar"} Instancia
       </LoadingButton>

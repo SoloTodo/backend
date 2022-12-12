@@ -1,4 +1,10 @@
-import { Autocomplete, Stack, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Control, Controller, FieldValues } from "react-hook-form";
 import {
@@ -6,6 +12,7 @@ import {
   RHFTextField,
   RHFUploadSingleFile,
 } from "src/components/hook-form";
+import Image from "src/components/Image";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import {
@@ -21,11 +28,13 @@ export default function InstanceInput({
   control,
   setValue,
   values,
+  currentFileFields,
 }: {
   metaField: MetaField;
   control: Control<FieldValues, any>;
   setValue: Function;
   values: Record<string, any>;
+  currentFileFields: Record<string, string>;
 }) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
   const [selectedInstances, setSelectedIsntances] = useState<
@@ -130,10 +139,34 @@ export default function InstanceInput({
     if (metaField.model.is_primitive) {
       if (metaField.model.name === "FileField") {
         return (
-          <RHFUploadSingleFile
-            name={metaField.name}
-            onDrop={(t) => handleDrop(t, metaField.name)}
-          />
+          <Stack spacing={1}>
+            {currentFileFields[metaField.name] && (
+              <Stack>
+                <Image
+                  src={`https://media.solotodo.com/media/${
+                    currentFileFields[metaField.name]
+                  }`}
+                  sx={{ width: "60%" }}
+                />
+                <Typography variant="body2">
+                  Actual:{" "}
+                  <Link
+                    href={`https://media.solotodo.com/media/${
+                      currentFileFields[metaField.name]
+                    }`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {currentFileFields[metaField.name]}
+                  </Link>
+                </Typography>
+              </Stack>
+            )}
+            <RHFUploadSingleFile
+              name={metaField.name}
+              onDrop={(t) => handleDrop(t, metaField.name)}
+            />
+          </Stack>
         );
       } else if (metaField.model.name === "BooleanField") {
         return <RHFCheckbox name={metaField.name} label="" />;
