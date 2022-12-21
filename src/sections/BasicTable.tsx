@@ -1,5 +1,19 @@
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box, Card, CardContent, CardHeader, Stack } from "@mui/material";
+import { DataGrid, GridColDef, GridToolbarQuickFilter } from "@mui/x-data-grid";
+
+function QuickSearchToolbar() {
+  return (
+    <Stack
+      alignItems="end"
+      sx={{
+        p: 0.5,
+        pb: 0,
+      }}
+    >
+      <GridToolbarQuickFilter />
+    </Stack>
+  );
+}
 
 export default function BasicTable({
   title,
@@ -25,6 +39,8 @@ export default function BasicTable({
               disableSelectionOnClick
               onSelectionModelChange={(ids) => setSelectedRows(ids)}
               rowsPerPageOptions={[100]}
+              disableColumnSelector
+              components={{ Toolbar: QuickSearchToolbar }}
             />
           ) : (
             <DataGrid
@@ -32,6 +48,9 @@ export default function BasicTable({
               rows={data}
               rowsPerPageOptions={[100]}
               disableSelectionOnClick
+              disableColumnSelector
+              disableDensitySelector
+              components={{ Toolbar: QuickSearchToolbar }}
             />
           )}
         </Box>

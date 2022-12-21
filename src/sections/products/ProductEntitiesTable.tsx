@@ -34,6 +34,7 @@ export default function ProductEntitiesTable({
           rowsPerPageOptions={[100]}
           getRowId={getRowId}
           rowHeight={104}
+          disableColumnSelector
         />
       </Box>
     </Scrollbar>

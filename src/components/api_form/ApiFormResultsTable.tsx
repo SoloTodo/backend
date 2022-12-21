@@ -36,6 +36,7 @@ export default function ApiFormResultsTable({
             rowsPerPageOptions={[100]}
             getRowId={getRowId}
             rowHeight={104}
+            disableColumnSelector
           />
         </Box>
       </Scrollbar>
