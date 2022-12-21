@@ -73,10 +73,11 @@ export default function AddOrEditMetaModelField({
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
+  const [defaultNeeded, setDefaultNeeded] = useState(true);
   const [modelOptions, setModelOptions] = useState([]);
   const [defaultOptions, setDefaultOptions] = useState<
-    { label: string; value: number }[]
-  >([]);
+    { label: string; value: number }[] | null
+  >(null);
 
   useEffect(() => {
     if (!metaField) {
@@ -90,6 +91,14 @@ export default function AddOrEditMetaModelField({
           is_primitive: r.is_primitive,
         }));
         setModelOptions(options);
+      });
+    }
+    if (metaModelId) {
+      jwtFetch(
+        null,
+        `${apiSettings.apiResourceEndpoints.metamodel_instance_models}?models=${metaModelId}`
+      ).then((res) => {
+        setDefaultNeeded(res.length !== 0);
       });
     }
   }, []);
@@ -156,7 +165,7 @@ export default function AddOrEditMetaModelField({
             label: r.unicode_representation,
             value: r.id,
           }));
-          setDefaultOptions(options);
+          setDefaultOptions(options.length === 0 ? null : options);
         });
       } else {
         if (values.model.label === "BooleanField") {
@@ -177,7 +186,12 @@ export default function AddOrEditMetaModelField({
   const onSubmit = (data: FormValuesProps) => {
     if (typeof metaField === "undefined") {
       // Add
-      if (data.model !== null && !data.nullable && !data.multiple) {
+      if (
+        data.model !== null &&
+        !data.nullable &&
+        !data.multiple &&
+        defaultNeeded
+      ) {
         if (
           data.default === null &&
           (!data.model.is_primitive || data.model.label === "BooleanField")
@@ -200,7 +214,7 @@ export default function AddOrEditMetaModelField({
       formData.append("hidden", data.hidden.toString());
       formData.append("nullable", data.nullable!.toString());
       formData.append("multiple", data.multiple!.toString());
-      if (data.model && !data.nullable && !data.multiple) {
+      if (data.model && !data.nullable && !data.multiple && defaultNeeded) {
         if (!data.model.is_primitive || data.model.label === "BooleanField") {
           formData.append("default", data.default!.value.toString());
         } else {
@@ -339,7 +353,7 @@ export default function AddOrEditMetaModelField({
                   <UpdateNullableMetaField
                     metaField={metaField}
                     updateMetaModelField={updateMetaModelField}
-                    options={defaultOptions}
+                    options={defaultOptions || []}
                   />
                 )}
               </Stack>
@@ -360,6 +374,8 @@ export default function AddOrEditMetaModelField({
               </Stack>
               {!metaField &&
                 !(values.nullable || values.multiple) &&
+                defaultNeeded &&
+                defaultOptions !== null &&
                 values.model &&
                 (values.model.is_primitive &&
                 values.model.label !== "BooleanField" ? (
@@ -430,7 +446,8 @@ export default function AddOrEditMetaModelField({
                     !(values.nullable || values.multiple) &&
                     values.model &&
                     !values.model.is_primitive &&
-                    defaultOptions.length === 0) ||
+                    (defaultOptions === null || defaultOptions?.length === 0) &&
+                    defaultNeeded) ||
                   undefined
                 }
               >
