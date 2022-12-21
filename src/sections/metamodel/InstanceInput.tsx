@@ -114,7 +114,7 @@ export default function InstanceInput({
     instanceChoices !== null
       ? instanceChoices.map((i) => ({
           value: i.id,
-          label: i.unicode_representation || '',
+          label: i.unicode_representation || "",
         }))
       : [];
 
@@ -211,31 +211,36 @@ export default function InstanceInput({
               />
             )}
           />
-          {errors[metaField.name] && (
-            <FormHelperText sx={{ px: 2, display: "block" }} error>
-              {(errors[metaField.name] as any).message}
-            </FormHelperText>
-          )}
         </>
       );
     }
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      {componentToRender()}
-      {!metaField.model.is_primitive && (
-        <>
-          <MetaModalInstanceModal metaField={metaField} addChoice={addChoice} />
-          {values[metaField.name] && !metaField.multiple && (
+    <>
+      <Stack direction="row" spacing={1} alignItems="center">
+        {componentToRender()}
+        {!metaField.model.is_primitive && (
+          <>
             <MetaModalInstanceModal
               metaField={metaField}
-              instanceId={values[metaField.name].value}
-              editChoice={editChoice}
+              addChoice={addChoice}
             />
-          )}
-        </>
+            {values[metaField.name] && !metaField.multiple && (
+              <MetaModalInstanceModal
+                metaField={metaField}
+                instanceId={values[metaField.name].value}
+                editChoice={editChoice}
+              />
+            )}
+          </>
+        )}
+      </Stack>
+      {errors[metaField.name] && (
+        <FormHelperText sx={{ px: 2, display: "block" }} error>
+          {(errors[metaField.name] as any).message}
+        </FormHelperText>
       )}
-    </Stack>
+    </>
   );
 }
