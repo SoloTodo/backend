@@ -26,6 +26,11 @@ export default function MetaModels() {
 
   const addNewModel = (newModel: MetaModel) => {
     const newModels = [...models, newModel];
+    newModels.sort((a, b) => {
+      if (b.name > a.name) return -1;
+      if (b.name < a.name) return 1;
+      return 0;
+    });
     setModels(newModels);
   };
 
