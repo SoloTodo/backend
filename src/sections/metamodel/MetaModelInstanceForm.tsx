@@ -1,5 +1,12 @@
 import { LoadingButton } from "@mui/lab";
-import { capitalize, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  capitalize,
+  CircularProgress,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "src/components/hook-form";
 import {
@@ -14,6 +21,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { useRouter } from "next/router";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { PATH_METAMODEL } from "src/routes/paths";
+import DeleteInstance from "./DeleteInstance";
 
 type FormProps = {
   [key: string]: any;
@@ -32,6 +40,9 @@ export default function MetaModelInstanceForm({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [submitPath, setSubmitPath] = useState(
+    `${PATH_METAMODEL.models}/${metaModel.id}`
+  );
   const [currentFileFields, setCurrentFileFields] = useState<
     Record<string, string>
   >({});
@@ -55,7 +66,14 @@ export default function MetaModelInstanceForm({
     defaultValues: defaultValues,
   });
 
-  const { control, handleSubmit, setValue, watch } = methods;
+  const {
+    control,
+    handleSubmit,
+    setError,
+    setValue,
+    watch,
+    formState: { errors },
+  } = methods;
 
   const values = watch();
 
@@ -148,9 +166,16 @@ export default function MetaModelInstanceForm({
         } else if (editChoice) {
           editChoice(json);
         } else {
-          router.push(`${PATH_METAMODEL.models}/${metaModel.id}`);
+          router.push(submitPath);
         }
       })
+      .catch((err) =>
+        err.json().then((data: any) => {
+          Object.keys(data).map((d: string) =>
+            setError(d, { message: data[d] })
+          );
+        })
+      )
       .finally(() => setLoading(false));
   };
 
@@ -176,6 +201,7 @@ export default function MetaModelInstanceForm({
                 control={control}
                 setValue={setValue}
                 values={values}
+                errors={errors}
                 currentFileFields={currentFileFields}
               />
             </Grid>
@@ -183,10 +209,42 @@ export default function MetaModelInstanceForm({
         ))}
       </Stack>
       <br />
-      <LoadingButton type="submit" variant="contained" loading={loading}>
-        {!instanceModel ? <AddIcon /> : <EditIcon />}{" "}
-        {!instanceModel ? "Agregar" : "Editar"} Instancia
-      </LoadingButton>
+      <Stack direction="row" spacing={1}>
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          disabled={loading}
+          onClick={() =>
+            setSubmitPath(`${PATH_METAMODEL.models}/${metaModel.id}`)
+          }
+        >
+          {!instanceModel ? <AddIcon /> : ""}{" "}
+          {!instanceModel ? "Agregar" : "Guardar"} Instancia
+        </LoadingButton>
+        {instanceModel && (
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            onClick={() =>
+              setSubmitPath(`${PATH_METAMODEL.instances}/${instanceModel.id}`)
+            }
+          >
+            Guardar y seguir editando instancia
+          </LoadingButton>
+        )}
+        {instanceModel && (
+          <DeleteInstance
+            metaModelId={metaModel.id.toString()}
+            instanceModelId={instanceModel.id.toString()}
+          />
+        )}
+        {loading && (
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+          </Box>
+        )}
+      </Stack>
     </FormProvider>
   );
 }

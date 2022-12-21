@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  FormHelperText,
   Link,
   Stack,
   TextField,
@@ -28,12 +29,14 @@ export default function InstanceInput({
   control,
   setValue,
   values,
+  errors,
   currentFileFields,
 }: {
   metaField: MetaField;
   control: Control<FieldValues, any>;
   setValue: Function;
   values: Record<string, any>;
+  errors: Record<string, any>;
   currentFileFields: Record<string, string>;
 }) {
   const [instanceChoices, setInstanceChoices] = useState<InstanceChoices>(null);
@@ -111,7 +114,7 @@ export default function InstanceInput({
     instanceChoices !== null
       ? instanceChoices.map((i) => ({
           value: i.id,
-          label: i.unicode_representation,
+          label: i.unicode_representation || '',
         }))
       : [];
 
@@ -183,30 +186,37 @@ export default function InstanceInput({
       }
     } else {
       return (
-        <Controller
-          name={metaField.name}
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              multiple={metaField.multiple}
-              disableClearable={!metaField.nullable}
-              isOptionEqualToValue={isOptionEqualToValue}
-              onChange={(_, newValue) => {
-                field.onChange(newValue);
-                Array.isArray(newValue) && setSelectedIsntances(newValue);
-              }}
-              renderOption={(props, option) => (
-                <li {...props} key={option.value}>
-                  {option.label}
-                </li>
-              )}
-              options={options}
-              renderInput={(params) => <TextField label="" {...params} />}
-              fullWidth
-            />
+        <>
+          <Controller
+            name={metaField.name}
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                multiple={metaField.multiple}
+                disableClearable={!metaField.nullable}
+                isOptionEqualToValue={isOptionEqualToValue}
+                onChange={(_, newValue) => {
+                  field.onChange(newValue);
+                  Array.isArray(newValue) && setSelectedIsntances(newValue);
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.value}>
+                    {option.label}
+                  </li>
+                )}
+                options={options}
+                renderInput={(params) => <TextField label="" {...params} />}
+                fullWidth
+              />
+            )}
+          />
+          {errors[metaField.name] && (
+            <FormHelperText sx={{ px: 2, display: "block" }} error>
+              {(errors[metaField.name] as any).message}
+            </FormHelperText>
           )}
-        />
+        </>
       );
     }
   };
