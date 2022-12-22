@@ -87,7 +87,7 @@ export default function DeleteInstance({
               alignItems="center"
               justifyContent="space-between"
             >
-              <Typography variant="h5">Eliminar Instnacia</Typography>
+              <Typography variant="h5">Eliminar Instancia</Typography>
               <IconButton onClick={closeModal}>
                 <CloseIcon />
               </IconButton>
