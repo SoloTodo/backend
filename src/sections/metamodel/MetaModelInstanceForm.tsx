@@ -14,7 +14,6 @@ import {
   MetaModel,
 } from "src/frontend-utils/types/metamodel";
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
 import InstanceInput from "./InstanceInput";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -108,21 +107,20 @@ export default function MetaModelInstanceForm({
           f.value.decimal_value && f.value.decimal_value !== "0.00000"
         );
       } else if (f.value.unicode_value !== null) {
-        if (
-          "FileField" === f.field.model.name &&
-          f.value.unicode_value !== null
-        ) {
+        if ("FileField" === f.field.model.name) {
           setCurrentFileFields({
             ...currentFileFields,
             [f.field.name]: f.value.unicode_value,
           });
+          setValue(f.field.name, "");
+        } else {
+          setValue(f.field.name, f.value.unicode_value);
         }
-        setValue(f.field.name, f.value.unicode_value);
       }
     });
 
     Object.keys(multipleFields).map((m) => setValue(m, multipleFields[m]));
-  }, []);
+  }, [instanceModel]);
 
   const onSubmit = (
     data: FormProps,
