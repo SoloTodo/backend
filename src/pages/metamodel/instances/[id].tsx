@@ -1,4 +1,11 @@
-import { Card, CardContent, CardHeader, Container } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { GetServerSideProps } from "next";
 import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -45,10 +52,16 @@ export default function MetaModelEditInstance({
         <Card>
           <CardHeader title={instance.unicode_representation} />
           <CardContent>
-            <MetaModelInstanceForm
-              metaModel={instance.model}
-              instanceModel={instance}
-            />
+            {initialInstance !== instance ? (
+              <Box textAlign="center">
+                <CircularProgress color="inherit" />
+              </Box>
+            ) : (
+              <MetaModelInstanceForm
+                metaModel={instance.model}
+                instanceModel={instance}
+              />
+            )}
           </CardContent>
         </Card>
       </Container>
