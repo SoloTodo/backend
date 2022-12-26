@@ -106,7 +106,7 @@ export default function DeleteInstance({
                   {dependencies.map((d, index) => (
                     <NextLink
                       key={index}
-                      href={`${PATH_METAMODEL.instances}/${d.parent.id}/edit`}
+                      href={`${PATH_METAMODEL.instances}/${d.parent.id}`}
                       passHref
                     >
                       <Link
