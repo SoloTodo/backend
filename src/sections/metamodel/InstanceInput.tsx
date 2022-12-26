@@ -45,10 +45,12 @@ export default function InstanceInput({
   >([]);
 
   useEffect(() => {
+    const myAbortController = new AbortController();
     if (!metaField.model.is_primitive) {
       jwtFetch(
         null,
-        `${apiSettings.apiResourceEndpoints.metamodel_instance_models}?models=${metaField.model.id}`
+        `${apiSettings.apiResourceEndpoints.metamodel_instance_models}?models=${metaField.model.id}`,
+        { signal: myAbortController.signal }
       ).then((res) => {
         if (metaField.nullable) {
           const newDropDownInstanceValueChoices = [
@@ -67,6 +69,9 @@ export default function InstanceInput({
         }
       });
     }
+    return () => {
+      myAbortController.abort();
+    };
   }, []);
 
   const addChoice = (json: InstanceMetaModel) => {
