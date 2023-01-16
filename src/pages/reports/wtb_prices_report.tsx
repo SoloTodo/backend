@@ -15,7 +15,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { Brand } from "src/frontend-utils/types/wtb";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_REPORTS } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 

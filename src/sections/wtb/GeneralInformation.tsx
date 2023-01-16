@@ -2,7 +2,7 @@ import NextLink from "next/link";
 // MUI
 import { Link } from "@mui/material";
 // utils
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // types

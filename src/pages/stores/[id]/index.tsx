@@ -9,7 +9,7 @@ import Details from "src/sections/Details";
 import { Detail } from "src/frontend-utils/types/extras";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { getStore } from "src/frontend-utils/nextjs/utils";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
 import { GetServerSidePropsContext, PreviewData } from "next/types";

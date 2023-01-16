@@ -10,7 +10,7 @@ import Options from "src/sections/Options";
 // utils
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { useUser } from "src/frontend-utils/redux/user";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 // paths
 import { apiSettings } from "src/frontend-utils/settings";
 import { PATH_DASHBOARD, PATH_USER } from "src/routes/paths";

@@ -32,10 +32,13 @@ import { AuthProvider } from "../frontend-utils/nextjs/JWTContext";
 import { deleteAuthTokens, jwtFetch } from "src/frontend-utils/nextjs/utils";
 import userSlice from "src/frontend-utils/redux/user";
 import apiResourceObjectsSlice from "src/frontend-utils/redux/api_resources/apiResources";
-// import { EnhancedStore } from "@reduxjs/toolkit";
-import { wrapper } from "../store/store";
 import { ChartStyle } from "src/components/chart";
 import { resources_query } from "src/utils";
+import withReduxStore, {
+  MyAppContext,
+} from "src/frontend-utils/redux/with-redux-store";
+import { Provider } from "react-redux";
+import { AnyAction, Store as ReduxStore } from "redux";
 
 // ----------------------------------------------------------------------
 
@@ -44,86 +47,22 @@ type NextPageWithLayout = NextPage & {
 };
 
 interface MyAppProps extends AppProps {
-  settings: SettingsValueProps;
   Component: NextPageWithLayout;
+  reduxStore: ReduxStore<any, AnyAction>;
+  settings: SettingsValueProps;
 }
 
-class MyApp extends App<MyAppProps> {
-  public static getInitialProps = wrapper.getInitialAppProps(
-    (store) => async (context) => {
-      const cookies = cookie.parse(
-        context.ctx.req ? context.ctx.req.headers.cookie || "" : document.cookie
-      );
+function MyApp({ Component, pageProps, reduxStore, settings }: MyAppProps) {
+  const getLayout = Component.getLayout ?? ((page) => page);
 
-      const settings = getSettings(cookies);
+  return (
+    <>
+      <Head>
+        <title>SoloTodo Backend</title>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
 
-      const ctx = context.ctx;
-
-      const exclude_urls = ["/login", "/reset/", "/reset_password"];
-      if (exclude_urls.find((path) => ctx.pathname.includes(path))) {
-        return { pageProps: {}, settings };
-      }
-
-      if (!ctx.req) {
-        return { pageProps: {}, settings };
-      }
-
-      let user = null;
-
-      try {
-        user = await jwtFetch(
-          ctx as unknown as GetServerSidePropsContext,
-          "users/me/"
-        );
-      } catch (err) {
-        // Invalid token or some other network error, invalidate the
-        // possible auth cookie
-        ctx.res?.setHeader("error", err.message);
-        deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
-      }
-
-      // const store = initializeStore();
-
-      if (user) {
-        // Store in redux api resources
-        try {
-          const apiResources = await jwtFetch(
-            ctx as unknown as GetServerSidePropsContext,
-            `resources/with_permissions/?${resources_query}`
-          );
-          store.dispatch(
-            apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
-          );
-        } catch (err) {
-          ctx.res?.setHeader("error", err.message);
-        }
-
-        store.dispatch(userSlice.actions.setUser(user));
-      } else {
-        ctx.res &&
-          ctx.res.setHeader(
-            "Location",
-            `/login?next=${encodeURIComponent(ctx.asPath || "")}`
-          );
-        ctx.res && (ctx.res.statusCode = 302);
-        ctx.res && ctx.res.end();
-      }
-      return { pageProps: {}, settings };
-    }
-  );
-
-  public render() {
-    const { Component, pageProps, settings } = this.props;
-
-    const getLayout = Component.getLayout ?? ((page) => page);
-
-    return (
-      <>
-        <Head>
-          <title>SoloTodo Backend</title>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
-
+      <Provider store={reduxStore}>
         <SettingsProvider defaultSettings={settings}>
           <ThemeProvider>
             <NotistackProvider>
@@ -144,9 +83,73 @@ class MyApp extends App<MyAppProps> {
             </NotistackProvider>
           </ThemeProvider>
         </SettingsProvider>
-      </>
-    );
-  }
+      </Provider>
+    </>
+  );
 }
 
-export default wrapper.withRedux(MyApp);
+MyApp.getInitialProps = async (context: MyAppContext) => {
+  const cookies = cookie.parse(
+    context.ctx.req ? context.ctx.req.headers.cookie || "" : document.cookie
+  );
+
+  const settings = getSettings(cookies);
+
+  const ctx = context.ctx;
+
+  const exclude_urls = ["/login", "/reset/", "/reset_password"];
+  if (exclude_urls.find((path) => ctx.pathname.includes(path))) {
+    const appProps = await App.getInitialProps(context);
+    return { ...appProps, settings };
+  }
+
+  if (!ctx.req) {
+    const appProps = await App.getInitialProps(context);
+    return { ...appProps, settings };
+  }
+
+  let user = null;
+
+  try {
+    user = await jwtFetch(
+      ctx as unknown as GetServerSidePropsContext,
+      "users/me/"
+    );
+  } catch (err) {
+    // Invalid token or some other network error, invalidate the
+    // possible auth cookie
+    ctx.res?.setHeader("error", err.message);
+    deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
+  }
+
+  if (user) {
+    // Store in redux api resources
+    const reduxStore = ctx.reduxStore;
+    try {
+      const apiResources = await jwtFetch(
+        ctx as unknown as GetServerSidePropsContext,
+        `resources/with_permissions/?${resources_query}`
+      );
+      reduxStore.dispatch(
+        apiResourceObjectsSlice.actions.addApiResourceObjects(apiResources)
+      );
+    } catch (err) {
+      ctx.res?.setHeader("error", err.message);
+    }
+
+    reduxStore.dispatch(userSlice.actions.setUser(user));
+  } else {
+    ctx.res &&
+      ctx.res.setHeader(
+        "Location",
+        `/login?next=${encodeURIComponent(ctx.asPath || "")}`
+      );
+    ctx.res && (ctx.res.statusCode = 302);
+    ctx.res && ctx.res.end();
+  }
+
+  const appProps = await App.getInitialProps(context);
+  return { ...appProps, settings };
+};
+
+export default withReduxStore(MyApp);

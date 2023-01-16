@@ -31,7 +31,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 // currency
 import currency from "currency.js";
 // redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   selectApiResourceObjects,
   useApiResourceObjects,

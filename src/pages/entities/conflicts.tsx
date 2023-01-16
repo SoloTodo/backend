@@ -26,7 +26,7 @@ import {
   PATH_PRODUCT,
   PATH_STORE,
 } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import ApiFormResultsTable from "src/components/api_form/ApiFormResultsTable";
 import { GridColDef } from "@mui/x-data-grid";
 import { Entity } from "src/frontend-utils/types/entity";

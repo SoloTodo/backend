@@ -9,16 +9,16 @@ import {
   Stack,
   MenuItem,
   Avatar,
-  Button,
 } from "@mui/material";
 // components
 import MenuPopover from "../../../components/MenuPopover";
 import { IconButtonAnimate } from "../../../components/animate";
 import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
-import { useAppSelector } from "src/store/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
 // routes 
 import { PATH_AUTH } from "src/routes/paths";
+// hooks
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 

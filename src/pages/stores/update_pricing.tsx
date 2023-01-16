@@ -23,7 +23,7 @@ import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 // redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   getApiResourceObjects,
   useApiResourceObjects,

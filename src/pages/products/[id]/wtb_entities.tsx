@@ -11,7 +11,7 @@ import { Product } from "src/frontend-utils/types/product";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT, PATH_WTB } from "src/routes/paths";
 import PaginationTable from "src/components/api_form/ApiFormPaginationTable";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";

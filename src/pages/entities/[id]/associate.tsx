@@ -20,7 +20,7 @@ import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { differenceInMilliseconds, millisecondsToMinutes } from "date-fns";
 import { useSnackbar } from "notistack";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
 

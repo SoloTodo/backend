@@ -6,7 +6,7 @@ import Layout from "src/layouts";
 // components
 import Page from "src/components/Page";
 // redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   getApiResourceObjects,
   useApiResourceObjects,

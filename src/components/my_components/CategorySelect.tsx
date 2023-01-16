@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useSnackbar } from "notistack";
 import { Category } from "src/frontend-utils/types/store";
 import { Entity } from "src/frontend-utils/types/entity";

@@ -11,7 +11,7 @@ import { BannerUpdate, statusCodes } from "src/frontend-utils/types/banner";
 import Layout from "src/layouts";
 import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 import CustomTable from "src/sections/CustomTable";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
 // ----------------------------------------------------------------------

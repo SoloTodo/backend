@@ -23,7 +23,7 @@ import { apiSettings } from "../../frontend-utils/settings";
 // types
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 // redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   selectApiResourceObjects,
   useApiResourceObjects,

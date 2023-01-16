@@ -2,7 +2,7 @@ import { Banner } from "src/frontend-utils/types/banner";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { Link, Stack } from "@mui/material";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";

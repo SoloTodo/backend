@@ -9,7 +9,7 @@ import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { GetServerSidePropsContext, PreviewData } from "next";
 import { ParsedUrlQuery } from "querystring";
 

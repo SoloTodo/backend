@@ -7,7 +7,7 @@ import { PATH_DASHBOARD, PATH_WTB } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { Detail, Option } from "src/frontend-utils/types/extras";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { Brand } from "src/frontend-utils/types/wtb";
 import { GetServerSideProps } from "next/types";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";

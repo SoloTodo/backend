@@ -33,7 +33,7 @@ import {
   PATH_PRODUCT,
   PATH_STORE,
 } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import ProductEntitiesTable from "src/sections/products/ProductEntitiesTable";
 import { GridColDef } from "@mui/x-data-grid";
 import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";

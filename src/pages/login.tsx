@@ -36,7 +36,7 @@ import { jwtFetch, saveAuthTokens } from "src/frontend-utils/nextjs/utils";
 import { useAuth } from "src/frontend-utils/nextjs/JWTContext";
 import userSlice from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch } from "src/frontend-utils/redux/hooks";
 import useSettings from "src/hooks/useSettings";
 // routes
 import { PATH_AUTH, PATH_DASHBOARD } from "src/routes/paths";

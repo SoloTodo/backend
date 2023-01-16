@@ -11,7 +11,7 @@ import {
 import { useSnackbar } from "notistack";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/frontend-utils/redux/hooks";
 import apiResourceObjectsSlice, {
   getApiResourceObjects,
   useApiResourceObjects,

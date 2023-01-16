@@ -24,7 +24,7 @@ import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTab
 // api
 import { apiSettings } from "src/frontend-utils/settings";
 // redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   selectApiResourceObjects,
   useApiResourceObjects,

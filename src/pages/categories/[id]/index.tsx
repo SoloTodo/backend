@@ -10,7 +10,8 @@ import { Detail } from "src/frontend-utils/types/extras";
 import { getApiResourceObject } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Option } from "src/frontend-utils/types/extras";
 import Options from "../../../sections/Options";
-import { wrapper } from "src/store/store";
+import { MyNextPageContext } from "src/frontend-utils/redux/with-redux-store";
+import { useCheckStatusCode } from "src/hooks/useCheckStatusCode";
 
 // ----------------------------------------------------------------------
 
@@ -18,9 +19,16 @@ CategoryPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
+type CategoryPageProps = {
+  category: Category;
+  statusCode?: number;
+};
+
 // ----------------------------------------------------------------------
 
-export default function CategoryPage({ category }: { category: Category }) {
+function CategoryPage({ category, statusCode }: CategoryPageProps) {
+  useCheckStatusCode(statusCode);
+
   const baseRoute = `${PATH_CATEGORY.root}/${category.id}`;
 
   const details: Detail[] = [
@@ -72,24 +80,23 @@ export default function CategoryPage({ category }: { category: Category }) {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (st) => async (context) => {
-    const apiResourceObjects = st.getState().apiResourceObjects;
-    const category = getApiResourceObject(
-      apiResourceObjects,
-      "categories",
-      context.params?.id as string
-    );
-    if (typeof category === "undefined") {
-      return {
-        notFound: true,
-      };
-    } else {
-      return {
-        props: {
-          category: category,
-        },
-      };
-    }
+CategoryPage.getInitialProps = async (context: MyNextPageContext) => {
+  const reduxStore = context.reduxStore;
+  const apiResourceObjects = reduxStore.getState().apiResourceObjects;
+  const category = getApiResourceObject(
+    apiResourceObjects,
+    "categories",
+    context.query?.id as string
+  );
+  if (typeof category === "undefined") {
+    return {
+      statusCode: 404,
+    };
+  } else {
+    return {
+      category: category,
+    };
   }
-);
+};
+
+export default CategoryPage;

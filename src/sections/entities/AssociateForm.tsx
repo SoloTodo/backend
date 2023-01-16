@@ -11,7 +11,7 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { Bundle, CellPlan, Entity } from "src/frontend-utils/types/entity";
 import { Product } from "src/frontend-utils/types/product";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 export default function AssociateForm({
   entity,

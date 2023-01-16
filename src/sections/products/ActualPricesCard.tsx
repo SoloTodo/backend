@@ -13,7 +13,7 @@ import NextLink from "next/link";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Entity } from "src/frontend-utils/types/entity";
 import { PATH_ENTITY } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import LinkIcon from "@mui/icons-material/Link";
 // currency
 import currency from "currency.js";

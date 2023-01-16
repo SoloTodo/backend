@@ -29,7 +29,7 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Entity, InLineProduct } from "src/frontend-utils/types/entity";
 import { Product } from "src/frontend-utils/types/product";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
 import { Brand } from "src/frontend-utils/types/banner";
 // currency

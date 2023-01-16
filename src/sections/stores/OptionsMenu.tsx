@@ -4,7 +4,7 @@ import { Option } from "src/frontend-utils/types/extras";
 import { Store } from "src/frontend-utils/types/store";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { Link } from "@mui/material";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
 import { useSnackbar } from "notistack";
 

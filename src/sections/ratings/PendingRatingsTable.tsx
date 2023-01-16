@@ -3,7 +3,7 @@ import { Button, Link, Typography } from "@mui/material";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";

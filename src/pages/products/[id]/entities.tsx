@@ -28,7 +28,7 @@ import CustomTable from "src/sections/CustomTable";
 import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";

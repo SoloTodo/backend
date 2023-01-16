@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Layout from "src/layouts";
 // hooks
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 // types
 import { Entity } from "src/frontend-utils/types/entity";

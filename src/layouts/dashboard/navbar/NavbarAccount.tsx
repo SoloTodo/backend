@@ -1,8 +1,8 @@
 // @mui
 import { styled } from "@mui/material/styles";
 import { Box, Link, Typography, Avatar } from "@mui/material";
-import { useAppSelector } from "src/store/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 

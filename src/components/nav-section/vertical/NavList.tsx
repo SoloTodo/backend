@@ -7,8 +7,8 @@ import { NavListProps } from "../type";
 //
 import { NavItemRoot, NavItemSub } from "./NavItem";
 import { getActive } from "..";
-import { useAppSelector } from "src/store/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 

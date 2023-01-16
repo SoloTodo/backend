@@ -3,7 +3,7 @@ import Options from "../Options";
 import { Option } from "src/frontend-utils/types/extras";
 import { Product } from "src/frontend-utils/types/product";
 import { apiSettings } from "src/frontend-utils/settings";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Category } from "src/frontend-utils/types/store";
 import {

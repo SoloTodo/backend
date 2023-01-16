@@ -19,7 +19,7 @@ import {
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import PendingEntitiesTable from "src/sections/entities/PendingEntitiesTable";
 import { GetServerSideProps } from "next/types";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";

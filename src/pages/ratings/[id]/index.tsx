@@ -13,7 +13,7 @@ import { Rating } from "src/frontend-utils/types/ratings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import Details from "src/sections/Details";
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 
 // ----------------------------------------------------------------------

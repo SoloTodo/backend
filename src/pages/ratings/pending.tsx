@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 // layout
 import Layout from "src/layouts";
 // hooks
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 // api form
 import {
   selectApiResourceObjects,

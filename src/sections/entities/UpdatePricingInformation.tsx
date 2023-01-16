@@ -9,7 +9,7 @@ import {
 import { useSnackbar } from "notistack";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 // hooks
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 // paths
 import { apiSettings } from "src/frontend-utils/settings";
