@@ -14,8 +14,7 @@ import { Store, Update } from "src/frontend-utils/types/store";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import { getStore } from "src/frontend-utils/nextjs/utils";
-import { GetServerSidePropsContext, PreviewData } from "next/types";
-import { ParsedUrlQuery } from "querystring";
+import { NextPageContext } from "next/types";
 
 // ----------------------------------------------------------------------
 
@@ -124,8 +123,6 @@ export default function StoreUpdateLogs(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
-) => {
+export const getServerSideProps = async (context: NextPageContext) => {
   return await getStore(context);
 };

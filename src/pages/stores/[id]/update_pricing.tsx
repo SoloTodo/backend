@@ -10,8 +10,7 @@ import UpdateStorePricingForm from "src/sections/stores/UpdateStorePriceForm";
 import OptionsMenu from "src/sections/stores/OptionsMenu";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
-import { GetServerSidePropsContext, PreviewData } from "next";
-import { ParsedUrlQuery } from "querystring";
+import { NextPageContext } from "next/types";
 
 // ----------------------------------------------------------------------
 
@@ -84,8 +83,6 @@ export default function UpdateStorePricing(props: { store: Store }) {
   );
 }
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
-) => {
+export const getServerSideProps = async (context: NextPageContext) => {
   return await getStore(context);
 };
