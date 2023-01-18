@@ -35,6 +35,10 @@ export default function GeneralInformation({
       label: "Nombre",
     },
     {
+      key: "model_name",
+      label: "Nombre Modelo",
+    },
+    {
       key: "brand",
       label: "Marca",
       renderData: () => (

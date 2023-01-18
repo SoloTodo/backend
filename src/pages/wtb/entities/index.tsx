@@ -105,6 +105,11 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
       ),
     },
     {
+      headerName: "Nombre Modelo",
+      field: "model_name",
+      flex: 1,
+    },
+    {
       headerName: "Marca",
       field: "brand",
       flex: 1,
@@ -143,9 +148,18 @@ export default function WtbEntities({ brands }: { brands: Brand[] }) {
       flex: 1,
       renderCell: (row: WtbEntity) =>
         row.product ? (
-          <NextLink href={`${PATH_PRODUCT.root}/${row.product.id}`} passHref>
-            <Link>{row.product.name}</Link>
-          </NextLink>
+          <Stack alignItems={"center"} spacing={1}>
+            <NextLink href={`${PATH_PRODUCT.root}/${row.product.id}`} passHref>
+              <Link>{row.product.name}</Link>
+            </NextLink>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://www.solotodo.cl/products/${row.product.id}`}
+            >
+              <LinkIcon />
+            </Link>
+          </Stack>
         ) : (
           "N/A"
         ),

@@ -31,7 +31,7 @@ AssociateInformation.getLayout = function getLayout(page: ReactElement) {
 export default function AssociateInformation({
   entity,
   setEntity,
-  brand
+  brand,
 }: {
   entity: WtbEntity;
   setEntity: Function;
@@ -61,8 +61,8 @@ export default function AssociateInformation({
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h6">Marca</Typography>
-            <Typography>{brand.name}</Typography>
+            <Typography variant="h6">Nombre Modelo</Typography>
+            <Typography>{entity.model_name}</Typography>
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h6">Producto actual</Typography>
@@ -78,6 +78,10 @@ export default function AssociateInformation({
                 "N/A"
               )}
             </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6">Marca</Typography>
+            <Typography>{brand.name}</Typography>
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h6">URL</Typography>

@@ -71,7 +71,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
             />
           </Grid>
           <Grid item xs={12}>
-            <AssociateForm entity={entity} setEntity={setEntity} />
+            <AssociateForm entity={entity} setEntity={setEntity} brand={props.brand} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Card>

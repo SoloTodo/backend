@@ -127,7 +127,7 @@ export default function PricingInformation({
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href={`${PATH_PRODUCT.root}/${entity.product.id}`}
+              href={`https://www.solotodo.cl/products/${entity.product.id}`}
             >
               <LinkIcon fontSize="small" />
             </Link>

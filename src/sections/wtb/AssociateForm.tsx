@@ -1,21 +1,27 @@
 import { Button, Card, CardContent, CardHeader, Stack } from "@mui/material";
+import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import ProductSearch from "src/components/my_components/ProductSearch";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { getApiResourceObject } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
+import { Brand } from "src/frontend-utils/types/banner";
 import { Product } from "src/frontend-utils/types/product";
 import { WtbEntity } from "src/frontend-utils/types/wtb";
-import { PATH_PRODUCT } from "src/routes/paths";
+import { PATH_PRODUCT, PATH_WTB } from "src/routes/paths";
 
 export default function AssociateForm({
   entity,
   setEntity,
+  brand,
 }: {
   entity: WtbEntity;
   setEntity: Function;
+  brand: Brand;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -49,6 +55,7 @@ export default function AssociateForm({
       enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
         variant: "success",
       });
+      router.push(`${PATH_WTB.pending}/?brands=${brand.id}`);
     });
   };
 
