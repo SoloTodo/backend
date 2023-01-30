@@ -30,6 +30,8 @@ import EditmodelProperties from "src/sections/metamodel/EditModelProperties";
 import AddOrEditMetaModelField from "src/sections/metamodel/AddOrEditMetaFieldForm";
 import MetaModelFindUsages from "src/sections/metamodel/MetaModelFindUsages";
 import MetaModelDelete from "src/sections/metamodel/MetaModelDelete";
+import { MyNextPageContext } from "src/frontend-utils/redux/with-redux-store";
+import AccessDenied from "src/components/my_components/AccessDenied";
 
 // ----------------------------------------------------------------------
 
@@ -39,10 +41,12 @@ MetaModelEditStructure.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function MetaModelEditStructure({
+function MetaModelEditStructure({
   initialMetaModel,
+  statusCode,
 }: {
   initialMetaModel: MetaModel;
+  statusCode?: number;
 }) {
   const [metaModel, setMetaModel] = useState(initialMetaModel);
   const [editOrderingRow, setEditOrderingRow] = useState<string | null>(null);
@@ -196,7 +200,7 @@ export default function MetaModelEditStructure({
     },
   ];
 
-  return (
+  return statusCode !== 404 ? (
     <Page title={`${metaModel.name} | Editar Estructura`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
@@ -255,23 +259,27 @@ export default function MetaModelEditStructure({
         </Stack>
       </Container>
     </Page>
+  ) : (
+    <AccessDenied />
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const metaModel = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${context.params?.id}/`
-    );
+MetaModelEditStructure.getInitialProps = async (context: MyNextPageContext) => {
+  const reduxStore = context.reduxStore;
+  const user = reduxStore.getState().user;
+  const metaModel = await jwtFetch(
+    context,
+    `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${context.query?.id}/`
+  );
+  if (typeof user === "undefined" || !user.is_superuser) {
     return {
-      props: {
-        initialMetaModel: metaModel,
-      },
+      statusCode: 404,
     };
-  } catch {
+  } else {
     return {
-      notFound: true,
+      initialMetaModel: metaModel,
     };
   }
 };
+
+export default MetaModelEditStructure;

@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { PATH_METAMODEL } from "src/routes/paths";
 import DeleteInstance from "./DeleteInstance";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
+import { useUser } from "src/frontend-utils/redux/user";
 
 type FormProps = {
   [key: string]: any;
@@ -38,6 +40,7 @@ export default function MetaModelInstanceForm({
   editChoice?: Function;
 }) {
   const router = useRouter();
+  const user = useAppSelector(useUser);
   const [loading, setLoading] = useState(false);
   const [submitPath, setSubmitPath] = useState(
     `${PATH_METAMODEL.models}/${metaModel.id}`
@@ -208,18 +211,20 @@ export default function MetaModelInstanceForm({
       </Stack>
       <br />
       <Stack direction="row" spacing={1}>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          disabled={loading}
-          onClick={() =>
-            setSubmitPath(`${PATH_METAMODEL.models}/${metaModel.id}`)
-          }
-        >
-          {!instanceModel ? <AddIcon /> : ""}{" "}
-          {!instanceModel ? "Agregar" : "Guardar"} Instancia
-        </LoadingButton>
-        {instanceModel && (
+        {user?.is_staff && (
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            onClick={() =>
+              setSubmitPath(`${PATH_METAMODEL.models}/${metaModel.id}`)
+            }
+          >
+            {!instanceModel ? <AddIcon /> : ""}{" "}
+            {!instanceModel ? "Agregar" : "Guardar"} Instancia
+          </LoadingButton>
+        )}
+        {instanceModel && user?.is_staff && (
           <LoadingButton
             type="submit"
             variant="contained"
@@ -231,7 +236,7 @@ export default function MetaModelInstanceForm({
             Guardar y seguir editando instancia
           </LoadingButton>
         )}
-        {instanceModel && (
+        {instanceModel && user?.is_staff && (
           <DeleteInstance
             metaModelId={metaModel.id.toString()}
             instanceModelId={instanceModel.id.toString()}

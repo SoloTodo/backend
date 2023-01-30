@@ -11,6 +11,8 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import AddMetaModel from "src/sections/metamodel/AddMetaModel";
 import { MetaModel } from "src/frontend-utils/types/metamodel";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
+import { useUser } from "src/frontend-utils/redux/user";
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +25,7 @@ MetaModels.getLayout = function getLayout(page: ReactElement) {
 export default function MetaModels() {
   const [isLoading, setLoading] = useState(false);
   const [models, setModels] = useState<MetaModel[]>([]);
+  const user = useAppSelector(useUser);
 
   const addNewModel = (newModel: MetaModel) => {
     const newModels = [...models, newModel];
@@ -56,11 +59,14 @@ export default function MetaModels() {
       headerName: "Nombre",
       field: "name",
       flex: 1,
-      renderCell: (params) => (
-        <NextLink href={`${PATH_METAMODEL.models}/${params.row.id}`} passHref>
-          <Link>{params.row.name}</Link>
-        </NextLink>
-      ),
+      renderCell: (params) =>
+        user?.is_staff ? (
+          <NextLink href={`${PATH_METAMODEL.models}/${params.row.id}`} passHref>
+            <Link>{params.row.name}</Link>
+          </NextLink>
+        ) : (
+          params.row.name
+        ),
     },
   ];
 
@@ -80,7 +86,7 @@ export default function MetaModels() {
           </Box>
         ) : (
           <Stack spacing={3}>
-            <AddMetaModel addNewModel={addNewModel} />
+            {user?.is_superuser && <AddMetaModel addNewModel={addNewModel} />}
             <BasicTable title="Modelos" columns={columns} data={models} />
           </Stack>
         )}

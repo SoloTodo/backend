@@ -21,6 +21,8 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
+import { useUser } from "src/frontend-utils/redux/user";
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +37,8 @@ export default function MetaModelinstanceList({
 }: {
   metaModel: MetaModel;
 }) {
+  const user = useAppSelector(useUser);
+
   const fieldMetadata = [
     {
       fieldType: "pagination" as "pagination",
@@ -81,26 +85,30 @@ export default function MetaModelinstanceList({
             <Card>
               <CardContent>
                 <Stack spacing={2} direction="row">
-                  <NextLink
-                    href={`${PATH_METAMODEL.models}/${metaModel.id}/add_instance`}
-                    passHref
-                  >
-                    <Button startIcon={<AddIcon />} variant="contained">
-                      Agregar nueva instancia
-                    </Button>
-                  </NextLink>
-                  <NextLink
-                    href={`${PATH_METAMODEL.models}/${metaModel.id}/edit`}
-                    passHref
-                  >
-                    <Button
-                      startIcon={<EditIcon />}
-                      variant="contained"
-                      color="info"
+                  {user?.is_staff && (
+                    <NextLink
+                      href={`${PATH_METAMODEL.models}/${metaModel.id}/add_instance`}
+                      passHref
                     >
-                      Editar estructura
-                    </Button>
-                  </NextLink>
+                      <Button startIcon={<AddIcon />} variant="contained">
+                        Agregar nueva instancia
+                      </Button>
+                    </NextLink>
+                  )}
+                  {user?.is_superuser && (
+                    <NextLink
+                      href={`${PATH_METAMODEL.models}/${metaModel.id}/edit`}
+                      passHref
+                    >
+                      <Button
+                        startIcon={<EditIcon />}
+                        variant="contained"
+                        color="info"
+                      >
+                        Editar estructura
+                      </Button>
+                    </NextLink>
+                  )}
                 </Stack>
               </CardContent>
             </Card>

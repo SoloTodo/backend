@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, Container } from "@mui/material";
-import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import AccessDenied from "src/components/my_components/AccessDenied";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { MyNextPageContext } from "src/frontend-utils/redux/with-redux-store";
 import { apiSettings } from "src/frontend-utils/settings";
 import { MetaModel } from "src/frontend-utils/types/metamodel";
 import Layout from "src/layouts";
@@ -18,12 +19,14 @@ MetaModelAddInstance.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function MetaModelAddInstance({
+function MetaModelAddInstance({
   metaModel,
+  statusCode,
 }: {
   metaModel: MetaModel;
+  statusCode?: number;
 }) {
-  return (
+  return statusCode !== 404 ? (
     <Page title={`${metaModel.name} | Agregar Instancia`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
@@ -46,23 +49,27 @@ export default function MetaModelAddInstance({
         </Card>
       </Container>
     </Page>
+  ) : (
+    <AccessDenied />
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const metaModel = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${context.params?.id}/`
-    );
+MetaModelAddInstance.getInitialProps = async (context: MyNextPageContext) => {
+  const reduxStore = context.reduxStore;
+  const user = reduxStore.getState().user;
+  const metaModel = await jwtFetch(
+    context,
+    `${apiSettings.apiResourceEndpoints.metamodel_meta_models}${context.query?.id}/`
+  );
+  if (typeof user === "undefined" || !user.is_staff) {
     return {
-      props: {
-        metaModel: metaModel,
-      },
+      statusCode: 404,
     };
-  } catch {
+  } else {
     return {
-      notFound: true,
+      metaModel: metaModel,
     };
   }
 };
+
+export default MetaModelAddInstance;

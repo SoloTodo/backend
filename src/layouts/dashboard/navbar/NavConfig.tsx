@@ -6,7 +6,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ExploreIcon from "@mui/icons-material/Explore";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import StorageIcon from '@mui/icons-material/Storage';
+import StorageIcon from "@mui/icons-material/Storage";
 // routes
 import {
   PATH_BANNERS,
@@ -51,7 +51,7 @@ const sidebarConfig = [
       {
         title: "Dashboard",
         path: "/",
-        icon: ICONS.dashboard
+        icon: ICONS.dashboard,
       },
       {
         title: "Tiendas",
@@ -87,19 +87,19 @@ const sidebarConfig = [
           {
             title: "Todas",
             path: PATH_ENTITY.root,
-            hasPermission: "solotodo.backend_list_entities"
+            hasPermission: "solotodo.backend_list_entities",
           },
           {
             title: "Pendientes",
             path: PATH_ENTITY.pending,
-            hasPermission: "solotodo.backend_view_pending_entities"
+            hasPermission: "solotodo.backend_view_pending_entities",
           },
           {
             title: "Conflictos",
             path: PATH_ENTITY.conflicts,
-            hasPermission: "solotodo.backend_view_entity_conflicts"
+            hasPermission: "solotodo.backend_view_entity_conflicts",
           },
-        ]
+        ],
       },
       {
         title: "Productos",
@@ -107,11 +107,11 @@ const sidebarConfig = [
         icon: ICONS.ecommerce,
         hasPermission: "solotodo.backend_list_products",
         children: [
-            {
-              title: "Todos",
-              path: PATH_PRODUCT.root,
-              hasPermission: "solotodo.backend_list_products",
-            }
+          {
+            title: "Todos",
+            path: PATH_PRODUCT.root,
+            hasPermission: "solotodo.backend_list_products",
+          },
         ],
       },
       {
@@ -161,11 +161,11 @@ const sidebarConfig = [
         icon: ICONS.fileDownload,
         hasPermission: "reports.backend_list_reports",
         children: [
-            {
-              title: "Todos",
-              path: PATH_REPORTS.root,
-              hasPermission: "reports.backend_list_reports",
-            }
+          {
+            title: "Todos",
+            path: PATH_REPORTS.root,
+            hasPermission: "reports.backend_list_reports",
+          },
         ],
       },
       {
@@ -179,11 +179,13 @@ const sidebarConfig = [
             path: PATH_BANNERS.banners,
             hasPermission: "banners.is_staff_of_banner_assets",
           },
-          { title: "Assets",
+          {
+            title: "Assets",
             path: PATH_BANNERS.assets,
             hasPermission: "banners.is_staff_of_banner_assets",
           },
-          { title: "Assets pendientes",
+          {
+            title: "Assets pendientes",
             path: PATH_BANNERS.assetsPending,
             hasPermission: "banners.is_staff_of_banner_assets",
           },
@@ -203,6 +205,7 @@ const sidebarConfig = [
         title: "Metamodel",
         path: PATH_METAMODEL.models,
         icon: ICONS.storage,
+        hasPermission: "is_staff",
       },
     ],
   },
@@ -221,12 +224,12 @@ const sidebarConfig = [
           {
             title: "Todos",
             path: PATH_USER.root,
-            requiredPermission: "solotodo.backend_list_users",
+            hasPermission: "solotodo.backend_list_users",
           },
           {
             title: "Mi usuario",
             path: `${PATH_USER.root}/me`,
-            requiredPermission: "solotodo.view_users_with_staff_actions",
+            hasPermission: "solotodo.view_users_with_staff_actions",
           },
         ],
       },
