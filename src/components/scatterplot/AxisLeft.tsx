@@ -25,8 +25,6 @@ export const AxisLeft = ({ yScale, pixelsPerTick, width }: AxisLeftProps) => {
     }));
   }, [yScale]);
 
-  console.log(ticks);
-
   return (
     <>
       {/* Ticks and labels */}
