@@ -79,7 +79,6 @@ export default function ApiFormCompareChart({
       p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
     );
     const offerPrice = priceCurrency ? parseFloat(priceCurrency.offer_price) : 0;
-    console.log(offerPrice)
     if (min === null || offerPrice < min) min = offerPrice;
     if (max === null || offerPrice > max) max = offerPrice;
     return {
