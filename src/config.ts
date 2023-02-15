@@ -45,3 +45,5 @@ export const defaultSettings: SettingsValueProps = {
   themeLayout: 'horizontal',
   themeStretch: true,
 };
+
+export const websiteId = 1;
