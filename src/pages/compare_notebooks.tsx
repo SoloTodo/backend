@@ -91,13 +91,6 @@ function CompareNotebooks({
                   columns={{ xs: 6, md: 12 }}
                 >
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent
-                      name="ordering"
-                      label="Ordenar por"
-                      selectOnly
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
                     <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
@@ -146,47 +139,6 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
       fieldType: "select" as "select",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
-    },
-    {
-      fieldType: "select" as "select",
-      name: "ordering",
-      choices: [
-        {
-          value: "offer_price_usd",
-          label: "Precio",
-        },
-        {
-          value: "leads",
-          label: "Popularidad",
-        },
-        {
-          value: "discount",
-          label: "Descuento",
-        },
-        ...categorySpecsFormLayout.orders.reduce((acc, o) => {
-          if (o.suggested_use === "ascending") {
-            acc.push({
-              value: o.name,
-              label: o.label,
-            });
-          } else if (o.suggested_use === "descending") {
-            acc.push({
-              value: `-${o.name}`,
-              label: o.label,
-            });
-          } else if (o.suggested_use === "both") {
-            acc.push({
-              value: o.name,
-              label: `${o.label} (menor a mayor)`,
-            });
-            acc.push({
-              value: `-${o.name}`,
-              label: `${o.label} (mayor a menor)`,
-            });
-          }
-          return acc;
-        }, []),
-      ],
     },
   ];
 
