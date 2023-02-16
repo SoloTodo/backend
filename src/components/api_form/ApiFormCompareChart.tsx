@@ -74,7 +74,6 @@ export default function ApiFormCompareChart({
     const { product_entries } = p;
     const { product, metadata } = product_entries[0];
 
-    // const offerPrice = parseFloat(metadata.offer_price_usd);
     const priceCurrency = metadata.prices_per_currency.find((p) =>
       p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
     );
@@ -94,7 +93,7 @@ export default function ApiFormCompareChart({
     price_range = {
       ...price_range,
       min: min - (max - min) / 10,
-      max: max,
+      max: max + (max - min) / 10,
     };
   }
 

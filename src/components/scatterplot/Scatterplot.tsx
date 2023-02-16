@@ -5,7 +5,7 @@ import { ProductsData } from "../api_form/ApiFormCompareChart";
 import { useState } from "react";
 import useSettings from "src/hooks/useSettings";
 
-const MARGIN = { top: 24, right: 24, bottom: 24, left: 56 };
+const MARGIN = { top: 24, right: 24, bottom: 24, left: 80 };
 
 type ScatterplotProps = {
   width: number;
@@ -43,8 +43,17 @@ export const Scatterplot = ({
 
   // Build the shapes
   let last = null;
+  const positions: { x: number; y: number }[] = [];
   const allShapes = data.map((d, i) => {
     const product = d.productData!.product_entries[0].product;
+    let needExtra = false;
+    positions.map(({ x, y }) => {
+      if (xScale(d.x) === x && yScale(d.y) === y) {
+        needExtra = true;
+      }
+    });
+    positions.push({ x: xScale(d.x), y: yScale(d.y) });
+    const extra = needExtra ? 46 : 36;
     const fig = (
       <g
         key={i}
@@ -52,7 +61,7 @@ export const Scatterplot = ({
         onMouseLeave={() => setActive(null)}
       >
         <rect
-          x={xScale(d.x) - 4}
+          x={xScale(d.x) - extra - 4}
           y={yScale(d.y) - 14}
           width={120}
           height={32}
@@ -63,10 +72,10 @@ export const Scatterplot = ({
           rx="5"
         />
         <g fill={isLight ? "#fff" : "#000"}>
-          <text x={xScale(d.x)} y={yScale(d.y)} fontSize={12}>
+          <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={12}>
             {product.specs.part_number ?? product.name.slice(0, 18)}
           </text>
-          <text x={xScale(d.x)} y={yScale(d.y) +12} fontSize={10}>
+          <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={10}>
             <tspan>{product.specs.processor_line_name}</tspan>
             <tspan>{" | "}</tspan>
             <tspan>{product.specs.ram_quantity_unicode}</tspan>
@@ -83,6 +92,7 @@ export const Scatterplot = ({
     }
     return fig;
   });
+  console.log(positions);
 
   return (
     <div>
