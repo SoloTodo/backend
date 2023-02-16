@@ -55,6 +55,7 @@ export const Scatterplot = ({
     });
     positions.push({ x: xScale(d.x), y: yScale(d.y) });
     const extra = needExtra > 0 ? 28 + 20 * needExtra : 28;
+    const name = product.specs.part_number ?? product.name;
     const fig = (
       <g
         key={i}
@@ -74,11 +75,11 @@ export const Scatterplot = ({
         />
         <g fill={isLight ? "#fff" : "#000"}>
           <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
-            {product.specs.part_number ?? product.name.slice(0, 16)}
+            {name.length > 15 ? `${name.slice(0, 13)}...` : name}
           </text>
           <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
-            <tspan>{product.specs.processor_line_name}</tspan>
-            <tspan>{" | "}</tspan>
+            {/* <tspan>{product.specs.processor_line_name}</tspan>
+            <tspan>{" | "}</tspan> */}
             <tspan>{product.specs.ram_quantity_unicode}</tspan>
             <tspan>{" | "}</tspan>
             <tspan>
