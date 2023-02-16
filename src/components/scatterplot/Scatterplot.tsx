@@ -58,7 +58,7 @@ export const Scatterplot = ({
     const fig = (
       <g
         key={i}
-        onMouseOver={() => setActive(i)}
+        onMouseEnter={() => setActive(i)}
         onMouseLeave={() => setActive(null)}
       >
         <rect
