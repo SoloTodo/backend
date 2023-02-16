@@ -38,7 +38,7 @@ export const Scatterplot = ({
     .range([boundsHeight, 0]);
   const xScale = d3
     .scaleLinear()
-    .domain([0, xaxis.length])
+    .domain([0, xaxis.length + 1])
     .range([0, boundsWidth]);
 
   // Build the shapes
@@ -54,7 +54,7 @@ export const Scatterplot = ({
       }
     });
     positions.push({ x: xScale(d.x), y: yScale(d.y) });
-    const extra = needExtra > 0 ? 36 + 10 * needExtra : 36;
+    const extra = needExtra > 0 ? 28 + 20 * needExtra : 28;
     const fig = (
       <g
         key={i}
@@ -73,8 +73,8 @@ export const Scatterplot = ({
           rx="5"
         />
         <g fill={isLight ? "#fff" : "#000"}>
-          <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={12}>
-            {product.specs.part_number ?? product.name.slice(0, 18)}
+          <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
+            {product.specs.part_number ?? product.name.slice(0, 16)}
           </text>
           <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
             <tspan>{product.specs.processor_line_name}</tspan>

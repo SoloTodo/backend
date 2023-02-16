@@ -1,6 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
+import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Product } from "src/frontend-utils/types/product";
 import { Scatterplot } from "../scatterplot/Scatterplot";
@@ -48,25 +49,24 @@ export default function ApiFormCompareChart({
     );
   }
 
-  let index = 0;
-  const currentProcessors = processorsLines.reduce(
-    (acc: { index: number; value: number; label: string }[], a) => {
-      const choiceWithDoc = context.currentResult.aggs[
-        "processor_lines"
-      ].filter((c: { id: number }) => c.id === a.id);
-      if (choiceWithDoc.length > 0) {
-        acc.push({
-          index: index,
-          value: a.id,
-          label: a.name,
-        });
-        index++;
-      }
-      return acc;
-    },
-    []
-  );
-  let price_range = context.currentResult.price_ranges["offer_price_usd"];
+  let index = 1;
+  const currentProcessors: { index: number; value: number; label: string }[] =
+    [];
+  currentResult.results.map((p: ProductsData) => {
+    const { product_entries } = p;
+    const { product } = product_entries[0];
+    const present = currentProcessors.find(
+      (c) => c.value === product.specs.processor_line_family_id
+    );
+    if (typeof present === "undefined") {
+      currentProcessors.push({
+        index: index,
+        label: product.specs.processor_line_family_name,
+        value: product.specs.processor_line_family_id,
+      });
+      index++;
+    }
+  });
 
   let min: number | null = null;
   let max: number | null = null;
@@ -77,7 +77,9 @@ export default function ApiFormCompareChart({
     const priceCurrency = metadata.prices_per_currency.find((p) =>
       p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
     );
-    const offerPrice = priceCurrency ? parseFloat(priceCurrency.offer_price) : 0;
+    const offerPrice = priceCurrency
+      ? parseFloat(priceCurrency.offer_price)
+      : 0;
     if (min === null || offerPrice < min) min = offerPrice;
     if (max === null || offerPrice > max) max = offerPrice;
     return {
@@ -89,21 +91,25 @@ export default function ApiFormCompareChart({
     };
   });
 
+  let price_range = { min: 0, max: 0 };
   if (min && max) {
     price_range = {
-      ...price_range,
       min: min - (max - min) / 10,
       max: max + (max - min) / 10,
     };
   }
 
   return (
-    <Scatterplot
-      data={data}
-      width={1000}
-      height={500}
-      xaxis={currentProcessors}
-      yaxis={price_range}
-    />
+    <>
+      <ApiFormPaginationComponent />
+      <Scatterplot
+        data={data}
+        width={1000}
+        height={500}
+        xaxis={currentProcessors}
+        yaxis={price_range}
+      />
+      <ApiFormPaginationComponent />
+    </>
   );
 }

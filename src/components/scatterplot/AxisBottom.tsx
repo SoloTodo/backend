@@ -22,7 +22,7 @@ export const AxisBottom = ({
     const numberOfTicksTarget = Math.floor(xaxis.length);
 
     return xScale.ticks(numberOfTicksTarget).map((value) => ({
-      value: xaxis[value]?.label ?? "",
+      value: value === 0 ? "  " : xaxis[value - 1]?.label ?? "",
       xOffset: xScale(value),
     }));
   }, [xScale]);

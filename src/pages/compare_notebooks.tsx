@@ -139,6 +139,9 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
+      fieldType: "pagination" as "pagination",
+    },
+    {
       name: "stores",
       fieldType: "select" as "select",
       multiple: true,
