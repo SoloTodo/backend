@@ -100,7 +100,7 @@ export default function ApiFormCompareChart({
   return (
     <Scatterplot
       data={data}
-      width={800}
+      width={1000}
       height={500}
       xaxis={currentProcessors}
       yaxis={price_range}
