@@ -111,7 +111,7 @@ function CompareNotebooks({
             </Card>
             <Card>
               <CardHeader title="Gráfica" />
-              <CardContent>
+              <CardContent sx={{ overflow: "auto" }}>
                 <ApiFormCompareChart processorsLines={processorsLines} />
               </CardContent>
             </Card>
