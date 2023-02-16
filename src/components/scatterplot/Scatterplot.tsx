@@ -46,14 +46,15 @@ export const Scatterplot = ({
   const positions: { x: number; y: number }[] = [];
   const allShapes = data.map((d, i) => {
     const product = d.productData!.product_entries[0].product;
-    let needExtra = false;
+    let needExtra = 0;
     positions.map(({ x, y }) => {
       if (xScale(d.x) === x && yScale(d.y) === y) {
-        needExtra = true;
+        needExtra += 1;
+        return { x: x, y: y };
       }
     });
     positions.push({ x: xScale(d.x), y: yScale(d.y) });
-    const extra = needExtra ? 46 : 36;
+    const extra = needExtra > 0 ? 36 + 10 * needExtra : 36;
     const fig = (
       <g
         key={i}
@@ -63,7 +64,7 @@ export const Scatterplot = ({
         <rect
           x={xScale(d.x) - extra - 4}
           y={yScale(d.y) - 14}
-          width={120}
+          width={110}
           height={32}
           stroke={isLight ? "#fff" : "#000"}
           fill={isLight ? "#000" : "#fff"}
@@ -75,7 +76,7 @@ export const Scatterplot = ({
           <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={12}>
             {product.specs.part_number ?? product.name.slice(0, 18)}
           </text>
-          <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={10}>
+          <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
             <tspan>{product.specs.processor_line_name}</tspan>
             <tspan>{" | "}</tspan>
             <tspan>{product.specs.ram_quantity_unicode}</tspan>
@@ -92,7 +93,6 @@ export const Scatterplot = ({
     }
     return fig;
   });
-  console.log(positions);
 
   return (
     <div>
