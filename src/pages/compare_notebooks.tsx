@@ -20,6 +20,8 @@ import { fetchJson } from "src/frontend-utils/network/utils";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 import ApiFormCompareChart from "src/components/api_form/ApiFormCompareChart";
 import { websiteId } from "src/config";
+import ApiFormTreeComponent from "src/frontend-utils/api_form/fields/tree/ApiFormTreeComponent";
+import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 
 // ----------------------------------------------------------------------
 
@@ -58,15 +60,58 @@ CompareNotebooks.getLayout = function getLayout(page: ReactElement) {
 
 type CompareNotebooksPageProps = {
   fieldsMetadata: ApiFormFieldMetadata[];
-  processorsLines: { id: number; name: string }[];
+  categorySpecsFormLayout: CategorySpecsFormLayoutProps;
 };
 
 // ----------------------------------------------------------------------
 
+const whitelist = ["brands", "lines", "processor_brands"];
+
 function CompareNotebooks({
   fieldsMetadata,
-  processorsLines,
+  categorySpecsFormLayout,
 }: CompareNotebooksPageProps) {
+  const fieldFilters: JSX.Element[] = [];
+
+  categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
+    fieldset.filters.forEach((filter) => {
+      if (!whitelist.includes(filter.name)) {
+        return;
+      }
+      if (filter.name === "grocery_categories") {
+        fieldFilters.push(
+          <Grid key={filter.id} item xs={6}>
+            <ApiFormTreeComponent name={filter.name} label={filter.label} />
+          </Grid>
+        );
+      } else if (filter.type === "exact") {
+        fieldFilters.push(
+          <Grid key={filter.id} item xs={6}>
+            <ApiFormSelectComponent
+              name={filter.name}
+              label={filter.label}
+              exact
+            />
+          </Grid>
+        );
+      } else if (filter.type === "gte" || filter.type === "lte") {
+        const fullName =
+          filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
+        fieldFilters.push(
+          <Grid key={filter.id} item xs={6}>
+            <ApiFormSelectComponent name={fullName} label={filter.label} />
+          </Grid>
+        );
+      } else if (filter.type === "range") {
+        fieldFilters.push(
+          <Grid key={filter.id} item xs={6}>
+            <ApiFormSliderComponent name={filter.name} label={filter.label} />
+          </Grid>
+        );
+      }
+    });
+  });
+
   return (
     <Page title="Comparar Notebooks">
       <Container maxWidth={false}>
@@ -79,7 +124,7 @@ function CompareNotebooks({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/?exclude_refurbished=True`}
+          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/`}
         >
           <Stack spacing={3}>
             <Card>
@@ -94,18 +139,16 @@ function CompareNotebooks({
                     <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="brands" label="Marcas" />
+                    <ApiFormSelectComponent name="exclude_refurbished" label="Condición" />
                   </Grid>
-                  <Grid item xs={6}>
-                    <ApiFormSelectComponent name="lines" label="Líneas" />
-                  </Grid>
+                  {fieldFilters.map((f) => f)}
                 </Grid>
               </CardContent>
             </Card>
             <Card>
               <CardHeader title="Gráfica" />
               <CardContent sx={{ overflow: "auto" }}>
-                <ApiFormCompareChart processorsLines={processorsLines} />
+                <ApiFormCompareChart />
               </CardContent>
             </Card>
           </Stack>
@@ -140,78 +183,88 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
+    {
+      name: "exclude_refurbished",
+      fieldType: "select" as "select",
+      choices: [
+        { value: "False", label: "Todos" },
+        { value: "True", label: "Nuevos" },
+      ],
+    },
   ];
 
-  categorySpecsFormLayout.fieldsets[0].filters.forEach((filter) => {
-    let filterChoices =
-      filter.choices === null
-        ? filter.choices
-        : filter.choices.map((c) => ({
-            label: c.name,
-            value: c.id,
-          }));
-
-    if (filter.type === "exact") {
-      filterChoices = filterChoices || [
-        { value: 0, label: "No" },
-        { value: 1, label: "Sí" },
-      ];
-    } else {
-      filterChoices = filterChoices || [];
-    }
-    if (filter.name === "grocery_categories") {
-      fieldsMetadata.push({
-        fieldType: "tree" as "tree",
-        name: filter.name,
-        multiple: false,
-        choices: filterChoices,
-      });
-    } else if (filter.type === "exact") {
-      fieldsMetadata.push({
-        fieldType: "select" as "select",
-        name: filter.name,
-        multiple: Boolean(filter.choices),
-        choices: filterChoices,
-      });
-    } else if (filter.type === "gte" || filter.type === "lte") {
-      const fullName =
-        filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
-      fieldsMetadata.push({
-        fieldType: "select" as "select",
-        name: fullName,
-        multiple: false,
-        choices: filterChoices,
-      });
-    } else if (filter.type === "range") {
-      if (
-        filter.continuous_range_step !== null &&
-        filter.continuous_range_unit !== null
-      ) {
-        fieldsMetadata.push({
-          fieldType: "slider" as "slider",
-          name: filter.name,
-          step: filter.continuous_range_step,
-          unit: filter.continuous_range_unit,
-          choices: [],
-        });
-      } else {
-        fieldsMetadata.push({
-          fieldType: "slider" as "slider",
-          name: filter.name,
-          step: null,
-          unit: null,
-          choices: filterChoices.map((c) => ({ ...c, index: c.value })),
-        });
+  categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
+    fieldset.filters.forEach((filter) => {
+      if (!whitelist.includes(filter.name)) {
+        return;
       }
-    }
-  });
+      let filterChoices =
+        filter.choices === null
+          ? filter.choices
+          : filter.choices.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }));
 
-  const processorLines =
-    categorySpecsFormLayout.fieldsets[1].filters[1].choices;
+      if (filter.type === "exact") {
+        filterChoices = filterChoices || [
+          { value: 0, label: "No" },
+          { value: 1, label: "Sí" },
+        ];
+      } else {
+        filterChoices = filterChoices || [];
+      }
+      if (filter.name === "grocery_categories") {
+        fieldsMetadata.push({
+          fieldType: "tree" as "tree",
+          name: filter.name,
+          multiple: false,
+          choices: filterChoices,
+        });
+      } else if (filter.type === "exact") {
+        fieldsMetadata.push({
+          fieldType: "select" as "select",
+          name: filter.name,
+          multiple: Boolean(filter.choices),
+          choices: filterChoices,
+        });
+      } else if (filter.type === "gte" || filter.type === "lte") {
+        const fullName =
+          filter.type === "gte" ? `${filter.name}_min` : `${filter.name}_max`;
+        fieldsMetadata.push({
+          fieldType: "select" as "select",
+          name: fullName,
+          multiple: false,
+          choices: filterChoices,
+        });
+      } else if (filter.type === "range") {
+        if (
+          filter.continuous_range_step !== null &&
+          filter.continuous_range_unit !== null
+        ) {
+          fieldsMetadata.push({
+            fieldType: "slider" as "slider",
+            name: filter.name,
+            step: filter.continuous_range_step,
+            unit: filter.continuous_range_unit,
+            choices: [],
+          });
+        } else {
+          fieldsMetadata.push({
+            fieldType: "slider" as "slider",
+            name: filter.name,
+            step: null,
+            unit: null,
+            choices: filterChoices.map((c) => ({ ...c, index: c.value })),
+          });
+        }
+      }
+    });
+  });
 
   return {
     fieldsMetadata: fieldsMetadata,
-    processorsLines: processorLines,
+    categorySpecsFormLayout: categorySpecsFormLayout,
   };
 };
 

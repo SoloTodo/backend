@@ -34,11 +34,7 @@ export type ProductsData = {
   }[];
 };
 
-export default function ApiFormCompareChart({
-  processorsLines,
-}: {
-  processorsLines: { id: number; name: string }[];
-}) {
+export default function ApiFormCompareChart() {
   const context = useContext(ApiFormContext);
   let currentResult = context.currentResult;
   if (currentResult === null) {
