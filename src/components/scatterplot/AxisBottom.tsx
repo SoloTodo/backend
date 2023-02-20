@@ -4,25 +4,20 @@ import { ScaleLinear } from "d3";
 type AxisBottomProps = {
   xScale: ScaleLinear<number, number>;
   height: number;
-  xaxis: { index: number; value: number; label: string }[];
+  xaxis: string[];
 };
 
 // tick length
 const TICK_LENGTH = 10;
 
-export const AxisBottom = ({
-  xScale,
-  height,
-  xaxis,
-}: AxisBottomProps) => {
-  const range = xScale.range();
+export const AxisBottom = ({ xScale, height, xaxis }: AxisBottomProps) => {
 
   const ticks = useMemo(() => {
-    const width = range[1] - range[0];
     const numberOfTicksTarget = Math.floor(xaxis.length);
 
     return xScale.ticks(numberOfTicksTarget).map((value) => ({
-      value: value === 0 ? "  " : xaxis[value - 1]?.label ?? "",
+      index: value,
+      value: xaxis[value],
       xOffset: xScale(value),
     }));
   }, [xScale]);
@@ -30,9 +25,9 @@ export const AxisBottom = ({
   return (
     <>
       {/* Ticks and labels */}
-      {ticks.map(({ value, xOffset }) => (
+      {ticks.map(({ index, value, xOffset }) => (
         <g
-          key={value}
+          key={index}
           transform={`translate(${xOffset}, 0)`}
           shapeRendering={"crispEdges"}
         >
@@ -43,7 +38,7 @@ export const AxisBottom = ({
             strokeWidth={0.5}
           />
           <text
-            key={value}
+            key={index}
             style={{
               fontSize: "10px",
               textAnchor: "middle",

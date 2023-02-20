@@ -34,6 +34,42 @@ export type ProductsData = {
   }[];
 };
 
+const processorLinePositionList: Record<number, number> = {
+  106254: 1,
+  106261: 1,
+  1079336: 2,
+  1203859: 2,
+  1139730: 2,
+  106080: 2,
+  106090: 2,
+  106100: 2,
+  106111: 2,
+  106120: 2,
+  106131: 2,
+  106141: 2,
+  106348: 2,
+  106357: 2,
+  106306: 3,
+  764085: 3,
+  106315: 4,
+  697544: 4,
+  106325: 5,
+  696420: 5,
+  788519: 6,
+  1202555: 6,
+};
+
+const axis = [
+  "",
+  "Celeron",
+  "Pentium / Athlon",
+  "Core i3 / Ryzen 3",
+  "Core i5 / Ryzen 5",
+  "Core i7 / Ryzen 7",
+  "Core i9 / Ryzen 9",
+  "Extra",
+];
+
 export default function ApiFormCompareChart() {
   const context = useContext(ApiFormContext);
   let currentResult = context.currentResult;
@@ -44,25 +80,6 @@ export default function ApiFormCompareChart() {
       </Box>
     );
   }
-
-  let index = 1;
-  const currentProcessors: { index: number; value: number; label: string }[] =
-    [];
-  currentResult.results.map((p: ProductsData) => {
-    const { product_entries } = p;
-    const { product } = product_entries[0];
-    const present = currentProcessors.find(
-      (c) => c.value === product.specs.processor_line_family_id
-    );
-    if (typeof present === "undefined") {
-      currentProcessors.push({
-        index: index,
-        label: product.specs.processor_line_family_name,
-        value: product.specs.processor_line_family_id,
-      });
-      index++;
-    }
-  });
 
   let min: number | null = null;
   let max: number | null = null;
@@ -79,9 +96,7 @@ export default function ApiFormCompareChart() {
     if (min === null || offerPrice < min) min = offerPrice;
     if (max === null || offerPrice > max) max = offerPrice;
     return {
-      x: currentProcessors.find(
-        (c) => c.value === product.specs.processor_line_family_id
-      )?.index,
+      x: processorLinePositionList[product.specs.processor_line_id] ?? axis.length - 1,
       y: offerPrice,
       productData: p,
     };
@@ -102,7 +117,7 @@ export default function ApiFormCompareChart() {
         data={data}
         width={1000}
         height={500}
-        xaxis={currentProcessors}
+        xaxis={axis}
         yaxis={price_range}
       />
       <ApiFormPaginationComponent />

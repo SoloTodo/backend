@@ -11,7 +11,7 @@ type ScatterplotProps = {
   width: number;
   height: number;
   data: { x: number; y: number; productData?: ProductsData }[];
-  xaxis: { index: number; value: number; label: string }[];
+  xaxis: string[];
   yaxis: { min: number; max: number };
 };
 
@@ -38,7 +38,7 @@ export const Scatterplot = ({
     .range([boundsHeight, 0]);
   const xScale = d3
     .scaleLinear()
-    .domain([0, xaxis.length + 1])
+    .domain([0, xaxis.length])
     .range([0, boundsWidth]);
 
   // Build the shapes
@@ -48,12 +48,12 @@ export const Scatterplot = ({
     const product = d.productData!.product_entries[0].product;
     let needExtra = 0;
     positions.map(({ x, y }) => {
-      if (xScale(d.x) === x && yScale(d.y) === y) {
+      if (xScale(d.x) === x && Math.round(yScale(d.y)) === y) {
         needExtra += 1;
         return { x: x, y: y };
       }
     });
-    positions.push({ x: xScale(d.x), y: yScale(d.y) });
+    positions.push({ x: xScale(d.x), y: Math.round(yScale(d.y)) });
     const extra = needExtra > 0 ? 28 + 20 * needExtra : 28;
     const name = product.specs.part_number ?? product.name;
     const fig = (
@@ -65,7 +65,7 @@ export const Scatterplot = ({
         <rect
           x={xScale(d.x) - extra - 4}
           y={yScale(d.y) - 14}
-          width={110}
+          width={185}
           height={32}
           stroke={isLight ? "#fff" : "#000"}
           fill={isLight ? "#000" : "#fff"}
@@ -75,15 +75,23 @@ export const Scatterplot = ({
         />
         <g fill={isLight ? "#fff" : "#000"}>
           <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
-            {name.length > 15 ? `${name.slice(0, 13)}...` : name}
+            <tspan>{product.brand_name}</tspan>
+            <tspan x={xScale(d.x) - extra + 40} fontSize={9}>{" | "}</tspan>
+            <tspan>{name.length > 15 ? `${name.slice(0, 13)}...` : name}</tspan>
           </text>
           <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
-            {/* <tspan>{product.specs.processor_line_name}</tspan>
-            <tspan>{" | "}</tspan> */}
+            <tspan>{product.specs.screen_size_unicode}</tspan>
+            <tspan x={xScale(d.x) - extra + 40}>{" | "}</tspan>
+            <tspan>{product.specs.processor_line_name}</tspan>
+            <tspan>{" | "}</tspan>
             <tspan>{product.specs.ram_quantity_unicode}</tspan>
             <tspan>{" | "}</tspan>
             <tspan>
               {product.specs.largest_storage_drive.capacity_unicode}
+            </tspan>
+            <tspan>{" | "}</tspan>
+            <tspan>
+              {product.specs.screen_refresh_rate_unicode}
             </tspan>
           </text>
         </g>
