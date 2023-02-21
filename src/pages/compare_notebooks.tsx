@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import NextLink from "next/link";
 import Layout from "src/layouts";
 import Page from "src/components/Page";
 import {
@@ -7,21 +8,30 @@ import {
   CardHeader,
   Container,
   Grid,
+  Link,
   Stack,
 } from "@mui/material";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
-import { PATH_DASHBOARD } from "src/routes/paths";
+import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { apiSettings } from "src/frontend-utils/settings";
-import { selectApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import {
+  selectApiResourceObjects,
+  useApiResourceObjects,
+} from "src/frontend-utils/redux/api_resources/apiResources";
 import { MyNextPageContext } from "src/frontend-utils/redux/with-redux-store";
 import { fetchJson } from "src/frontend-utils/network/utils";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
-import ApiFormCompareChart from "src/components/api_form/ApiFormCompareChart";
+import ApiFormCompareChart, {
+  ProductsData,
+} from "src/components/api_form/ApiFormCompareChart";
 import { websiteId } from "src/config";
 import ApiFormTreeComponent from "src/frontend-utils/api_form/fields/tree/ApiFormTreeComponent";
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
+import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
+import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -71,6 +81,7 @@ function CompareNotebooks({
   fieldsMetadata,
   categorySpecsFormLayout,
 }: CompareNotebooksPageProps) {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const fieldFilters: JSX.Element[] = [];
 
   categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
@@ -112,6 +123,67 @@ function CompareNotebooks({
     });
   });
 
+  const columns: any[] = [
+    {
+      headerName: "Nombre",
+      field: "name",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return (
+          <NextLink href={`${PATH_PRODUCT.root}/${product.id}`} passHref>
+            <Link>{product.name}</Link>
+          </NextLink>
+        );
+      },
+    },
+    {
+      headerName: "Part Number",
+      field: "part_number",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return product.specs.part_number ?? "N/A";
+      },
+    },
+    {
+      headerName: "Procesador",
+      field: "processor",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return product.specs.processor_unicode;
+      },
+    },
+    {
+      headerName: "Ram",
+      field: "ram",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return product.specs.ram_quantity_unicode;
+      },
+    },
+    {
+      headerName: "Storage Drive",
+      field: "storage",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return product.specs.largest_storage_drive.capacity_unicode;
+      },
+    },
+    {
+      headerName: "SO",
+      field: "so",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return product.specs.operating_system_short_name;
+      },
+    },
+  ];
+
   return (
     <Page title="Comparar Notebooks">
       <Container maxWidth={false}>
@@ -139,9 +211,18 @@ function CompareNotebooks({
                     <ApiFormSelectComponent name="stores" label="Tiendas" />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormSelectComponent name="exclude_refurbished" label="Condición" />
+                    <ApiFormSelectComponent
+                      name="exclude_refurbished"
+                      label="Condición"
+                    />
                   </Grid>
                   {fieldFilters.map((f) => f)}
+                  <Grid item xs={6}>
+                    <ApiFormTextComponent
+                      name="search"
+                      label="Palabras clave"
+                    />
+                  </Grid>
                 </Grid>
               </CardContent>
             </Card>
@@ -151,6 +232,7 @@ function CompareNotebooks({
                 <ApiFormCompareChart />
               </CardContent>
             </Card>
+            <ApiFormPaginationTable columns={columns} title="Productos" />
           </Stack>
         </ApiFormComponent>
       </Container>
@@ -176,6 +258,10 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
       fieldType: "pagination" as "pagination",
+    },
+    {
+      fieldType: "text" as "text",
+      name: "search",
     },
     {
       name: "stores",
