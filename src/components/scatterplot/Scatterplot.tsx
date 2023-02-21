@@ -65,8 +65,8 @@ export const Scatterplot = ({
         <rect
           x={xScale(d.x) - extra - 4}
           y={yScale(d.y) - 14}
-          width={185}
-          height={32}
+          width={150}
+          height={42}
           stroke={isLight ? "#fff" : "#000"}
           fill={isLight ? "#000" : "#fff"}
           fillOpacity={active !== null && active === i ? 0.9 : 0.2}
@@ -76,12 +76,10 @@ export const Scatterplot = ({
         <g fill={isLight ? "#fff" : "#000"}>
           <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
             <tspan>{product.brand_name}</tspan>
-            <tspan x={xScale(d.x) - extra + 40} fontSize={9}>{" | "}</tspan>
+            <tspan>{" | "}</tspan>
             <tspan>{name.length > 15 ? `${name.slice(0, 13)}...` : name}</tspan>
           </text>
           <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
-            <tspan>{product.specs.screen_size_unicode}</tspan>
-            <tspan x={xScale(d.x) - extra + 40}>{" | "}</tspan>
             <tspan>{product.specs.processor_line_name}</tspan>
             <tspan>{" | "}</tspan>
             <tspan>{product.specs.ram_quantity_unicode}</tspan>
@@ -89,10 +87,15 @@ export const Scatterplot = ({
             <tspan>
               {product.specs.largest_storage_drive.capacity_unicode}
             </tspan>
-            <tspan>{" | "}</tspan>
+          </text>
+          <text x={xScale(d.x) - extra} y={yScale(d.y) + 24} fontSize={9}>
             <tspan>
-              {product.specs.screen_refresh_rate_unicode}
+              {product.specs.name.length > 18
+                ? `${product.specs.name.slice(0, 16)}...`
+                : product.specs.name}
             </tspan>
+            <tspan>{" | "}</tspan>
+            <tspan>{product.specs.operating_system_short_name}</tspan>
           </text>
         </g>
       </g>
