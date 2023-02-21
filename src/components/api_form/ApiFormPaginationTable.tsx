@@ -61,8 +61,8 @@ export default function ApiFormPaginationTable({
                   </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((row: any) => (
-                    <StyledTableRow key={row.id}>
+                  {data.map((row: any, index: number) => (
+                    <StyledTableRow key={index}>
                       {columns.map((col) => (
                         <StyledTableCell key={col.field}>
                           {col.renderCell
