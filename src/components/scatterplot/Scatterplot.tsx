@@ -4,6 +4,8 @@ import { AxisBottom } from "./AxisBottom";
 import { ProductsData } from "../api_form/ApiFormCompareChart";
 import { useState } from "react";
 import useSettings from "src/hooks/useSettings";
+import { PATH_PRODUCT } from "src/routes/paths";
+import { useRouter } from "next/router";
 
 const MARGIN = { top: 24, right: 24, bottom: 24, left: 80 };
 
@@ -22,6 +24,7 @@ export const Scatterplot = ({
   xaxis,
   yaxis,
 }: ScatterplotProps) => {
+  const router = useRouter();
   // Layout. The div size is set by the given props.
   // The bounds (=area inside the axis) is calculated by substracting the margins
   const boundsWidth = width - MARGIN.right - MARGIN.left;
@@ -61,43 +64,48 @@ export const Scatterplot = ({
         key={i}
         onMouseEnter={() => setActive(i)}
         onMouseLeave={() => setActive(null)}
+        onClick={() => router.push(`${PATH_PRODUCT.root}/${product.id}`)}
       >
-        <rect
-          x={xScale(d.x) - extra - 4}
-          y={yScale(d.y) - 14}
-          width={150}
-          height={42}
-          stroke={isLight ? "#fff" : "#000"}
-          fill={isLight ? "#000" : "#fff"}
-          fillOpacity={active !== null && active === i ? 0.9 : 0.2}
-          strokeWidth={1}
-          rx="5"
-        />
-        <g fill={isLight ? "#fff" : "#000"}>
-          <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
-            <tspan>{product.brand_name}</tspan>
-            <tspan>{" | "}</tspan>
-            <tspan>{name.length > 15 ? `${name.slice(0, 13)}...` : name}</tspan>
-          </text>
-          <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
-            <tspan>{product.specs.processor_line_name}</tspan>
-            <tspan>{" | "}</tspan>
-            <tspan>{product.specs.ram_quantity_unicode}</tspan>
-            <tspan>{" | "}</tspan>
-            <tspan>
-              {product.specs.largest_storage_drive.capacity_unicode}
-            </tspan>
-          </text>
-          <text x={xScale(d.x) - extra} y={yScale(d.y) + 24} fontSize={9}>
-            <tspan>
-              {product.specs.name.length > 18
-                ? `${product.specs.name.slice(0, 16)}...`
-                : product.specs.name}
-            </tspan>
-            <tspan>{" | "}</tspan>
-            <tspan>{product.specs.operating_system_short_name}</tspan>
-          </text>
-        </g>
+        <a href="#">
+          <rect
+            x={xScale(d.x) - extra - 4}
+            y={yScale(d.y) - 14}
+            width={150}
+            height={42}
+            stroke={isLight ? "#fff" : "#000"}
+            fill={isLight ? "#000" : "#fff"}
+            fillOpacity={active !== null && active === i ? 0.9 : 0.2}
+            strokeWidth={1}
+            rx="5"
+          />
+          <g fill={isLight ? "#fff" : "#000"}>
+            <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
+              <tspan>{product.brand_name}</tspan>
+              <tspan>{" | "}</tspan>
+              <tspan>
+                {name.length > 15 ? `${name.slice(0, 13)}...` : name}
+              </tspan>
+            </text>
+            <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
+              <tspan>{product.specs.processor_line_name}</tspan>
+              <tspan>{" | "}</tspan>
+              <tspan>{product.specs.ram_quantity_unicode}</tspan>
+              <tspan>{" | "}</tspan>
+              <tspan>
+                {product.specs.largest_storage_drive.capacity_unicode}
+              </tspan>
+            </text>
+            <text x={xScale(d.x) - extra} y={yScale(d.y) + 24} fontSize={9}>
+              <tspan>
+                {product.specs.name.length > 18
+                  ? `${product.specs.name.slice(0, 16)}...`
+                  : product.specs.name}
+              </tspan>
+              <tspan>{" | "}</tspan>
+              <tspan>{product.specs.operating_system_short_name}</tspan>
+            </text>
+          </g>
+        </a>
       </g>
     );
     if (active !== null && active === i) {
