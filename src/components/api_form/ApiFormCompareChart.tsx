@@ -35,32 +35,31 @@ export type ProductsData = {
 };
 
 const processorLinePositionList: Record<number, number> = {
-  106254: 1,
-  106261: 1,
-  1079336: 2,
-  1203859: 2,
-  1139730: 2,
-  106080: 2,
-  106090: 2,
-  106100: 2,
-  106111: 2,
-  106120: 2,
-  106131: 2,
-  106141: 2,
-  106348: 2,
-  106357: 2,
-  106306: 3,
-  764085: 3,
-  106315: 4,
-  697544: 4,
-  106325: 5,
-  696420: 5,
-  788519: 6,
-  1202555: 6,
+  106254: 0,
+  106261: 0,
+  1079336: 1,
+  1203859: 1,
+  1139730: 1,
+  106080: 1,
+  106090: 1,
+  106100: 1,
+  106111: 1,
+  106120: 1,
+  106131: 1,
+  106141: 1,
+  106348: 1,
+  106357: 1,
+  106306: 2,
+  764085: 2,
+  106315: 3,
+  697544: 3,
+  106325: 4,
+  696420: 4,
+  788519: 5,
+  1202555: 5,
 };
 
 const axis = [
-  "",
   "Celeron",
   "Pentium / Athlon",
   "Core i3 / Ryzen 3",
@@ -96,7 +95,9 @@ export default function ApiFormCompareChart() {
     if (min === null || offerPrice < min) min = offerPrice;
     if (max === null || offerPrice > max) max = offerPrice;
     return {
-      x: processorLinePositionList[product.specs.processor_line_id] ?? axis.length - 1,
+      x:
+        processorLinePositionList[product.specs.processor_line_id] ??
+        axis.length - 1,
       y: offerPrice,
       productData: p,
     };
@@ -112,7 +113,7 @@ export default function ApiFormCompareChart() {
 
   return (
     <>
-      <ApiFormPaginationComponent />
+      <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
       <Scatterplot
         data={data}
         width={1000}
@@ -120,7 +121,7 @@ export default function ApiFormCompareChart() {
         xaxis={axis}
         yaxis={price_range}
       />
-      <ApiFormPaginationComponent />
+      <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
     </>
   );
 }

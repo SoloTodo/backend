@@ -194,7 +194,7 @@ function CompareNotebooks({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/?exclude_marketplace=1`}
         >
           <Stack spacing={3}>
             <Card>
@@ -230,7 +230,11 @@ function CompareNotebooks({
                 <ApiFormCompareChart />
               </CardContent>
             </Card>
-            <ApiFormPaginationTable columns={columns} title="Productos" />
+            <ApiFormPaginationTable
+              columns={columns}
+              title="Productos"
+              rowsPerPage={[5, 10, 20, 50]}
+            />
           </Stack>
         </ApiFormComponent>
       </Container>
@@ -239,6 +243,34 @@ function CompareNotebooks({
 }
 
 CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
+  if (
+    context.req &&
+    context.query.page_size &&
+    Number(context.query.page_size) > 50
+  ) {
+    const query = context.query;
+    delete query.category_slug;
+    delete query.page_size;
+    delete query.page;
+    let queryUrl = "";
+    for (const q of Object.keys(query)) {
+      if (Array.isArray(query[q])) {
+        (query[q] as string[]).map((v: string) => {
+          queryUrl += `${q}=${v}&`;
+        });
+      } else {
+        queryUrl += `${q}=${query[q]}&`;
+      }
+    }
+    queryUrl += "page_size=20";
+
+    context.res?.writeHead(302, {
+      Location: `/compare_notebooks?${queryUrl}`,
+    });
+    context.res?.end();
+    return;
+  }
+
   const reduxStore = context.reduxStore;
   const apiResourceObjects = reduxStore.getState().apiResourceObjects;
 

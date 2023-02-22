@@ -23,10 +23,12 @@ export default function ApiFormPaginationTable({
   title,
   columns,
   withSearch,
+  rowsPerPage,
 }: {
   title: string;
   columns: GridColumns;
   withSearch?: boolean;
+  rowsPerPage?: number[];
 }) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult ? context.currentResult.results : [];
@@ -75,7 +77,7 @@ export default function ApiFormPaginationTable({
                 </TableBody>
               </Table>
             </TableContainer>
-            <ApiFormPaginationComponent />
+            <ApiFormPaginationComponent rowsPerPage={rowsPerPage} />
           </Stack>
         </CardContent>
       )}
