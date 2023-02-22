@@ -10,16 +10,14 @@ import {
   Grid,
   Link,
   Stack,
+  Typography,
 } from "@mui/material";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import { PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { apiSettings } from "src/frontend-utils/settings";
-import {
-  selectApiResourceObjects,
-  useApiResourceObjects,
-} from "src/frontend-utils/redux/api_resources/apiResources";
+import { selectApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { MyNextPageContext } from "src/frontend-utils/redux/with-redux-store";
 import { fetchJson } from "src/frontend-utils/network/utils";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
@@ -31,7 +29,6 @@ import ApiFormTreeComponent from "src/frontend-utils/api_form/fields/tree/ApiFor
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
-import { useAppSelector } from "src/frontend-utils/redux/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -81,7 +78,6 @@ function CompareNotebooks({
   fieldsMetadata,
   categorySpecsFormLayout,
 }: CompareNotebooksPageProps) {
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const fieldFilters: JSX.Element[] = [];
 
   categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
@@ -161,7 +157,9 @@ function CompareNotebooks({
       flex: 1,
       renderCell: (row: ProductsData) => {
         const product = row.product_entries[0].product;
-        return product.specs.ram_quantity_unicode;
+        return (
+          <Typography noWrap>{product.specs.ram_quantity_unicode}</Typography>
+        );
       },
     },
     {
