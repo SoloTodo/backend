@@ -57,7 +57,7 @@ export const Scatterplot = ({
       }
     });
     positions.push({ x: xScale(d.x), y: Math.round(yScale(d.y)) });
-    const extra = needExtra > 0 ? 28 + 20 * needExtra : 28;
+    const extra = needExtra > 0 ? 28 + 15 * needExtra : 28;
     const name = product.specs.part_number ?? product.name;
     const fig = (
       <g
@@ -69,8 +69,8 @@ export const Scatterplot = ({
         <a href="#">
           <rect
             x={xScale(d.x) - extra - 4}
-            y={yScale(d.y) - 14}
-            width={150}
+            y={yScale(d.y) - 24}
+            width={140}
             height={42}
             stroke={isLight ? "#fff" : "#000"}
             fill={isLight ? "#000" : "#fff"}
@@ -79,14 +79,14 @@ export const Scatterplot = ({
             rx="5"
           />
           <g fill={isLight ? "#fff" : "#000"}>
-            <text x={xScale(d.x) - extra} y={yScale(d.y)} fontSize={11}>
+            <text x={xScale(d.x) - extra} y={yScale(d.y) - 10} fontSize={11}>
               <tspan>{product.brand_name}</tspan>
               <tspan>{" | "}</tspan>
               <tspan>
                 {name.length > 15 ? `${name.slice(0, 13)}...` : name}
               </tspan>
             </text>
-            <text x={xScale(d.x) - extra} y={yScale(d.y) + 12} fontSize={9}>
+            <text x={xScale(d.x) - extra} y={yScale(d.y) + 2} fontSize={9}>
               <tspan>{product.specs.processor_line_name}</tspan>
               <tspan>{" | "}</tspan>
               <tspan>{product.specs.ram_quantity_unicode}</tspan>
@@ -95,7 +95,7 @@ export const Scatterplot = ({
                 {product.specs.largest_storage_drive.capacity_unicode}
               </tspan>
             </text>
-            <text x={xScale(d.x) - extra} y={yScale(d.y) + 24} fontSize={9}>
+            <text x={xScale(d.x) - extra} y={yScale(d.y) + 14} fontSize={9}>
               <tspan>
                 {product.specs.name.length > 18
                   ? `${product.specs.name.slice(0, 16)}...`
