@@ -116,7 +116,7 @@ export default function ApiFormCompareChart() {
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
       <Scatterplot
         data={data}
-        width={1000}
+        width={1200}
         height={500}
         xaxis={axis}
         yaxis={price_range}
