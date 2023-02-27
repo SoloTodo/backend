@@ -99,7 +99,7 @@ export default function SortingSelecting({
   return (
     <div>
       <Scrollbar>
-        <TableContainer sx={{ minWidth: 800 }}>
+        <TableContainer sx={{ minWidth: 700 }}>
           <Table>
             <SortingSelectingHead
               order={order}
