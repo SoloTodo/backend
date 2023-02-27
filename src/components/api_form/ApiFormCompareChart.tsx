@@ -26,7 +26,7 @@ type ExtendedProduct = Product & {
   specs: Record<string, any>;
 };
 
-export type ProductEntry = {
+type ProductEntry = {
   metadata: metadata;
   product: ExtendedProduct;
 };
