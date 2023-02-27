@@ -29,6 +29,7 @@ import ApiFormTreeComponent from "src/frontend-utils/api_form/fields/tree/ApiFor
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
+import currency from "currency.js";
 
 // ----------------------------------------------------------------------
 
@@ -178,6 +179,36 @@ function CompareNotebooks({
       renderCell: (row: ProductsData) => {
         const product = row.product_entries[0].product;
         return product.specs.operating_system_short_name;
+      },
+    },
+    {
+      headerName: "Tamaño pantalla",
+      field: "resolution",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const product = row.product_entries[0].product;
+        return (
+          <Typography noWrap>
+            {`${product.specs.screen_size_family_unicode} (${product.specs.screen_resolution_unicode})`}
+          </Typography>
+        );
+      },
+    },
+    {
+      headerName: "Precio oferta",
+      field: "offer_price",
+      flex: 1,
+      renderCell: (row: ProductsData) => {
+        const metadata = row.product_entries[0].metadata;
+        const priceCurrency = metadata.prices_per_currency.find((p) =>
+          p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
+        );
+        const offerPrice = priceCurrency
+          ? parseFloat(priceCurrency.offer_price)
+          : 0;
+        return currency(offerPrice, {
+          precision: 0,
+        }).format();
       },
     },
   ];

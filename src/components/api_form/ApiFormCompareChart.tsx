@@ -26,12 +26,14 @@ type ExtendedProduct = Product & {
   specs: Record<string, any>;
 };
 
+export type ProductEntry = {
+  metadata: metadata;
+  product: ExtendedProduct;
+};
+
 export type ProductsData = {
   bucket: string;
-  product_entries: {
-    metadata: metadata;
-    product: ExtendedProduct;
-  }[];
+  product_entries: ProductEntry[];
 };
 
 const processorLinePositionList: Record<number, number> = {
@@ -82,9 +84,14 @@ export default function ApiFormCompareChart() {
 
   let min: number | null = null;
   let max: number | null = null;
+  const activeBrands: number[] = [];
   const data = currentResult.results.map((p: ProductsData) => {
     const { product_entries } = p;
     const { product, metadata } = product_entries[0];
+
+    if (!activeBrands.includes(product.brand_id)) {
+      activeBrands.push(product.brand_id);
+    }
 
     const priceCurrency = metadata.prices_per_currency.find((p) =>
       p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
@@ -120,6 +127,7 @@ export default function ApiFormCompareChart() {
         height={500}
         xaxis={axis}
         yaxis={price_range}
+        activeBrands={activeBrands}
       />
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
     </>

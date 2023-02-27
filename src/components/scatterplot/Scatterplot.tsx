@@ -1,13 +1,31 @@
 import * as d3 from "d3";
 import { AxisLeft } from "./AxisLeft";
 import { AxisBottom } from "./AxisBottom";
-import { ProductsData } from "../api_form/ApiFormCompareChart";
+import { ProductsData, ProductEntry } from "../api_form/ApiFormCompareChart";
 import { useState } from "react";
-import useSettings from "src/hooks/useSettings";
-import { PATH_PRODUCT } from "src/routes/paths";
-import { useRouter } from "next/router";
+import { Box, Container, Modal, Stack, useTheme } from "@mui/material";
+import { Typography } from "@mui/material";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import { Category } from "src/frontend-utils/types/store";
+import styles from "../../css/ProductPage.module.css";
+import Handlebars from "handlebars";
+import { apiSettings } from "src/frontend-utils/settings";
+import currency from "currency.js";
 
 const MARGIN = { top: 24, right: 24, bottom: 24, left: 80 };
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: { xs: "100%", md: "70%" },
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 type ScatterplotProps = {
   width: number;
@@ -15,6 +33,7 @@ type ScatterplotProps = {
   data: { x: number; y: number; productData?: ProductsData }[];
   xaxis: string[];
   yaxis: { min: number; max: number };
+  activeBrands: number[];
 };
 
 export const Scatterplot = ({
@@ -23,16 +42,61 @@ export const Scatterplot = ({
   data,
   xaxis,
   yaxis,
+  activeBrands,
 }: ScatterplotProps) => {
-  const router = useRouter();
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
   // Layout. The div size is set by the given props.
   // The bounds (=area inside the axis) is calculated by substracting the margins
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
+  const [activeProduct, setActiveProduct] = useState<ProductEntry | null>(null);
+  const [renderHtml, setRenderHtml] = useState("");
+  const [offerPrice, setOfferPrice] = useState("");
   const [active, setActive] = useState<number | null>(null);
-  const { themeMode } = useSettings();
-  const isLight = themeMode === "light";
+  const theme = useTheme();
+
+  const colors = [
+    theme.palette.chart.blue[0],
+    theme.palette.chart.green[0],
+    theme.palette.chart.yellow[0],
+    theme.palette.chart.red[0],
+    theme.palette.chart.violet[0],
+    theme.palette.chart.blue[1],
+    theme.palette.chart.green[1],
+    theme.palette.chart.yellow[1],
+    theme.palette.chart.red[1],
+    theme.palette.chart.violet[1],
+  ];
+
+  const setOpen = (productEntry: ProductEntry) => {
+    setActiveProduct(productEntry);
+    const category = apiResourceObjects[
+      productEntry.product.category
+    ] as Category;
+    const template = category.detail_template;
+    if (template) {
+      const templateHandler = Handlebars.compile(template);
+      setRenderHtml(templateHandler(productEntry.product.specs));
+    }
+    const priceCurrency = productEntry.metadata.prices_per_currency.find((p) =>
+      p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
+    );
+    const offerPrice = priceCurrency
+      ? parseFloat(priceCurrency.offer_price)
+      : 0;
+    setOfferPrice(
+      currency(offerPrice, {
+        precision: 0,
+      }).format()
+    );
+  };
+
+  const setClose = () => {
+    setActiveProduct(null);
+    setRenderHtml("");
+    setOfferPrice("");
+  };
 
   // Scales
   const yScale = d3
@@ -59,12 +123,16 @@ export const Scatterplot = ({
     positions.push({ x: xScale(d.x), y: Math.round(yScale(d.y)) });
     const extra = needExtra > 0 ? 28 + 15 * needExtra : 28;
     const name = product.specs.part_number ?? product.name;
+    const color =
+      colors[
+        activeBrands.findIndex((b) => b === product.brand_id) % colors.length
+      ];
     const fig = (
       <g
         key={i}
         onMouseEnter={() => setActive(i)}
         onMouseLeave={() => setActive(null)}
-        onClick={() => router.push(`${PATH_PRODUCT.root}/${product.id}`)}
+        onClick={() => setOpen(d.productData!.product_entries[0])}
       >
         <a href="#">
           <rect
@@ -72,18 +140,18 @@ export const Scatterplot = ({
             y={yScale(d.y) - 24}
             width={140}
             height={42}
-            stroke={isLight ? "#fff" : "#000"}
-            fill={isLight ? "#000" : "#fff"}
+            stroke={"#000"}
+            fill={color}
             fillOpacity={active !== null && active === i ? 0.9 : 0.2}
             strokeWidth={1}
             rx="5"
           />
-          <g fill={isLight ? "#fff" : "#000"}>
+          <g fill={"#000"}>
             <text x={xScale(d.x) - extra} y={yScale(d.y) - 10} fontSize={11}>
               <tspan>{product.brand_name}</tspan>
               <tspan>{" | "}</tspan>
               <tspan>
-                {name.length > 15 ? `${name.slice(0, 13)}...` : name}
+                {name.length > 12 ? `${name.slice(0, 11)}...` : name}
               </tspan>
             </text>
             <text x={xScale(d.x) - extra} y={yScale(d.y) + 2} fontSize={9}>
@@ -136,6 +204,32 @@ export const Scatterplot = ({
           {last}
         </g>
       </svg>
+      <Modal open={activeProduct !== null} onClose={setClose}>
+        <Box sx={style}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h4">{activeProduct?.product.name}</Typography>
+            <Typography>Precio oferta: {offerPrice}</Typography>
+          </Stack>
+          <br />
+          <Container>
+            {renderHtml !== "" ? (
+              <div
+                className={styles.product_specs}
+                dangerouslySetInnerHTML={{ __html: renderHtml }}
+              />
+            ) : (
+              <Typography>
+                Las especificaciones técnicas de este producto no están
+                disponibles por ahora.
+              </Typography>
+            )}
+          </Container>
+        </Box>
+      </Modal>
     </div>
   );
 };
