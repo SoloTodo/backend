@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { AxisLeft } from "./AxisLeft";
 import { AxisBottom } from "./AxisBottom";
-import { ProductsData, ProductEntry } from "../api_form/ApiFormCompareChart";
+import { ProductsData } from "../api_form/ApiFormCompareChart";
 import { useState } from "react";
 import { Box, Container, Modal, Stack, useTheme } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -10,8 +10,11 @@ import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/ap
 import { Category } from "src/frontend-utils/types/store";
 import styles from "../../css/ProductPage.module.css";
 import Handlebars from "handlebars";
+import { Product } from "src/frontend-utils/types/product";
+import { Entity } from "src/frontend-utils/types/entity";
+import ActualPricesCard from "src/sections/products/ActualPricesCard";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import currency from "currency.js";
 
 const MARGIN = { top: 24, right: 24, bottom: 24, left: 80 };
 
@@ -25,6 +28,8 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  overflow: "auto",
+  maxHeight: "90vh",
 };
 
 type ScatterplotProps = {
@@ -50,9 +55,10 @@ export const Scatterplot = ({
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
-  const [activeProduct, setActiveProduct] = useState<ProductEntry | null>(null);
+  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const [renderHtml, setRenderHtml] = useState("");
-  const [offerPrice, setOfferPrice] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [entities, setEntities] = useState<Entity[]>([]);
   const [active, setActive] = useState<number | null>(null);
   const theme = useTheme();
 
@@ -69,33 +75,31 @@ export const Scatterplot = ({
     theme.palette.chart.violet[1],
   ];
 
-  const setOpen = (productEntry: ProductEntry) => {
-    setActiveProduct(productEntry);
-    const category = apiResourceObjects[
-      productEntry.product.category
-    ] as Category;
+  const setOpen = (product: Product) => {
+    setActiveProduct(product);
+    const category = apiResourceObjects[product.category] as Category;
     const template = category.detail_template;
     if (template) {
       const templateHandler = Handlebars.compile(template);
-      setRenderHtml(templateHandler(productEntry.product.specs));
+      setRenderHtml(templateHandler(product.specs));
     }
-    const priceCurrency = productEntry.metadata.prices_per_currency.find((p) =>
-      p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
-    );
-    const offerPrice = priceCurrency
-      ? parseFloat(priceCurrency.offer_price)
-      : 0;
-    setOfferPrice(
-      currency(offerPrice, {
-        precision: 0,
-      }).format()
-    );
+    setLoading(true);
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`
+    )
+      .then((response) => {
+        setEntities(response);
+        setLoading(false);
+      })
+      .catch((_) => {});
   };
 
   const setClose = () => {
     setActiveProduct(null);
     setRenderHtml("");
-    setOfferPrice("");
+    setLoading(false);
+    setEntities([]);
   };
 
   // Scales
@@ -132,7 +136,7 @@ export const Scatterplot = ({
         key={i}
         onMouseEnter={() => setActive(i)}
         onMouseLeave={() => setActive(null)}
-        onClick={() => setOpen(d.productData!.product_entries[0])}
+        onClick={() => setOpen(product)}
       >
         <a href="#">
           <rect
@@ -211,9 +215,10 @@ export const Scatterplot = ({
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="h4">{activeProduct?.product.name}</Typography>
-            <Typography>Precio oferta: {offerPrice}</Typography>
+            <Typography variant="h4">{activeProduct?.name}</Typography>
           </Stack>
+          <br />
+          <ActualPricesCard entities={entities} loading={loading} />
           <br />
           <Container>
             {renderHtml !== "" ? (
