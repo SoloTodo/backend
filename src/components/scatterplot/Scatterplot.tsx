@@ -16,7 +16,7 @@ import ActualPricesCard from "src/sections/products/ActualPricesCard";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 
-const MARGIN = { top: 24, right: 24, bottom: 24, left: 80 };
+const MARGIN = { top: 24, right: 24, bottom: 24, left: 96 };
 
 const style = {
   position: "absolute" as "absolute",
@@ -142,8 +142,8 @@ export const Scatterplot = ({
           <rect
             x={xScale(d.x) - extra - 4}
             y={yScale(d.y) - 24}
-            width={140}
-            height={42}
+            width={160}
+            height={product.specs.name ? 42 : 32}
             stroke={"#000"}
             fill={color}
             fillOpacity={active !== null && active === i ? 0.9 : 0.2}
@@ -155,7 +155,7 @@ export const Scatterplot = ({
               <tspan>{product.brand_name}</tspan>
               <tspan>{" | "}</tspan>
               <tspan>
-                {name.length > 12 ? `${name.slice(0, 11)}...` : name}
+                {name.length > 15 ? `${name.slice(0, 13)}...` : name}
               </tspan>
             </text>
             <text x={xScale(d.x) - extra} y={yScale(d.y) + 2} fontSize={9}>
@@ -166,16 +166,19 @@ export const Scatterplot = ({
               <tspan>
                 {product.specs.largest_storage_drive.capacity_unicode}
               </tspan>
-            </text>
-            <text x={xScale(d.x) - extra} y={yScale(d.y) + 14} fontSize={9}>
-              <tspan>
-                {product.specs.name && product.specs.name.length > 18
-                  ? `${product.specs.name.slice(0, 16)}...`
-                  : product.specs.name || ''}
-              </tspan>
+
               <tspan>{" | "}</tspan>
               <tspan>{product.specs.operating_system_short_name}</tspan>
             </text>
+            {product.specs.name && (
+              <text x={xScale(d.x) - extra} y={yScale(d.y) + 14} fontSize={9}>
+                <tspan>
+                  {product.specs.name.length > 18
+                    ? `${product.specs.name.slice(0, 16)}...`
+                    : product.specs.name}
+                </tspan>
+              </text>
+            )}
           </g>
         </a>
       </g>
