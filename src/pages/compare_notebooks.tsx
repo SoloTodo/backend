@@ -24,7 +24,6 @@ import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 import ApiFormCompareChart, {
   ProductsData,
 } from "src/components/api_form/ApiFormCompareChart";
-import { websiteId } from "src/config";
 import ApiFormTreeComponent from "src/frontend-utils/api_form/fields/tree/ApiFormTreeComponent";
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
@@ -73,8 +72,6 @@ type CompareNotebooksPageProps = {
 
 // ----------------------------------------------------------------------
 
-const whitelist = ["brands", "lines", "processor_brands", "families"];
-
 function CompareNotebooks({
   fieldsMetadata,
   categorySpecsFormLayout,
@@ -83,9 +80,6 @@ function CompareNotebooks({
 
   categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
     fieldset.filters.forEach((filter) => {
-      if (!whitelist.includes(filter.name)) {
-        return;
-      }
       if (filter.name === "grocery_categories") {
         fieldFilters.push(
           <Grid key={filter.id} item xs={6}>
@@ -241,6 +235,12 @@ function CompareNotebooks({
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormSelectComponent
+                      name="lenovo_store_tiers"
+                      label="Tiers"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent
                       name="exclude_refurbished"
                       label="Condición"
                     />
@@ -257,7 +257,7 @@ function CompareNotebooks({
             </Card>
             <Card>
               <CardHeader title="Gráfica" />
-              <CardContent sx={{ overflow: "auto" }}>
+              <CardContent>
                 <ApiFormCompareChart />
               </CardContent>
             </Card>
@@ -305,16 +305,9 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
   const reduxStore = context.reduxStore;
   const apiResourceObjects = reduxStore.getState().apiResourceObjects;
 
-  const response = await fetchJson(
-    `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=1`
+  let categorySpecsFormLayout: CategorySpecsFormLayoutProps = await fetchJson(
+    `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}370/`
   );
-  let categorySpecsFormLayout: CategorySpecsFormLayoutProps = response[0];
-  response.forEach((res: CategorySpecsFormLayoutProps) => {
-    if (
-      res.website == `${apiSettings.apiResourceEndpoints.websites}${websiteId}/`
-    )
-      categorySpecsFormLayout = res;
-  });
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
@@ -338,13 +331,18 @@ CompareNotebooks.getInitialProps = async (context: MyNextPageContext) => {
         { value: "True", label: "Nuevos" },
       ],
     },
+    {
+      name: "lenovo_store_tiers",
+      fieldType: "select" as "select",
+      choices: [
+        { value: "A", label: "Retail A" },
+        { value: "B", label: "Retail B" },
+      ],
+    },
   ];
 
   categorySpecsFormLayout.fieldsets.forEach((fieldset) => {
     fieldset.filters.forEach((filter) => {
-      if (!whitelist.includes(filter.name)) {
-        return;
-      }
       let filterChoices =
         filter.choices === null
           ? filter.choices
