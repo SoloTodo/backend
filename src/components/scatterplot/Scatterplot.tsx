@@ -169,9 +169,9 @@ export const Scatterplot = ({
             </text>
             <text x={xScale(d.x) - extra} y={yScale(d.y) + 14} fontSize={9}>
               <tspan>
-                {product.specs.name.length > 18
+                {product.specs.name && product.specs.name.length > 18
                   ? `${product.specs.name.slice(0, 16)}...`
-                  : product.specs.name}
+                  : product.specs.name || ''}
               </tspan>
               <tspan>{" | "}</tspan>
               <tspan>{product.specs.operating_system_short_name}</tspan>

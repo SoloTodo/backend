@@ -73,7 +73,7 @@ type CompareNotebooksPageProps = {
 
 // ----------------------------------------------------------------------
 
-const whitelist = ["brands", "lines", "processor_brands"];
+const whitelist = ["brands", "lines", "processor_brands", "families"];
 
 function CompareNotebooks({
   fieldsMetadata,
@@ -225,7 +225,7 @@ function CompareNotebooks({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/?exclude_marketplace=1`}
+          endpoint={`${apiSettings.apiResourceEndpoints.categories}1/browse/?exclude_marketplace=1&exclude_without_part_number=1`}
         >
           <Stack spacing={3}>
             <Card>
