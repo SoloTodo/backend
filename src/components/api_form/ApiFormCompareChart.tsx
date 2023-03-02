@@ -2,6 +2,12 @@ import { Box, CircularProgress } from "@mui/material";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
+import {
+  getApiResourceObject,
+  useApiResourceObjects,
+} from "src/frontend-utils/redux/api_resources/apiResources";
+import { Currency } from "src/frontend-utils/redux/api_resources/types";
+import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Product } from "src/frontend-utils/types/product";
 import { Scatterplot } from "../scatterplot/Scatterplot";
@@ -72,6 +78,7 @@ const axis = [
 ];
 
 export default function ApiFormCompareChart() {
+  const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const context = useContext(ApiFormContext);
   let currentResult = context.currentResult;
   if (currentResult === null) {
@@ -81,6 +88,12 @@ export default function ApiFormCompareChart() {
       </Box>
     );
   }
+
+  const clpCurrency = getApiResourceObject(
+    apiResourceObjects,
+    "currencies",
+    apiSettings.clpCurrencyId.toString()
+  ) as Currency;
 
   let min: number | null = null;
   let max: number | null = null;
@@ -93,12 +106,12 @@ export default function ApiFormCompareChart() {
       activeBrands.push(product.brand_id);
     }
 
-    const priceCurrency = metadata.prices_per_currency.find((p) =>
-      p.currency.includes(`/${apiSettings.clpCurrencyId}/`)
-    );
-    const offerPrice = priceCurrency
-      ? parseFloat(priceCurrency.offer_price)
-      : 0;
+    const offerPrice =
+      Math.round(
+        (parseFloat(metadata.offer_price_usd) *
+          parseFloat(clpCurrency.exchange_rate)) /
+          1000
+      ) * 1000;
     if (min === null || offerPrice < min) min = offerPrice;
     if (max === null || offerPrice > max) max = offerPrice;
     return {
@@ -113,22 +126,24 @@ export default function ApiFormCompareChart() {
   let price_range = { min: 0, max: 0 };
   if (min && max) {
     price_range = {
-      min: min - (max - min) / 10,
-      max: max + (max - min) / 10,
+      min: min - (max - min) / 50,
+      max: max + (max - min) / 50,
     };
   }
 
   return (
     <>
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
-      <Scatterplot
-        data={data}
-        width={1200}
-        height={500}
-        xaxis={axis}
-        yaxis={price_range}
-        activeBrands={activeBrands}
-      />
+      <Box sx={{ overflow: "auto", pb: 1 }}>
+        <Scatterplot
+          data={data}
+          width={1280}
+          height={500}
+          xaxis={axis}
+          yaxis={price_range}
+          activeBrands={activeBrands}
+        />
+      </Box>
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
     </>
   );
