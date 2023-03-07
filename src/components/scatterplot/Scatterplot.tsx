@@ -39,6 +39,7 @@ type ScatterplotProps = {
   xaxis: string[];
   yaxis: { min: number; max: number };
   activeBrands: number[];
+  selectedStoreUrls: string[];
 };
 
 export const Scatterplot = ({
@@ -48,6 +49,7 @@ export const Scatterplot = ({
   xaxis,
   yaxis,
   activeBrands,
+  selectedStoreUrls,
 }: ScatterplotProps) => {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   // Layout. The div size is set by the given props.
@@ -89,7 +91,13 @@ export const Scatterplot = ({
       `${apiSettings.apiResourceEndpoints.products}${product.id}/entities/`
     )
       .then((response) => {
-        setEntities(response);
+        const filteredByStore =
+          selectedStoreUrls.length !== 0
+            ? response.filter((r: Entity) =>
+                selectedStoreUrls.includes(r.store)
+              )
+            : response;
+        setEntities(filteredByStore);
         setLoading(false);
       })
       .catch((_) => {});

@@ -1,4 +1,4 @@
-import { SettingsValueProps } from './components/settings/type';
+import { SettingsValueProps } from "./components/settings/type";
 
 // LAYOUT
 // ----------------------------------------------------------------------
@@ -31,19 +31,24 @@ export const ICON = {
 export const cookiesExpires = 3;
 
 export const cookiesKey = {
-  themeMode: 'themeMode',
-  themeDirection: 'themeDirection',
-  themeColorPresets: 'themeColorPresets',
-  themeLayout: 'themeLayout',
-  themeStretch: 'themeStretch',
+  themeMode: "themeMode",
+  themeDirection: "themeDirection",
+  themeColorPresets: "themeColorPresets",
+  themeLayout: "themeLayout",
+  themeStretch: "themeStretch",
 };
 
 export const defaultSettings: SettingsValueProps = {
-  themeMode: 'dark',
-  themeDirection: 'ltr',
-  themeColorPresets: 'orange',
-  themeLayout: 'horizontal',
+  themeMode: "dark",
+  themeDirection: "ltr",
+  themeColorPresets: "orange",
+  themeLayout: "horizontal",
   themeStretch: true,
 };
 
 export const websiteId = 1;
+
+export const lenovoRetailerTier: Record<string, number[]> = {
+  A: [9, 11, 18, 43, 87, 30, 5, 12, 260],
+  B: [86, 14, 294, 45, 4880, 788],
+};

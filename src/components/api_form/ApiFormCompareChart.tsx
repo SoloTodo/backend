@@ -1,7 +1,9 @@
 import { Box, CircularProgress } from "@mui/material";
 import { useContext } from "react";
+import { lenovoRetailerTier } from "src/config";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import ApiFormPaginationComponent from "src/frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
+import { ApiFormSelectChoice } from "src/frontend-utils/api_form/fields/select/ApiFormSelect";
 import {
   getApiResourceObject,
   useApiResourceObjects,
@@ -131,6 +133,24 @@ export default function ApiFormCompareChart() {
     };
   }
 
+  const selectedStoreUrls =
+    (context.getField("stores")?.cleanedData as ApiFormSelectChoice[]).map(
+      (c) =>
+        getApiResourceObject(apiResourceObjects, "stores", c.value.toString())
+          .url
+    ) || [];
+
+  const f = context.getField("lenovo_store_tiers")
+    ?.cleanedData as ApiFormSelectChoice[];
+  if (f.length !== 0) {
+    selectedStoreUrls.push(
+      ...lenovoRetailerTier[f[0].value].map(
+        (c) =>
+          getApiResourceObject(apiResourceObjects, "stores", c.toString()).url
+      )
+    );
+  }
+
   return (
     <>
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
@@ -142,6 +162,7 @@ export default function ApiFormCompareChart() {
           xaxis={axis}
           yaxis={price_range}
           activeBrands={activeBrands}
+          selectedStoreUrls={selectedStoreUrls}
         />
       </Box>
       <ApiFormPaginationComponent rowsPerPage={[5, 10, 20, 50]} />
