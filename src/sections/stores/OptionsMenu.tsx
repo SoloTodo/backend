@@ -54,6 +54,16 @@ export default function OptionsMenu({ store }: { store: Store }) {
       hasPermission: user?.permissions.includes('solotodo.backend_list_ratings')
     },
     {
+      text: "Posicionamiento actual de SKUs",
+      path: `${baseRoute}/current_sku_positions`,
+      hasPermission: store.permissions.includes('view_store_entity_positions')
+    },
+    {
+      text: "Posicionamiento histórico de SKUs",
+      path: `${baseRoute}/historic_sku_positions`,
+      hasPermission: store.permissions.includes('view_store_entity_positions')
+    },
+    {
       text: "Descargar reporte de homologación",
       path: `${baseRoute}/matching_report`,
       hasPermission: store.permissions.includes('view_store_reports'),
