@@ -35,6 +35,27 @@ export default function UpdatePricingInformation({
   ).permissions.includes("is_category_staff");
   const baseRoute = `${PATH_ENTITY.root}/${entity.id}`;
 
+  const createAlert = () => {
+    const store = apiResourceObjects[entity.store];
+    const data = {
+      stores: [store.id],
+      product: entity.product!.id,
+    };
+    jwtFetch(null, apiSettings.apiResourceEndpoints.alerts, {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then((_) => {
+        enqueueSnackbar("Alerta creada exitosamente");
+      })
+      .catch((err) => {
+        enqueueSnackbar(
+          "Error al crear la alerta, por favor intente de nuevo",
+          { variant: "error" }
+        );
+      });
+  };
+
   const options: Option[] = [
     {
       key: 1,
@@ -46,11 +67,24 @@ export default function UpdatePricingInformation({
       text: "Historial pricing",
       path: `${baseRoute}/pricing_history`,
     },
+    {
+      key: 3,
+      text: "Crear alerta",
+      path: `${baseRoute}/creat_alert`,
+      hasPermission: (
+        apiResourceObjects[entity.category] as Category
+      ).permissions.includes("view_category_reports"),
+      renderObject: entity.product ? (
+        <Button variant="contained" onClick={createAlert}>
+          Crear alerta
+        </Button>
+      ) : null,
+    },
   ];
 
   if (hasStaffPermission)
-    options.push({
-      key: 3,
+    options.splice(2, 0, {
+      key: 4,
       text: "Asociar",
       path: `${baseRoute}/associate`,
     });
@@ -75,7 +109,6 @@ export default function UpdatePricingInformation({
           "Error al ejecutar la petición, por favor intente de nuevo",
           { variant: "error" }
         );
-        console.log(err);
       });
   };
 
