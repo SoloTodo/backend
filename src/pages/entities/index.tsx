@@ -8,6 +8,8 @@ import {
   Grid,
   Link,
   Stack,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -69,6 +71,18 @@ export default function Entities() {
       name: "categories",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "countries",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "countries"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "types",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "types"),
     },
     {
       fieldType: "select" as "select",
@@ -143,7 +157,7 @@ export default function Entities() {
       headerName: "Vendedor",
       field: "seller",
       flex: 1,
-      renderCell: (row: Entity) => row.seller || "N/A"
+      renderCell: (row: Entity) => row.seller || "N/A",
     },
     {
       headerName: "SKU",
@@ -179,7 +193,13 @@ export default function Entities() {
         ),
     },
     {
-      headerName: "¿Disp?",
+      headerName: (
+        <Tooltip title="El SKU está disponible para compra actualmente">
+          <Typography variant="body2" fontWeight={600}>
+            ¿Disp?
+          </Typography>
+        </Tooltip>
+      ),
       field: "active_registry",
       flex: 1,
       renderCell: (row: Entity) =>
@@ -190,14 +210,20 @@ export default function Entities() {
         ),
     },
     {
-      headerName: "Act?",
+      headerName: "¿Act?",
       field: "key",
       flex: 1,
       renderCell: (row: Entity) =>
         row.active_registry ? <CheckIcon /> : <ClearIcon />,
     },
     {
-      headerName: "Vis?",
+      headerName: (
+        <Tooltip title="El SKU ha sido marcado como relevante por el staff de SoloTodo">
+          <Typography variant="body2" fontWeight={600}>
+            ¿Vis?
+          </Typography>
+        </Tooltip>
+      ),
       field: "is_visible",
       flex: 1,
       renderCell: (row: Entity) =>
@@ -270,7 +296,7 @@ export default function Entities() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.entities}?ordering=name`}
+          endpoint={`${apiSettings.apiResourceEndpoints.entities}?ordering=-id`}
         >
           <Stack spacing={3}>
             <Card>
@@ -290,6 +316,12 @@ export default function Entities() {
                       label="Categorías"
                     />
                   </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="countries" label="Países" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="types" label="Tipos" />
+                  </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
                       name="is_available"
@@ -298,7 +330,11 @@ export default function Entities() {
                     />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_active" label="¿Activa?" selectOnly />
+                    <ApiFormSelectComponent
+                      name="is_active"
+                      label="¿Activa?"
+                      selectOnly
+                    />
                   </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
