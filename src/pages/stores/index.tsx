@@ -8,13 +8,14 @@ import {
   Stack,
   Link,
   Grid,
+  Typography,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // layouts
 import Layout from "src/layouts";
 // sections
-import ApiFormResultsTable from "src/components/api_form/ApiFormResultsTable";
+import ApiFormStoreTable from "src/components/api_form/ApiFormStoreTable";
 // components
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
@@ -30,6 +31,7 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import { STATUS, Store, Update } from "src/frontend-utils/types/store";
 
 // ----------------------------------------------------------------------
 
@@ -57,14 +59,17 @@ export default function Stores() {
     },
   ];
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef<Update>[] = [
     {
       headerName: "Nombre",
       field: "name",
       flex: 1,
       renderCell: (params) => (
-        <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref>
-          <Link>{params.row.name}</Link>
+        <NextLink
+          href={`${PATH_STORE.root}/${apiResourceObjects[params.row.store].id}`}
+          passHref
+        >
+          <Link>{apiResourceObjects[params.row.store].name}</Link>
         </NextLink>
       ),
     },
@@ -72,27 +77,59 @@ export default function Stores() {
       headerName: "País",
       field: "country",
       flex: 1,
-      renderCell: (params) => apiResourceObjects[params.row.country].name,
+      renderCell: (params) =>
+        apiResourceObjects[
+          (apiResourceObjects[params.row.store] as Store).country
+        ].name,
     },
     {
       headerName: "Tipo",
       field: "type",
       flex: 1,
-      renderCell: (params) => apiResourceObjects[params.row.type].name,
+      renderCell: (params) =>
+        apiResourceObjects[(apiResourceObjects[params.row.store] as Store).type]
+          .name,
     },
     {
-      headerName: "Última Activación",
-      field: "last_activation",
+      headerName: "Última Actualización",
+      field: "last_updated",
       renderCell: (params) =>
-        params.row.last_activation
-          ? fDateTimeSuffix(params.row.last_activation)
+        params.row.last_updated
+          ? fDateTimeSuffix(params.row.last_updated)
           : "Inactiva",
       flex: 1,
     },
+    // {
+    //   headerName: "Scraper",
+    //   field: "storescraper_class",
+    //   flex: 1,
+    //   renderCell: (params) =>
+    //     (apiResourceObjects[params.row.store] as Store).storescraper_class,
+    // },
     {
-      headerName: "Scraper",
-      field: "storescraper_class",
+      headerName: "Estado",
+      field: "state",
       flex: 1,
+      renderCell: (params) =>
+        params.row.status === 3 && !params.row.available_products_count
+          ? "Error"
+          : STATUS[params.row.status as 1 | 2 | 3 | 4],
+    },
+    {
+      headerName: "Result",
+      field: "result",
+      flex: 1,
+      renderCell: (params) => {
+        const l = params.row;
+        const text = l.available_products_count
+          ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+          : "N/A";
+        return (
+          <Typography noWrap variant="body2">
+            {text}
+          </Typography>
+        );
+      },
     },
   ];
 
@@ -109,7 +146,9 @@ export default function Stores() {
 
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={apiSettings.apiResourceEndpoints.stores}
+          endpoint={
+            apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
+          }
         >
           <Stack spacing={3}>
             <Card>
@@ -132,7 +171,7 @@ export default function Stores() {
             <Card>
               <CardHeader title="Listado de Tiendas" />
               <CardContent>
-                <ApiFormResultsTable columns={columns} withPagination={false} />
+                <ApiFormStoreTable columns={columns} />
               </CardContent>
             </Card>
           </Stack>
