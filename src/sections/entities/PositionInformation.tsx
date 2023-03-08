@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import NextLink from "next/link";
 import { GridColDef } from "@mui/x-data-grid";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import BasicTable from "../BasicTable";
+import { Link } from "@mui/material";
+import { PATH_ENTITY } from "src/routes/paths";
 
 export default function PositionInformation({
   entityId,
@@ -46,6 +49,14 @@ export default function PositionInformation({
       title="Posicionamiento actual"
       columns={positionsColumns}
       data={positions}
+      action={
+        <NextLink
+          href={`${PATH_ENTITY.root}/${entityId}/position_history`}
+          passHref
+        >
+          <Link>Ver historial</Link>
+        </NextLink>
+      }
     />
   );
 }
