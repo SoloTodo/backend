@@ -4,7 +4,7 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { Category } from "src/frontend-utils/types/store";
 import Layout from "src/layouts";
-import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
+import { PATH_CATEGORY, PATH_DASHBOARD, PATH_PRODUCT } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { Detail } from "src/frontend-utils/types/extras";
 import { getApiResourceObject } from "src/frontend-utils/redux/api_resources/apiResources";
@@ -51,7 +51,7 @@ function CategoryPage({ category, statusCode }: CategoryPageProps) {
     },
     {
       text: "Productos",
-      path: `${baseRoute}/products`,
+      path: `${PATH_PRODUCT.root}?categories=${category.id}`,
       hasPermission: category.permissions.includes("view_category"),
     },
   ];
