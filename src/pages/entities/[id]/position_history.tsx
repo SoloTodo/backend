@@ -1,13 +1,21 @@
-import { Card, CardContent, CardHeader, Container, Grid, Stack } from "@mui/material";
-import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+} from "@mui/material";
+import { useRouter } from "next/router";
+import { ReactElement, useEffect, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Entity } from "src/frontend-utils/types/entity";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_ENTITY } from "src/routes/paths";
 import EntityPositionHistoryChart from "src/sections/entities/EntityPositionHistoryChart";
@@ -20,8 +28,30 @@ EntityPositionHistory.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function EntityPositionHistory(props: { entity: Entity }) {
-  const { entity } = props;
+export default function EntityPositionHistory() {
+  const [isLoading, setLoading] = useState(true);
+  const [entity, setEntity] = useState({
+    id: "",
+    name: "",
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    const myAbortController = new AbortController();
+    jwtFetch(
+      null,
+      `${apiSettings.apiResourceEndpoints.entities}${router.query.id}/`,
+      { signal: myAbortController.signal }
+    )
+      .then((data) => {
+        setEntity(data);
+        setLoading(false);
+      })
+      .catch((_) => {});
+    return () => {
+      myAbortController.abort();
+    };
+  }, []);
 
   const fieldMetadata = [
     {
@@ -32,7 +62,7 @@ export default function EntityPositionHistory(props: { entity: Entity }) {
   ];
 
   return (
-    <Page title={`${entity.name} | Historial pricing`}>
+    <Page title={`${entity.name} | Historial positions`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -43,7 +73,8 @@ export default function EntityPositionHistory(props: { entity: Entity }) {
             { name: "Historial positions" },
           ]}
         />
-        <ApiFormComponent
+        {!isLoading ? (
+          <ApiFormComponent
             fieldsMetadata={fieldMetadata}
             endpoint={`${apiSettings.apiResourceEndpoints.entities}${entity.id}/position_history/`}
           >
@@ -73,25 +104,12 @@ export default function EntityPositionHistory(props: { entity: Entity }) {
               </Card>
             </Stack>
           </ApiFormComponent>
+        ) : (
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+          </Box>
+        )}
       </Container>
     </Page>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  try {
-    const entity = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.entities}${context.params?.id}/`
-    );
-    return {
-      props: {
-        entity: entity,
-      },
-    };
-  } catch {
-    return {
-      notFound: true,
-    };
-  }
-};
