@@ -12,8 +12,9 @@ import {
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import CustomTable from "src/sections/CustomTable";
-import { PATH_CATEGORY } from "src/routes/paths";
+import { PATH_CATEGORY, PATH_DASHBOARD } from "src/routes/paths";
 import { GridColDef } from "@mui/x-data-grid";
+import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,10 @@ Categories.getLayout = function getLayout(page: ReactElement) {
 
 export default function Categories() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  const categoriesData = getApiResourceObjects(apiResourceObjects, "categories");
+  const categoriesData = getApiResourceObjects(
+    apiResourceObjects,
+    "categories"
+  );
 
   const columns: GridColDef[] = [
     {
@@ -48,6 +52,13 @@ export default function Categories() {
   return (
     <Page title="Categorías">
       <Container maxWidth={false}>
+        <HeaderBreadcrumbs
+          heading=""
+          links={[
+            { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Categorias" },
+          ]}
+        />
         <Card>
           <CardHeader title="Categorías" />
           <CardContent>
