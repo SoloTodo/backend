@@ -7,9 +7,11 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StorageIcon from "@mui/icons-material/Storage";
+import CompareIcon from '@mui/icons-material/Compare';
 // routes
 import {
   PATH_BANNERS,
+  PATH_BRAND_COMPARISONS,
   PATH_CATEGORY,
   PATH_ENTITY,
   PATH_METAMODEL,
@@ -40,6 +42,7 @@ const ICONS = {
   fileDownload: <FileDownloadIcon />,
   visibility: <VisibilityIcon />,
   storage: <StorageIcon />,
+  compare: <CompareIcon />,
 };
 
 const sidebarConfig = [
@@ -111,6 +114,19 @@ const sidebarConfig = [
             title: "Todos",
             path: PATH_PRODUCT.root,
             hasPermission: "solotodo.backend_list_products",
+          },
+        ],
+      },
+      {
+        title: "Comparación de marcas",
+        path: "-",
+        icon: ICONS.compare,
+        hasPermission: "brand_comparisons.backend_list_brand_comparisons",
+        children: [
+          {
+            title: "Todos",
+            path: PATH_BRAND_COMPARISONS.root,
+            hasPermission: "brand_comparisons.backend_list_brand_comparisons",
           },
         ],
       },

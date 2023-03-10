@@ -15,6 +15,7 @@ const ROOTS_WTB = "/wtb";
 const ROOTS_REPORTS = "/reports";
 const ROOTS_BANNERS = "/banners";
 const ROOTS_METAMODEL = "/metamodel";
+const ROOTS_BRAND_COMPARISONS = "/brand_comparisons";
 
 // ----------------------------------------------------------------------
 
@@ -87,4 +88,7 @@ export const PATH_METAMODEL = {
   metamodel: ROOTS_METAMODEL,
   models: path(ROOTS_METAMODEL, "/models"),
   instances: path(ROOTS_METAMODEL, "/instances"),
+};
+export const PATH_BRAND_COMPARISONS = {
+  root: ROOTS_BRAND_COMPARISONS,
 };
