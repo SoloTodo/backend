@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -27,6 +27,7 @@ import {
   selectApiResourceObjects,
   useApiResourceObjects,
 } from "src/frontend-utils/redux/api_resources/apiResources";
+import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 
 const style = {
   position: "absolute" as "absolute",
@@ -47,14 +48,11 @@ type FormValuesProps = {
   brand_2: string;
 };
 
-export default function AddBrandComparison({
-  brands,
-}: {
-  brands: Brand[];
-}) {
+export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
 
+  const context = useContext(ApiFormContext);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categories = selectApiResourceObjects(apiResourceObjects, "categories");
 
@@ -94,7 +92,12 @@ export default function AddBrandComparison({
       body: JSON.stringify(data),
     })
       .then((json) => {
-        // addNewBrandComparison(json);
+        let array = context.currentResult.results;
+        array.pop();
+        context.setCurrentResult({
+          ...context.currentResult,
+          results: [json, ...array],
+        });
         reset();
         enqueueSnackbar("Comparación de marcas creada exitosamente");
       })
