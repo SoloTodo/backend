@@ -1,8 +1,7 @@
-import { MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Select, TextField, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { Entity } from "src/frontend-utils/types/entity";
 
 export default function ProductSearch({
   entityCategory,
