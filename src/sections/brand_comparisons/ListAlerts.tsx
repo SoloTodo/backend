@@ -81,7 +81,7 @@ export default function ListAlerts({
       }
     ).then((res) => {
       setAlerts(alerts.filter((a) => a.id !== id));
-      enqueueSnackbar("Alerta creada exitosamente");
+      enqueueSnackbar("Alerta eliminada exitosamente");
     });
   };
 
