@@ -88,11 +88,15 @@ export default function AddManualProduct({
 
             <Divider />
             <Stack direction="row-reverse" spacing={1}>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => setOpen(false)}
+              >
+                Cancelar
+              </Button>
               <Button variant="contained" color="success" onClick={onSubmit}>
                 Crear
-              </Button>
-              <Button variant="outlined" onClick={() => setOpen(false)}>
-                Cancelar
               </Button>
             </Stack>
           </Stack>
