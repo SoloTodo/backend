@@ -24,9 +24,9 @@ BrandComparisons.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function BrandComparisons({brands}: {brands: Brand[]}) {
+export default function BrandComparisons({ brands }: { brands: Brand[] }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-  
+
   const fieldsMetadata = [
     {
       fieldType: "pagination" as "pagination",
@@ -48,7 +48,8 @@ export default function BrandComparisons({brands}: {brands: Brand[]}) {
       headerName: "Categoría",
       field: "category",
       flex: 1,
-      renderCell: (row: BrandComparison) => apiResourceObjects[row.category].name,
+      renderCell: (row: BrandComparison) =>
+        apiResourceObjects[row.category as unknown as string].name,
     },
     {
       headerName: "Marca 1",
@@ -102,4 +103,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-
