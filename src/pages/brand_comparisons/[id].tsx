@@ -1,4 +1,11 @@
-import { Card, CardContent, CardHeader, Container, Grid, Stack } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Grid,
+  Stack,
+} from "@mui/material";
 import { GetServerSideProps } from "next/types";
 import { ReactElement } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
@@ -9,6 +16,7 @@ import { BrandComparison } from "src/frontend-utils/types/brand_comparison";
 import Layout from "src/layouts";
 import { PATH_BRAND_COMPARISONS, PATH_DASHBOARD } from "src/routes/paths";
 import ListAlerts from "src/sections/brand_comparisons/ListAlerts";
+import ListManualProducts from "src/sections/brand_comparisons/ListManualProducts";
 
 // ----------------------------------------------------------------------
 
@@ -42,11 +50,11 @@ export default function BrandComparisonDetail({
             <CardHeader title={brandComparision.name} />
             <CardContent>
               <Grid container spacing={1}>
-                <Grid item xs={6} sm={4} md={2.4}>
+                <Grid item>
                   <ListAlerts brandComparision={brandComparision} />
                 </Grid>
-                <Grid item xs={6} sm={4} md={2.4}>
-
+                <Grid item>
+                  <ListManualProducts brandComparision={brandComparision} />
                 </Grid>
               </Grid>
             </CardContent>
