@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -19,6 +20,8 @@ import ListAlerts from "src/sections/brand_comparisons/ListAlerts";
 import ListManualProducts from "src/sections/brand_comparisons/ListManualProducts";
 import ListPendingProducts from "src/sections/brand_comparisons/ListPendingProducts";
 import EditName from "src/sections/brand_comparisons/EditName";
+import BrandComparisonTable from "src/sections/brand_comparisons/BrandComparisonTable";
+import SelectStores from "src/sections/brand_comparisons/SelectStores";
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +39,8 @@ export default function BrandComparisonDetail({
   const [brandComparision, setBrandComparision] = useState(
     initialBrandComparision
   );
-  console.log(brandComparision);
+  const [displayStores, setDisplayStores] = useState(true);
+
   return (
     <Page title="Comparación de marcas">
       <Container maxWidth={false}>
@@ -72,7 +76,29 @@ export default function BrandComparisonDetail({
                 <Grid item>
                   <ListPendingProducts brandComparision={brandComparision} />
                 </Grid>
+                <Grid item>
+                  <SelectStores
+                    brandComparision={brandComparision}
+                    setBrandComparision={setBrandComparision}
+                  />
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    onClick={() => setDisplayStores(!displayStores)}
+                  >
+                    Ocultar tiendas
+                  </Button>
+                </Grid>
               </Grid>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <BrandComparisonTable
+                brandComparision={brandComparision}
+                displayStores={displayStores}
+              />
             </CardContent>
           </Card>
         </Stack>
