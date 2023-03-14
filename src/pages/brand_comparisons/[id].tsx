@@ -7,7 +7,7 @@ import {
   Stack,
 } from "@mui/material";
 import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -17,6 +17,8 @@ import Layout from "src/layouts";
 import { PATH_BRAND_COMPARISONS, PATH_DASHBOARD } from "src/routes/paths";
 import ListAlerts from "src/sections/brand_comparisons/ListAlerts";
 import ListManualProducts from "src/sections/brand_comparisons/ListManualProducts";
+import ListPendingProducts from "src/sections/brand_comparisons/ListPendingProducts";
+import EditName from "src/sections/brand_comparisons/EditName";
 
 // ----------------------------------------------------------------------
 
@@ -27,10 +29,14 @@ BrandComparisonDetail.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function BrandComparisonDetail({
-  brandComparision,
+  initialBrandComparision,
 }: {
-  brandComparision: BrandComparison;
+  initialBrandComparision: BrandComparison;
 }) {
+  const [brandComparision, setBrandComparision] = useState(
+    initialBrandComparision
+  );
+  console.log(brandComparision);
   return (
     <Page title="Comparación de marcas">
       <Container maxWidth={false}>
@@ -47,7 +53,14 @@ export default function BrandComparisonDetail({
         />
         <Stack spacing={3}>
           <Card>
-            <CardHeader title={brandComparision.name} />
+            <CardHeader
+              title={
+                <EditName
+                  brandComparision={brandComparision}
+                  setBrandComparision={setBrandComparision}
+                />
+              }
+            />
             <CardContent>
               <Grid container spacing={1}>
                 <Grid item>
@@ -55,6 +68,9 @@ export default function BrandComparisonDetail({
                 </Grid>
                 <Grid item>
                   <ListManualProducts brandComparision={brandComparision} />
+                </Grid>
+                <Grid item>
+                  <ListPendingProducts brandComparision={brandComparision} />
                 </Grid>
               </Grid>
             </CardContent>
@@ -73,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
     return {
       props: {
-        brandComparision: brandComparision,
+        initialBrandComparision: brandComparision,
       },
     };
   } catch {
