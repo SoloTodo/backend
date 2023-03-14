@@ -115,7 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context,
       `${apiSettings.apiResourceEndpoints.wtb_entities}${context.params?.id}/`
     );
-    const brand = await jwtFetch(context, (entity as WtbEntity).brand);
+    const brand = await jwtFetch(context, (entity as WtbEntity).brand.url);
     return {
       props: {
         entity: entity,

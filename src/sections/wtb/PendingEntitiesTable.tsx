@@ -41,7 +41,7 @@ export default function PendingEntitiesTable({ brands }: { brands: Brand[] }) {
       field: "store",
       flex: 1,
       renderCell: (row: WtbEntity) => {
-        const brand = brands.filter((b) => b.url === row.brand)[0];
+        const brand = brands.filter((b) => b.url === row.brand.url)[0];
         return (
           <Stack alignItems={"center"} spacing={1}>
             <NextLink href={`${PATH_WTB.brands}/${brand.id}`} passHref>

@@ -73,7 +73,7 @@ export default function ProductWtbEntities({ product, brands }: { product: Produ
       field: "brand",
       flex: 1,
       renderCell: (row: WtbEntity) => (
-        brands.find((b) => b.url == row.brand)?.name
+        brands.find((b) => b.url == row.brand.url)?.name
       ),
     },
     {
