@@ -41,9 +41,9 @@ type Alert = {
 };
 
 export default function ListAlerts({
-  brandComparision,
+  brandComparison,
 }: {
-  brandComparision: BrandComparison;
+  brandComparison: BrandComparison;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ export default function ListAlerts({
     setLoading(true);
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.brand_comparisons_alerts}?brand_comparison=${brandComparision.id}`
+      `${apiSettings.apiResourceEndpoints.brand_comparisons_alerts}?brand_comparison=${brandComparison.id}`
     )
       .then((res) => setAlerts(res))
       .finally(() => setLoading(false));
@@ -137,7 +137,7 @@ export default function ListAlerts({
             <Stack direction="row-reverse">
               <AddAlertModal
                 addAlert={addAlert}
-                brandComparision={brandComparision}
+                brandComparison={brandComparison}
               />
             </Stack>
           </Stack>

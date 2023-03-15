@@ -1,9 +1,9 @@
 import { BrandComparison } from "src/frontend-utils/types/brand_comparison";
 
 export default function ListPendingProducts({
-  brandComparision,
+  brandComparison,
 }: {
-  brandComparision: BrandComparison;
+  brandComparison: BrandComparison;
 }) {
   return <p>Productos pendientes</p>;
 }

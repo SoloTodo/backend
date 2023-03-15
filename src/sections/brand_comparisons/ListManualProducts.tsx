@@ -33,14 +33,14 @@ const style = {
 };
 
 export default function ListManualProducts({
-  brandComparision,
+  brandComparison,
 }: {
-  brandComparision: BrandComparison;
+  brandComparison: BrandComparison;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [products, setProducts] = useState<InLineProduct[]>(
-    brandComparision.manual_products
+    brandComparison.manual_products
   );
 
   const addManualProduct = (newProducts: InLineProduct[]) => {
@@ -56,7 +56,7 @@ export default function ListManualProducts({
   };
 
   const handleRemove = (product_id: number) => {
-    jwtFetch(null, `${brandComparision.url}remove_manual_product/`, {
+    jwtFetch(null, `${brandComparison.url}remove_manual_product/`, {
       method: "POST",
       body: JSON.stringify({ product_id }),
     }).then((res) => {
@@ -115,7 +115,7 @@ export default function ListManualProducts({
             <Stack direction="row-reverse">
               <AddManualProduct
                 addManualProduct={addManualProduct}
-                brandComparision={brandComparision}
+                brandComparison={brandComparison}
               />
             </Stack>
           </Stack>

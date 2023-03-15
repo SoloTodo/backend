@@ -36,11 +36,11 @@ const style = {
 };
 
 export default function SelectStores({
-  brandComparision,
-  setBrandComparision,
+  brandComparison,
+  setBrandComparison,
 }: {
-  brandComparision: BrandComparison;
-  setBrandComparision: Function;
+  brandComparison: BrandComparison;
+  setBrandComparison: Function;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -51,7 +51,7 @@ export default function SelectStores({
   };
 
   const [selectedStoreIds, setSelectedStoresIds] = useState<string[]>(
-    brandComparision.stores.map((s) => apiResourceObjects[s].id.toString())
+    brandComparison.stores.map((s) => apiResourceObjects[s].id.toString())
   );
 
   const allStores = (
@@ -87,7 +87,7 @@ export default function SelectStores({
     } else {
       jwtFetch(
         null,
-        `${apiSettings.apiResourceEndpoints.brand_comparisons}${brandComparision.id}/`,
+        `${apiSettings.apiResourceEndpoints.brand_comparisons}${brandComparison.id}/`,
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -96,7 +96,7 @@ export default function SelectStores({
         }
       )
         .then((json) => {
-          setBrandComparision(json);
+          setBrandComparison(json);
           enqueueSnackbar("Tiendas guardadas exitosamente");
         })
         .finally(() => setOpen(false));

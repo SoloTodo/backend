@@ -29,10 +29,10 @@ const style = {
 
 export default function AddManualProduct({
   addManualProduct,
-  brandComparision,
+  brandComparison,
 }: {
   addManualProduct: Function;
-  brandComparision: BrandComparison;
+  brandComparison: BrandComparison;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function AddManualProduct({
         variant: "error",
       });
     } else {
-      jwtFetch(null, `${brandComparision.url}add_manual_product/`, {
+      jwtFetch(null, `${brandComparison.url}add_manual_product/`, {
         method: "POST",
         body: JSON.stringify({
           product_id: selectedProduct.id,
@@ -81,7 +81,7 @@ export default function AddManualProduct({
               </IconButton>
             </Stack>
             <ProductSearch
-              entityCategory={brandComparision.category.url}
+              entityCategory={brandComparison.category.url}
               selectedProduct={selectedProduct}
               setSelectedProduct={setSelectedProduct}
             />

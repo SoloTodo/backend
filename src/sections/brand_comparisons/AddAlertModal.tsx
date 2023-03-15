@@ -37,10 +37,10 @@ const style = {
 
 export default function AddAlertModal({
   addAlert,
-  brandComparision,
+  brandComparison,
 }: {
   addAlert: Function;
-  brandComparision: BrandComparison;
+  brandComparison: BrandComparison;
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -89,7 +89,7 @@ export default function AddAlertModal({
         {
           method: "POST",
           body: JSON.stringify({
-            brand_comparison: brandComparision.id,
+            brand_comparison: brandComparison.id,
             stores: selectedStoreIds,
           }),
         }
