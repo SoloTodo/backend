@@ -207,7 +207,11 @@ export default function BrandComparisonDetail({
                   <ListManualProducts brandComparison={brandComparison} />
                 </Grid>
                 <Grid item>
-                  <ListPendingProducts brandComparison={brandComparison} />
+                  <ListPendingProducts
+                    brandComparison={brandComparison}
+                    brand1RowData={brand1RowData}
+                    brand2RowData={brand2RowData}
+                  />
                 </Grid>
                 <Grid item>
                   <SelectStores
