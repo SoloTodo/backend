@@ -25,6 +25,7 @@ import SelectStores from "src/sections/brand_comparisons/SelectStores";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Entity, InLineProduct } from "src/frontend-utils/types/entity";
+import AddSegmentButton from "src/sections/brand_comparisons/AddSegmentButton";
 
 // ----------------------------------------------------------------------
 
@@ -53,8 +54,6 @@ export default function BrandComparisonDetail({
   const [displayStores, setDisplayStores] = useState(true);
   const [brand1RawRowData, setBrand1RowRawData] = useState<RawRowData>(null);
   const [brand2RawRowData, setBrand2RowRawData] = useState<RawRowData>(null);
-
-  console.log(brandComparison);
 
   const onComparisonChange = (updateBrandComparison?: BrandComparison) => {
     if (updateBrandComparison) {
@@ -174,8 +173,6 @@ export default function BrandComparisonDetail({
 
   const brand1RowData = processRowData(brand1RawRowData, "1");
   const brand2RowData = processRowData(brand2RawRowData, "2");
-  console.log(brand1RowData);
-  console.log(brand2RowData);
 
   return (
     <Page title="Comparación de marcas">
@@ -231,13 +228,19 @@ export default function BrandComparisonDetail({
           </Card>
           <Card>
             <CardContent>
-              <BrandComparisonTable
-                brandComparison={brandComparison}
-                displayStores={displayStores}
-                onComparisonChange={onComparisonChange}
-                brand1RowData={brand1RowData}
-                brand2RowData={brand2RowData}
-              />
+              <Stack spacing={3}>
+                <BrandComparisonTable
+                  brandComparison={brandComparison}
+                  displayStores={displayStores}
+                  onComparisonChange={onComparisonChange}
+                  brand1RowData={brand1RowData}
+                  brand2RowData={brand2RowData}
+                />
+                <AddSegmentButton
+                  brandComparison={brandComparison}
+                  onComparisonChange={onComparisonChange}
+                />
+              </Stack>
             </CardContent>
           </Card>
         </Stack>

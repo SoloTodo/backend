@@ -1,17 +1,17 @@
 import { IconButton } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { Segment } from "src/frontend-utils/types/brand_comparison";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
+import { Row } from "src/frontend-utils/types/brand_comparison";
 
-export default function MoveSegmentButton({
-  segment,
+export default function MoveRowButton({
+  row,
   direction,
   disabled,
   onComparisonChange,
 }: {
-  segment: Segment;
+  row: Row;
   direction: "up" | "down";
   disabled: boolean;
   onComparisonChange: Function;
@@ -23,7 +23,7 @@ export default function MoveSegmentButton({
 
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.brand_comparisons_segments}${segment.id}/move/`,
+      `${apiSettings.apiResourceEndpoints.brand_comparison_segment_rows}${row.id}/move/`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -36,9 +36,9 @@ export default function MoveSegmentButton({
   return (
     <IconButton onClick={handleClick} disabled={disabled} size="small">
       {direction === "up" ? (
-        <ArrowUpwardIcon sx={{ fontSize: 20 }} />
+        <ArrowUpwardIcon sx={{ fontSize: 15 }} />
       ) : (
-        <ArrowDownwardIcon sx={{ fontSize: 20 }} />
+        <ArrowDownwardIcon sx={{ fontSize: 15 }} />
       )}
     </IconButton>
   );

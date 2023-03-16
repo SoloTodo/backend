@@ -65,7 +65,7 @@ export default function EditSegmentName({
   return (
     <>
       <IconButton onClick={() => setOpenModal(true)} size="small">
-        <EditIcon />
+        <EditIcon sx={{ fontSize: 20 }} />
       </IconButton>
       <Modal open={openModal} onClose={handleClose}>
         <Box sx={style}>

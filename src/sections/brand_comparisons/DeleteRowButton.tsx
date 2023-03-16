@@ -10,7 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
-import { Segment } from "src/frontend-utils/types/brand_comparison";
+import { Row } from "src/frontend-utils/types/brand_comparison";
 import { LoadingButton } from "@mui/lab";
 
 const style = {
@@ -25,11 +25,13 @@ const style = {
   p: 4,
 };
 
-export default function DeleteSegmentButton({
-  segment,
+export default function DeleteRowButton({
+  row,
+  disabled,
   onComparisonChange,
 }: {
-  segment: Segment;
+  row: Row;
+  disabled: boolean;
   onComparisonChange: Function;
 }) {
   const [open, setOpen] = useState(false);
@@ -39,7 +41,7 @@ export default function DeleteSegmentButton({
     setLoading(true);
     jwtFetch(
       null,
-      `${apiSettings.apiResourceEndpoints.brand_comparisons_segments}${segment.id}/`,
+      `${apiSettings.apiResourceEndpoints.brand_comparison_segment_rows}${row.id}/`,
       {
         method: "delete",
       }
@@ -52,8 +54,12 @@ export default function DeleteSegmentButton({
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)} size="small">
-        <CloseIcon sx={{ fontSize: 20 }} />
+      <IconButton
+        onClick={() => setOpen(true)}
+        size="small"
+        disabled={disabled}
+      >
+        <CloseIcon sx={{ fontSize: 15 }} />
       </IconButton>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Box sx={style}>
@@ -62,16 +68,14 @@ export default function DeleteSegmentButton({
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="h5">
-              Eliminar segmento: {segment.name}
-            </Typography>
+            <Typography variant="h5">Eliminar fila</Typography>
             <IconButton onClick={() => setOpen(false)}>
               <CloseIcon />
             </IconButton>
           </Stack>
           <br />
           <Typography>
-            ¿Estás seguro que quieres eliminar este segmento? Este proceso es
+            ¿Estás seguro que quieres eliminar esta fila? Este proceso es
             irreversible
           </Typography>
           <br />
