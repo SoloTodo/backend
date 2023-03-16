@@ -26,6 +26,9 @@ import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Entity, InLineProduct } from "src/frontend-utils/types/entity";
 import AddSegmentButton from "src/sections/brand_comparisons/AddSegmentButton";
+import EditPriceTypeButton from "src/sections/brand_comparisons/EditPriceTypeButton";
+import DownloadReportButton from "src/sections/brand_comparisons/DownloadReportButton";
+import DeleteBrandComparison from "src/sections/brand_comparisons/DeleteBrandComparison";
 
 // ----------------------------------------------------------------------
 
@@ -194,7 +197,7 @@ export default function BrandComparisonDetail({
               title={
                 <EditBrandComparisonName
                   brandComparison={brandComparison}
-                  setBrandComparison={setbrandComparison}
+                  setBrandComparison={onComparisonChange}
                 />
               }
             />
@@ -216,7 +219,7 @@ export default function BrandComparisonDetail({
                 <Grid item>
                   <SelectStores
                     brandComparison={brandComparison}
-                    setBrandComparison={setbrandComparison}
+                    setBrandComparison={onComparisonChange}
                   />
                 </Grid>
                 <Grid item>
@@ -226,6 +229,18 @@ export default function BrandComparisonDetail({
                   >
                     Ocultar tiendas
                   </Button>
+                </Grid>
+                <Grid item>
+                  <EditPriceTypeButton
+                    brandComparison={brandComparison}
+                    onComparisonChange={onComparisonChange}
+                  />
+                </Grid>
+                <Grid item>
+                  <DownloadReportButton brandComparison={brandComparison} />
+                </Grid>
+                <Grid item>
+                  <DeleteBrandComparison brandComparison={brandComparison} />
                 </Grid>
               </Grid>
             </CardContent>
