@@ -17,6 +17,7 @@ const ROOTS_BANNERS = "/banners";
 const ROOTS_METAMODEL = "/metamodel";
 const ROOTS_BRAND_COMPARISONS = "/brand_comparisons";
 const ROOTS_ALERT = "/alerts";
+const ROOTS_STORE_SUBSCRIPTION = "/store_subscriptions";
 
 // ----------------------------------------------------------------------
 
@@ -97,3 +98,7 @@ export const PATH_BRAND_COMPARISONS = {
 export const PATH_ALERT = {
   root: ROOTS_ALERT,
 };
+
+export const PATH_STORE_SUBSCRIPTION = {
+  root: ROOTS_STORE_SUBSCRIPTION
+}

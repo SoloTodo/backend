@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   FormHelperText,
   Modal,
   Stack,
@@ -42,39 +43,28 @@ const style = {
 };
 
 type FormValuesProps = {
-  name: string;
-  category: { label: string; value: number } | null;
-  brand_1: { label: string; value: number } | null;
-  brand_2: { label: string; value: number } | null;
+  store: { label: string; value: number } | null;
+  categories: { label: string; value: number }[];
 };
 
-export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
+export default function AddStoreSubscription() {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
 
   const context = useContext(ApiFormContext);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const categories = selectApiResourceObjects(apiResourceObjects, "categories");
+  const stores = selectApiResourceObjects(apiResourceObjects, "stores");
 
   const field = context.getField("pagination") as ApiFormPagination | undefined;
 
-  const brandChoices = brands.map((b) => ({
-    label: b.name,
-    value: b.id,
-  }));
-
   const defaultValues = {
-    name: "",
-    category: null,
-    brand_1: null,
-    brand_2: null,
+    store: null,
+    categories: [],
   };
 
   const NewModelSchema = Yup.object().shape({
-    name: Yup.string().required("Nombre requerido"),
-    category: Yup.object(),
-    brand_1: Yup.object().required("Marca 1 requerida"),
-    brand_2: Yup.object().required("Marca 2 requerida"),
+    store: Yup.object().required("Tienda requerida"),
   });
 
   const methods = useForm<FormValuesProps>({
@@ -86,17 +76,20 @@ export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
     control,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting },
   } = methods;
 
   const onSubmit = (data: FormValuesProps) => {
-    jwtFetch(null, apiSettings.apiResourceEndpoints.brand_comparisons, {
+    if (data.categories.length === 0) {
+      setError("categories", { message: "" });
+      return;
+    }
+    jwtFetch(null, apiSettings.apiResourceEndpoints.store_subscriptions, {
       method: "post",
       body: JSON.stringify({
-        name: data.name,
-        category: data.category!.value,
-        brand_1: data.brand_1!.value,
-        brand_2: data.brand_2!.value,
+        store: data.store!.value,
+        categories: data.categories.map((c) => c.value),
       }),
     })
       .then((json) => {
@@ -108,15 +101,16 @@ export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
         }
         context.setCurrentResult({
           ...context.currentResult,
+          count: context.currentResult.count + 1,
           results: [json, ...array],
         });
         reset();
-        enqueueSnackbar("Comparación de marcas creada exitosamente");
+        enqueueSnackbar("Suscripción a tienda creada exitosamente");
       })
       .catch(async (error) => {
         const jsonError = await error.json();
         console.error(jsonError);
-        enqueueSnackbar("Error al agregar la comparación de marcas", {
+        enqueueSnackbar("Error al agregar la suscripción a tienda", {
           variant: "error",
         });
       });
@@ -144,26 +138,54 @@ export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
             startIcon={<AddIcon />}
             onClick={() => setOpen(true)}
           >
-            Nueva comparación
+            Nueva suscripción a tienda
           </Button>
         </CardContent>
       </Card>
       <Modal open={open} onClose={closeModal}>
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Crear nueva Comparación
+            Crear nueva Suscripción a tienda
           </Typography>
           <br />
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
-              <RHFTextField name="name" label="Nombre" type="string" />
               <Controller
-                name="category"
+                name="store"
                 control={control}
                 render={({ field }) => (
                   <Autocomplete
                     {...field}
                     multiple={false}
+                    isOptionEqualToValue={isOptionEqualToValue}
+                    onChange={(_, newValue) => {
+                      field.onChange(newValue);
+                    }}
+                    options={stores}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tienda" />
+                    )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option.value}>
+                        {option.label}
+                      </li>
+                    )}
+                    fullWidth
+                  />
+                )}
+              />
+              {errors.store && (
+                <FormHelperText sx={{ px: 2, display: "block" }} error>
+                  Tienda requerida
+                </FormHelperText>
+              )}
+              <Controller
+                name="categories"
+                control={control}
+                render={({ field }) => (
+                  <Autocomplete
+                    {...field}
+                    multiple={true}
                     isOptionEqualToValue={isOptionEqualToValue}
                     onChange={(_, newValue) => {
                       field.onChange(newValue);
@@ -172,76 +194,23 @@ export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
                     renderInput={(params) => (
                       <TextField {...params} label="Categorías" />
                     )}
-                    renderOption={(props, option) => (
-                      <li {...props} key={option.value}>
-                        {option.label}
-                      </li>
-                    )}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip
+                          {...getTagProps({ index })}
+                          key={option.value}
+                          size="small"
+                          label={option.label}
+                        />
+                      ))
+                    }
                     fullWidth
                   />
                 )}
               />
-              {errors.category && (
+              {errors.categories && (
                 <FormHelperText sx={{ px: 2, display: "block" }} error>
-                  Categoría requerida
-                </FormHelperText>
-              )}
-              <Controller
-                name="brand_1"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    multiple={false}
-                    isOptionEqualToValue={isOptionEqualToValue}
-                    onChange={(_, newValue) => {
-                      field.onChange(newValue);
-                    }}
-                    options={brandChoices}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Marca 1" />
-                    )}
-                    renderOption={(props, option) => (
-                      <li {...props} key={option.value}>
-                        {option.label}
-                      </li>
-                    )}
-                    fullWidth
-                  />
-                )}
-              />
-              {errors.brand_1 && (
-                <FormHelperText sx={{ px: 2, display: "block" }} error>
-                  Marca 1 requerida
-                </FormHelperText>
-              )}
-              <Controller
-                name="brand_2"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    multiple={false}
-                    isOptionEqualToValue={isOptionEqualToValue}
-                    onChange={(_, newValue) => {
-                      field.onChange(newValue);
-                    }}
-                    options={brandChoices}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Marca 2" />
-                    )}
-                    renderOption={(props, option) => (
-                      <li {...props} key={option.value}>
-                        {option.label}
-                      </li>
-                    )}
-                    fullWidth
-                  />
-                )}
-              />
-              {errors.brand_2 && (
-                <FormHelperText sx={{ px: 2, display: "block" }} error>
-                  Marca 2 requerida
+                  Al menos una categoría requerida
                 </FormHelperText>
               )}
             </Stack>
@@ -252,7 +221,7 @@ export default function AddBrandComparison({ brands }: { brands: Brand[] }) {
                 variant="contained"
                 loading={isSubmitting}
               >
-                <AddIcon /> Agregar Comparación
+                <AddIcon /> Agregar Suscripción a tienda
               </LoadingButton>
               <Button color="inherit" variant="outlined" onClick={closeModal}>
                 Cancelar

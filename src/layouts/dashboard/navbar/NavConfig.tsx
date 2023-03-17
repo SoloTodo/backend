@@ -9,6 +9,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import StorageIcon from "@mui/icons-material/Storage";
 import CompareIcon from '@mui/icons-material/Compare';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 // routes
 import {
   PATH_ALERT,
@@ -21,6 +22,7 @@ import {
   PATH_RATING,
   PATH_REPORTS,
   PATH_STORE,
+  PATH_STORE_SUBSCRIPTION,
   PATH_USER,
   PATH_WTB,
 } from "src/routes/paths";
@@ -46,6 +48,7 @@ const ICONS = {
   storage: <StorageIcon />,
   compare: <CompareIcon />,
   alert: <NotificationsIcon />,
+  storeFront: <StorefrontIcon />,
 };
 
 const sidebarConfig = [
@@ -178,6 +181,11 @@ const sidebarConfig = [
         title: "Alertas",
         path: PATH_ALERT.root,
         icon: ICONS.alert,
+      },
+      {
+        title: "Suscripción a tiendas",
+        path: PATH_STORE_SUBSCRIPTION.root,
+        icon: ICONS.storeFront,
       },
       {
         title: "Reportes",
