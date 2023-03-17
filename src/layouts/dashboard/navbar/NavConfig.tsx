@@ -8,8 +8,10 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StorageIcon from "@mui/icons-material/Storage";
 import CompareIcon from '@mui/icons-material/Compare';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 // routes
 import {
+  PATH_ALERT,
   PATH_BANNERS,
   PATH_BRAND_COMPARISONS,
   PATH_CATEGORY,
@@ -43,6 +45,7 @@ const ICONS = {
   visibility: <VisibilityIcon />,
   storage: <StorageIcon />,
   compare: <CompareIcon />,
+  alert: <NotificationsIcon />,
 };
 
 const sidebarConfig = [
@@ -170,6 +173,11 @@ const sidebarConfig = [
             hasPermission: "wtb.backend_view_pending_wtb_entities",
           },
         ],
+      },
+      {
+        title: "Alertas",
+        path: PATH_ALERT.root,
+        icon: ICONS.alert,
       },
       {
         title: "Reportes",
