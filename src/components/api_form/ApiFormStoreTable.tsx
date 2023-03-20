@@ -6,7 +6,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import CustomTable from "src/sections/CustomTable";
 
-export default function ApiFormResultsTable({
+export default function ApiFormStoreTable({
   columns,
 }: {
   columns: GridColDef[];
