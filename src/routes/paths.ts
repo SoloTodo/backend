@@ -85,6 +85,7 @@ export const PATH_BANNERS = {
   assetsPending: path(ROOTS_BANNERS, "/assets/pending"),
   updates: path(ROOTS_BANNERS, "/updates"),
   updatesLatest: path(ROOTS_BANNERS, "/updates/latest"),
+  activeParticipation: path(ROOTS_BANNERS, "/active_participation"),
 };
 
 export const PATH_METAMODEL = {

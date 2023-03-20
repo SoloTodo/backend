@@ -207,7 +207,7 @@ const sidebarConfig = [
         title: "Banner Visibility",
         path: "-",
         icon: ICONS.visibility,
-        hasPermission: "banners.is_staff_of_banner_assets",
+        hasPermission: "banners.backend_list_banners",
         children: [
           {
             title: "Banners",
@@ -233,6 +233,11 @@ const sidebarConfig = [
             title: "Últimas actualizaciones",
             path: PATH_BANNERS.updatesLatest,
             hasPermission: "banners.is_staff_of_banner_assets",
+          },
+          {
+            title: "Active Participation",
+            path: PATH_BANNERS.activeParticipation,
+            hasPermission: "banners.backend_list_banners",
           },
         ],
       },
