@@ -14,27 +14,30 @@ import {
 export default function CustomTable({
   data,
   columns,
+  withoutMinWidth,
 }: {
   data: any[];
   columns: GridColumns;
+  withoutMinWidth?: boolean;
 }) {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+      <Table
+        sx={withoutMinWidth ? {} : { minWidth: 700 }}
+        aria-label="customized table"
+      >
         <TableHead>
           <StyledTableRow>
-            {columns.map((col) => (
-              <StyledTableCell key={col.field}>
-                {col.headerName}
-              </StyledTableCell>
+            {columns.map((col, index) => (
+              <StyledTableCell key={index}>{col.headerName}</StyledTableCell>
             ))}
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <StyledTableRow key={row.id}>
-              {columns.map((col) => (
-                <StyledTableCell key={col.field}>
+          {data.map((row, rowIndex) => (
+            <StyledTableRow key={rowIndex}>
+              {columns.map((col, index) => (
+                <StyledTableCell key={index}>
                   {col.renderCell
                     ? col.renderCell({ row: row } as GridRenderCellParams<
                         any,
