@@ -45,8 +45,8 @@ export default function ReportActive({ brands }: { brands: Brand[] }) {
     },
     {
       fieldType: "select" as "select",
-      name: "stores",
-      multiple: true,
+      name: "store",
+      multiple: false,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
@@ -82,7 +82,7 @@ export default function ReportActive({ brands }: { brands: Brand[] }) {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="stores" label="Tiendas" />
+                  <ApiFormSelectComponent name="store" label="Tienda" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent
