@@ -18,6 +18,7 @@ const ROOTS_METAMODEL = "/metamodel";
 const ROOTS_BRAND_COMPARISONS = "/brand_comparisons";
 const ROOTS_ALERT = "/alerts";
 const ROOTS_STORE_SUBSCRIPTION = "/store_subscriptions";
+const ROOTS_KEYWORD = "/keyword_searches";
 
 // ----------------------------------------------------------------------
 
@@ -100,5 +101,11 @@ export const PATH_ALERT = {
 };
 
 export const PATH_STORE_SUBSCRIPTION = {
-  root: ROOTS_STORE_SUBSCRIPTION
-}
+  root: ROOTS_STORE_SUBSCRIPTION,
+};
+
+export const PATH_KEYWORD = {
+  root: ROOTS_KEYWORD,
+  report: path(ROOTS_KEYWORD, "/active_report"),
+  updates: "/keyword_search_updates",
+};

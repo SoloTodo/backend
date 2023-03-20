@@ -7,9 +7,10 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StorageIcon from "@mui/icons-material/Storage";
-import CompareIcon from '@mui/icons-material/Compare';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import StorefrontIcon from '@mui/icons-material/Storefront';
+import CompareIcon from "@mui/icons-material/Compare";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import KeyIcon from "@mui/icons-material/Key";
 // routes
 import {
   PATH_ALERT,
@@ -17,6 +18,7 @@ import {
   PATH_BRAND_COMPARISONS,
   PATH_CATEGORY,
   PATH_ENTITY,
+  PATH_KEYWORD,
   PATH_METAMODEL,
   PATH_PRODUCT,
   PATH_RATING,
@@ -49,6 +51,7 @@ const ICONS = {
   compare: <CompareIcon />,
   alert: <NotificationsIcon />,
   storeFront: <StorefrontIcon />,
+  key: <KeyIcon />,
 };
 
 const sidebarConfig = [
@@ -230,6 +233,24 @@ const sidebarConfig = [
             title: "Últimas actualizaciones",
             path: PATH_BANNERS.updatesLatest,
             hasPermission: "banners.is_staff_of_banner_assets",
+          },
+        ],
+      },
+      {
+        title: "Keyword Visibility",
+        path: "-",
+        icon: ICONS.key,
+        hasPermission: "keyword_search_positions.backend_list_keyword_searches",
+        children: [
+          {
+            title: "Búsquedas",
+            path: PATH_KEYWORD.root,
+            hasPermission: "keyword_search_positions.backend_list_keyword_searches",
+          },
+          {
+            title: "Reporte actual",
+            path: PATH_KEYWORD.report,
+            hasPermission: "keyword_search_positions.backend_list_keyword_searches",
           },
         ],
       },
