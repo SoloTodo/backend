@@ -19,9 +19,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import { useSnackbar } from "notistack";
-import { FormProvider, RHFTextField } from "src/components/hook-form";
+import { FormProvider } from "src/components/hook-form";
 import { LoadingButton } from "@mui/lab";
-import { Brand } from "src/frontend-utils/types/banner";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import {
   selectApiResourceObjects,
