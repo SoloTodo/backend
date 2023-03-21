@@ -10,7 +10,7 @@ import {
 // layouts
 import Layout from "src/layouts";
 // routes
-import { PATH_DASHBOARD } from "src/routes/paths";
+import { PATH_BANNERS, PATH_DASHBOARD } from "src/routes/paths";
 // components
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
@@ -114,6 +114,7 @@ export default function BannerActiveParticipation({
           heading=""
           links={[
             { name: "Inicio", href: PATH_DASHBOARD.root },
+            { name: "Banners", href: PATH_BANNERS.banners },
             { name: "Active participation" },
           ]}
         />
