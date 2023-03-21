@@ -239,6 +239,11 @@ const sidebarConfig = [
             path: PATH_BANNERS.activeParticipation,
             hasPermission: "banners.backend_list_banners",
           },
+          {
+            title: "Historic Participation",
+            path: PATH_BANNERS.historicParticipation,
+            hasPermission: "banners.backend_list_banners",
+          },
         ],
       },
       {
