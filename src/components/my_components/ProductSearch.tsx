@@ -7,10 +7,12 @@ export default function ProductSearch({
   entityCategory,
   selectedProduct,
   setSelectedProduct,
+  extraParams,
 }: {
   entityCategory: string;
   selectedProduct: any;
   setSelectedProduct: Function;
+  extraParams?: string;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState("");
@@ -27,7 +29,7 @@ export default function ProductSearch({
       null,
       `${entityCategory}products/?page_size=200&search=${encodeURIComponent(
         value
-      )}`
+      )}${extraParams}`
     ).then((data) => {
       const l = data.results.length;
       setProductChoices(data.results);
