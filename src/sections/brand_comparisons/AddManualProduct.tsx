@@ -44,7 +44,7 @@ export default function AddManualProduct({
 
   const onSubmit = () => {
     if (!selectedProduct) {
-      enqueueSnackbar("Debes seleccionar al menos una tienda", {
+      enqueueSnackbar("Debes seleccionar un producto", {
         variant: "error",
       });
     } else {
@@ -56,7 +56,7 @@ export default function AddManualProduct({
       })
         .then((json) => {
           addManualProduct(json.manual_products);
-          enqueueSnackbar("Alerta creada exitosamente");
+          enqueueSnackbar("Producto agregado exitosamente");
         })
         .finally(() => setOpen(false));
     }
@@ -96,7 +96,7 @@ export default function AddManualProduct({
                 Cancelar
               </Button>
               <Button variant="contained" color="success" onClick={onSubmit}>
-                Crear
+                Agregar
               </Button>
             </Stack>
           </Stack>
