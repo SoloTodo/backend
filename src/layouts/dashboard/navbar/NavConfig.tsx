@@ -11,6 +11,7 @@ import CompareIcon from "@mui/icons-material/Compare";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import KeyIcon from "@mui/icons-material/Key";
+import SellIcon from "@mui/icons-material/Sell";
 // routes
 import {
   PATH_ALERT,
@@ -20,6 +21,7 @@ import {
   PATH_ENTITY,
   PATH_KEYWORD,
   PATH_METAMODEL,
+  PATH_MICROSITE,
   PATH_PRODUCT,
   PATH_RATING,
   PATH_REPORTS,
@@ -52,6 +54,7 @@ const ICONS = {
   alert: <NotificationsIcon />,
   storeFront: <StorefrontIcon />,
   key: <KeyIcon />,
+  sell: <SellIcon />,
 };
 
 const sidebarConfig = [
@@ -138,6 +141,12 @@ const sidebarConfig = [
             hasPermission: "brand_comparisons.backend_list_brand_comparisons",
           },
         ],
+      },
+      {
+        title: "Sitios",
+        path: PATH_MICROSITE.root,
+        icon: ICONS.sell,
+        hasPermission: "microsite.pricing_view_microsite",
       },
       {
         title: "Ratings",
@@ -255,12 +264,14 @@ const sidebarConfig = [
           {
             title: "Búsquedas",
             path: PATH_KEYWORD.root,
-            hasPermission: "keyword_search_positions.backend_list_keyword_searches",
+            hasPermission:
+              "keyword_search_positions.backend_list_keyword_searches",
           },
           {
             title: "Reporte actual",
             path: PATH_KEYWORD.report,
-            hasPermission: "keyword_search_positions.backend_list_keyword_searches",
+            hasPermission:
+              "keyword_search_positions.backend_list_keyword_searches",
           },
         ],
       },
