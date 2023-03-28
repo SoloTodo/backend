@@ -6,22 +6,13 @@ import { apiSettings } from "src/frontend-utils/settings";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { Category } from "src/frontend-utils/types/store";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Link,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Link } from "@mui/material";
 import { useState } from "react";
 import { JSONTree } from "react-json-tree";
 import { useSnackbar } from "notistack";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
-export default function OptionsMenu({
-  product,
-}: {
-  product: Product;
-}) {
+export default function OptionsMenu({ product }: { product: Product }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [openModal, setOpenModal] = useState(false);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
@@ -46,6 +37,13 @@ export default function OptionsMenu({
     {
       text: "Historial pricing",
       path: `${baseRoute}/pricing_history`,
+    },
+    {
+      text: "Analytics",
+      path: `${baseRoute}/analytics`,
+      hasPermission: (
+        apiResourceObjects[product.category] as Category
+      ).permissions.includes("view_category_reports"),
     },
     {
       text: "Ratings",
