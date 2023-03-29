@@ -14,6 +14,7 @@ import {
 import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
+import WarningIcon from "@mui/icons-material/Warning";
 // layouts
 import Layout from "src/layouts";
 // routes
@@ -120,7 +121,43 @@ export default function Entities() {
     },
   ];
 
+  const getWarnings = (entity: Entity) => {
+    const warnings = [];
+    if (!entity.product) {
+      warnings.push("Este SKU aún no ha sido homologado");
+    }
+    if (!(entity.active_registry && entity.active_registry.is_available)) {
+      warnings.push("Este SKU no está disponible para compra");
+    }
+    if (!entity.is_visible) {
+      warnings.push(
+        "Este SKU ha sido marcado como no relevante por el staff de SoloTodo"
+      );
+    }
+    return warnings;
+  };
+
   const columns: any[] = [
+    {
+      headerName: "",
+      field: "warnings",
+      flex: 1,
+      renderCell: (row: Entity) => {
+        const warnings = getWarnings(row);
+        if (warnings.length) {
+          const message = warnings.reduce((acc, a) => {
+            return a + ". " + acc;
+          }, "");
+          return (
+            <Tooltip title={message}>
+              <WarningIcon fontSize="small" color="warning" />
+            </Tooltip>
+          );
+        } else {
+          return "";
+        }
+      },
+    },
     {
       headerName: "Nombre",
       field: "name",
@@ -195,7 +232,11 @@ export default function Entities() {
     {
       headerName: (
         <Tooltip title="El SKU está disponible para compra actualmente">
-          <Typography variant="body2" fontWeight={600}>
+          <Typography
+            variant="body2"
+            fontWeight={600}
+            sx={{ textDecoration: "underline" }}
+          >
             ¿Disp?
           </Typography>
         </Tooltip>
@@ -219,7 +260,11 @@ export default function Entities() {
     {
       headerName: (
         <Tooltip title="El SKU ha sido marcado como relevante por el staff de SoloTodo">
-          <Typography variant="body2" fontWeight={600}>
+          <Typography
+            variant="body2"
+            fontWeight={600}
+            sx={{ textDecoration: "underline" }}
+          >
             ¿Vis?
           </Typography>
         </Tooltip>

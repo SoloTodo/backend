@@ -49,14 +49,6 @@ export default function PositionInformation({
       title="Posicionamiento actual"
       columns={positionsColumns}
       data={positions}
-      action={
-        <NextLink
-          href={`${PATH_ENTITY.root}/${entityId}/position_history`}
-          passHref
-        >
-          <Link>Ver historial</Link>
-        </NextLink>
-      }
     />
   );
 }

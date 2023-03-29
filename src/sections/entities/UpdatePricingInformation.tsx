@@ -69,6 +69,11 @@ export default function UpdatePricingInformation({
     },
     {
       key: 3,
+      text: "Historial posicionamiento",
+      path: `${baseRoute}/position_history`,
+    },
+    {
+      key: 4,
       text: "Crear alerta",
       path: `${baseRoute}/creat_alert`,
       hasPermission: (
@@ -83,8 +88,8 @@ export default function UpdatePricingInformation({
   ];
 
   if (hasStaffPermission)
-    options.splice(2, 0, {
-      key: 4,
+    options.splice(3, 0, {
+      key: 5,
       text: "Asociar",
       path: `${baseRoute}/associate`,
     });
