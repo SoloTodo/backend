@@ -9,6 +9,7 @@ import {
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import merge from "lodash/merge";
 import currency from "currency.js";
+import { Typography } from "@mui/material";
 
 export default function ProductAnalyticsChart() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
@@ -126,17 +127,25 @@ export default function ProductAnalyticsChart() {
 
   return !context.isLoading ? (
     <Stack spacing={3}>
-      <Box>
-        <TextField
-          label="Número de Buckets"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={buckets}
-          onChange={onChange}
-        />
-      </Box>
+      <Stack direction="column" spacing={1}>
+        <Box>
+          <TextField
+            label="Número de Buckets"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={buckets}
+            onChange={onChange}
+          />
+        </Box>
+        {isFinite(bucketSize) && (
+          <Typography variant="caption">
+            Aumento por bucket:{" "}
+            {currency(bucketSize, { precision: 0 }).format()}
+          </Typography>
+        )}
+      </Stack>
       <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} />
     </Stack>
   ) : (
