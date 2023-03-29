@@ -107,7 +107,7 @@ export default function DownloadReportButton({
                   <MenuItem
                     onClick={(event) => handleMenuItemClick(event, "xls_2")}
                   >
-                    formato 2
+                    Formato 2
                   </MenuItem>
                 </MenuList>
               </ClickAwayListener>
