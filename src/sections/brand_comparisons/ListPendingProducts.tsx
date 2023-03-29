@@ -99,7 +99,7 @@ export default function ListPendingProducts({
             {pendingProductsCount} Productos Pendientes
           </Typography>
           <br />
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} justifyContent="space-evenly">
             <Stack>
               <Typography>{brandComparison.brand_1.name}</Typography>
               <List dense>
