@@ -221,7 +221,7 @@ const sidebarConfig = [
           {
             title: "Banners",
             path: PATH_BANNERS.banners,
-            hasPermission: "banners.is_staff_of_banner_assets",
+            hasPermission: "banners.backend_list_banners",
           },
           {
             title: "Assets",

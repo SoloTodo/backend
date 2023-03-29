@@ -35,6 +35,7 @@ import { fDateTimeSuffix } from "src/utils/formatTime";
 import ApiFormRemoveListFieldComponent from "src/frontend-utils/api_form/fields/remove/ApiFormRemoveListFieldComponent";
 import { useRouter } from "next/router";
 import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
+import { useUser } from "src/frontend-utils/redux/user";
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,7 @@ export default function Banners({
   subsections: Section[];
 }) {
   const router = useRouter();
+  const user = useAppSelector(useUser);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
 
   const brandChoices = brands.map((b) => ({
@@ -113,13 +115,21 @@ export default function Banners({
       headerName: "Asset",
       field: "asset",
       flex: 1,
-      renderCell: (row: Banner) => (
-        <NextLink href={`${PATH_BANNERS.assets}/${row.asset.id}`} passHref>
-          <Link>
-            <Image src={row.asset.picture_url} style={{ minWidth: '20rem' }} />
+      renderCell: (row: Banner) =>
+        user?.permissions.includes("banners.is_staff_of_banner_assets") ? (
+          <NextLink href={`${PATH_BANNERS.assets}/${row.asset.id}`} passHref>
+            <Link>
+              <Image
+                src={row.asset.picture_url}
+                style={{ minWidth: "20rem" }}
+              />
+            </Link>
+          </NextLink>
+        ) : (
+          <Link href={row.asset.picture_url} target="_blank">
+            <Image src={row.asset.picture_url} style={{ minWidth: "20rem" }} />
           </Link>
-        </NextLink>
-      ),
+        ),
     },
     {
       headerName: "Tienda",
