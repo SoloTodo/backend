@@ -74,8 +74,8 @@ export default function UpdatePricingInformation({
     },
     {
       key: 4,
-      text: "Crear alerta",
-      path: `${baseRoute}/creat_alert`,
+      text: "",
+      path: "",
       hasPermission: (
         apiResourceObjects[entity.category] as Category
       ).permissions.includes("view_category_reports"),
@@ -83,7 +83,7 @@ export default function UpdatePricingInformation({
         <Button variant="contained" onClick={createAlert}>
           Crear alerta
         </Button>
-      ) : null,
+      ) : <></>,
     },
   ];
 
