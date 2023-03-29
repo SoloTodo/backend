@@ -191,6 +191,7 @@ export default function CategoryHistoricShareOfShelves({
     fieldType: "select" as "select",
     name: "bucketing_field",
     multiple: false,
+    required: true,
     choices: allFieldSets,
   });
 
@@ -211,7 +212,7 @@ export default function CategoryHistoricShareOfShelves({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${category.url}full_browse/`}
+          endpoint={`${category.url}historic_share_of_shelves/`}
           requiresSubmit={true}
           onResultsChange={(json: { url: string }) => {
             if (json) window.location.href = json.url;
