@@ -43,13 +43,13 @@ export default function StoreHistoricSkuPositions(props: {
     },
     {
       fieldType: "select" as "select",
-      name: "category",
+      name: "categories",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
-      name: "brand",
+      name: "brands",
       multiple: true,
       choices: brandChoices,
     },
@@ -99,10 +99,10 @@ export default function StoreHistoricSkuPositions(props: {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="category" label="Categorías" />
+                  <ApiFormSelectComponent name="categories" label="Categorías" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="brand" label="Marcas" />
+                  <ApiFormSelectComponent name="brands" label="Marcas" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormTextComponent

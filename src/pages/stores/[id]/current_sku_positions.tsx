@@ -35,13 +35,13 @@ export default function StoreCurrentSkuPositions(props: {
   const fieldsMetadata = [
     {
       fieldType: "select" as "select",
-      name: "category",
+      name: "categories",
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
       fieldType: "select" as "select",
-      name: "brand",
+      name: "brands",
       multiple: true,
       choices: brandChoices,
     },
@@ -83,10 +83,10 @@ export default function StoreCurrentSkuPositions(props: {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="category" label="Categorías" />
+                  <ApiFormSelectComponent name="categories" label="Categorías" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent name="brand" label="Marcas" />
+                  <ApiFormSelectComponent name="brands" label="Marcas" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormTextComponent
