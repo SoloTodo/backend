@@ -30,9 +30,7 @@ export default function CategoryShareOfShelvesTable() {
   ];
 
   return context.isLoading ? (
-    <Box textAlign="center">
-      <CircularProgress color="inherit" />
-    </Box>
+    <Box />
   ) : (
     <CustomTable data={data ? data : []} columns={columns} />
   );
