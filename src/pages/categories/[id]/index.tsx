@@ -50,6 +50,11 @@ function CategoryPage({ category, statusCode }: CategoryPageProps) {
       hasPermission: category.permissions.includes("view_category"),
     },
     {
+      text: "Share of shelves actual",
+      path: `${baseRoute}/share_of_shelves`,
+      hasPermission: category.permissions.includes("view_category_share_of_shelves"),
+    },
+    {
       text: "Share of shelves histórico",
       path: `${baseRoute}/historic_share_of_shelves`,
       hasPermission: category.permissions.includes("view_category_share_of_shelves"),
