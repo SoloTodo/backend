@@ -182,13 +182,14 @@ export default function CategoryShareOfShelves({
     );
   });
 
-  fieldsMetadata.push({
-    fieldType: "select" as "select",
-    name: "bucketing_field",
-    multiple: false,
-    required: true,
-    choices: allFieldSets,
-  });
+  allFieldSets.length !== 0 &&
+    fieldsMetadata.push({
+      fieldType: "select" as "select",
+      name: "bucketing_field",
+      multiple: false,
+      required: true,
+      choices: allFieldSets,
+    });
 
   return (
     <Page title={`${category.name} | Share of shelves`}>
@@ -259,10 +260,12 @@ export default function CategoryShareOfShelves({
                 />
                 <CardContent>
                   <Stack spacing={3}>
-                    <ApiFormSelectComponent
-                      name="bucketing_field"
-                      label="Agrupar por"
-                    />
+                    {allFieldSets.length !== 0 && (
+                      <ApiFormSelectComponent
+                        name="bucketing_field"
+                        label="Agrupar por"
+                      />
+                    )}
                     <CategoryShareOfshelvesChart />
                     <CategoryShareOfShelvesTable />
                   </Stack>
