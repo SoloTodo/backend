@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import NextLink from "next/link";
 import {
   Card,
@@ -9,6 +9,8 @@ import {
   Link,
   Grid,
   Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
@@ -32,6 +34,7 @@ import {
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import { STATUS, Store, Update } from "src/frontend-utils/types/store";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +46,21 @@ Stores.getLayout = function getLayout(page: ReactElement) {
 
 export default function Stores() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const [lastUpdates, setLastUpdates] = useState<Record<string, Update> | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    jwtFetch(
+      null,
+      apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
+    ).then((res) => {
+      setLastUpdates(res);
+      setLoading(false);
+    });
+  }, []);
 
   const fieldsMetadata = [
     {
@@ -59,17 +77,14 @@ export default function Stores() {
     },
   ];
 
-  const columns: GridColDef<Update>[] = [
+  const columns: GridColDef<Store>[] = [
     {
       headerName: "Nombre",
       field: "name",
       flex: 1,
       renderCell: (params) => (
-        <NextLink
-          href={`${PATH_STORE.root}/${apiResourceObjects[params.row.store].id}`}
-          passHref
-        >
-          <Link>{apiResourceObjects[params.row.store].name}</Link>
+        <NextLink href={`${PATH_STORE.root}/${params.row.id}`} passHref>
+          <Link>{params.row.name}</Link>
         </NextLink>
       ),
     },
@@ -77,26 +92,31 @@ export default function Stores() {
       headerName: "País",
       field: "country",
       flex: 1,
-      renderCell: (params) =>
-        apiResourceObjects[
-          (apiResourceObjects[params.row.store] as Store).country
-        ].name,
+      renderCell: (params) => apiResourceObjects[params.row.country].name,
     },
     {
       headerName: "Tipo",
       field: "type",
       flex: 1,
-      renderCell: (params) =>
-        apiResourceObjects[(apiResourceObjects[params.row.store] as Store).type]
-          .name,
+      renderCell: (params) => apiResourceObjects[params.row.type].name,
     },
     {
       headerName: "Última Actualización",
       field: "last_updated",
       renderCell: (params) =>
-        params.row.last_updated
-          ? fDateTimeSuffix(params.row.last_updated)
-          : "Inactiva",
+        !loading && lastUpdates ? (
+          lastUpdates[params.row.url] ? (
+            <Typography noWrap variant="body2">
+              {fDateTimeSuffix(lastUpdates[params.row.url].last_updated)}
+            </Typography>
+          ) : (
+            "Inactiva"
+          )
+        ) : (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ),
       flex: 1,
     },
     // {
@@ -111,16 +131,32 @@ export default function Stores() {
       field: "state",
       flex: 1,
       renderCell: (params) =>
-        params.row.status === 3 && !params.row.available_products_count
-          ? "Error"
-          : STATUS[params.row.status as 1 | 2 | 3 | 4],
+        !loading && lastUpdates ? (
+          lastUpdates[params.row.url].status === 3 &&
+          !lastUpdates[params.row.url].available_products_count ? (
+            "Error"
+          ) : (
+            STATUS[lastUpdates[params.row.url].status as 1 | 2 | 3 | 4]
+          )
+        ) : (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ),
     },
     {
       headerName: "Result",
       field: "result",
       flex: 1,
       renderCell: (params) => {
-        const l = params.row;
+        if (loading || !lastUpdates) {
+          return (
+            <Box>
+              <CircularProgress />
+            </Box>
+          );
+        }
+        const l = lastUpdates[params.row.url];
         const text = l.available_products_count
           ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
           : "N/A";
@@ -146,9 +182,7 @@ export default function Stores() {
 
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={
-            apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
-          }
+          endpoint={apiSettings.apiResourceEndpoints.stores}
         >
           <Stack spacing={3}>
             <Card>
