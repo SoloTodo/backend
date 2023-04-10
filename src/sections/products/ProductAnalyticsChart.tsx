@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Input, Stack, TextField } from "@mui/material";
+import { Box, CircularProgress, Stack, TextField } from "@mui/material";
 import { ChangeEvent, useContext, useState } from "react";
 import ReactApexChart, { BaseOptionChart } from "src/components/chart";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
@@ -36,8 +36,6 @@ export default function ProductAnalyticsChart() {
       buckets;
   }
 
-  const initialArray = new Array(buckets).fill(0);
-
   const CHART_DATA: ApexAxisChartSeries = retailer_ids.map((id) => ({
     name: getApiResourceObject(apiResourceObjects, "stores", id.toString())
       .name,
@@ -45,12 +43,12 @@ export default function ProductAnalyticsChart() {
       (acc: number[], a: { price: number; retailer_id: number }) => {
         if (a.retailer_id === id) {
           let p = Math.trunc((a.price - currentResult[0].price) / bucketSize);
-          if (p >= initialArray.length) p = p - 1;
+          if (p >= buckets) p = p - 1;
           acc[p] = acc[p] + 1;
         }
         return acc;
       },
-      initialArray
+      new Array(buckets).fill(0)
     ),
   }));
 
@@ -91,14 +89,14 @@ export default function ProductAnalyticsChart() {
       type: "number",
       categories:
         currentResult.length !== 0
-          ? initialArray.map((_, index) => {
+          ? new Array(buckets).fill(0).map((_, index) => {
               const start = currency(
                 currentResult[0].price + index * bucketSize,
                 {
                   precision: 0,
                 }
               ).format();
-              const isLast = index === initialArray.length - 1 ? 0 : 1;
+              const isLast = index === buckets - 1 ? 0 : 1;
               const end = currency(
                 currentResult[0].price + (index + 1) * bucketSize - isLast,
                 {
