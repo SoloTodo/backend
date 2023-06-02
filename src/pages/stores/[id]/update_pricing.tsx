@@ -33,7 +33,7 @@ export default function UpdateStorePricing(props: { store: Store }) {
     const myAbortController = new AbortController();
 
     setLoading(true);
-    jwtFetch(null, `${store.url}scraper/`, { signal: myAbortController.signal })
+    jwtFetch(null, `stores/${store.id}/scraper/`, { signal: myAbortController.signal })
       .then((res) => {
         const data = {
           ...res,

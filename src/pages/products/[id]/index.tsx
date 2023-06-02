@@ -104,10 +104,12 @@ export default function ProductPage({ product }: ProductProps) {
             <Card>
               <CardHeader title="Especificaciones técnicas" />
               <CardContent>
+                {product.creator &&
                 <Typography>
                   <b>Creador/a:</b> {product.creator.first_name}{" "}
                   {product.creator.last_name}
                 </Typography>
+                }
                 <br />
                 <Container>
                   {renderHtml !== "" ? (

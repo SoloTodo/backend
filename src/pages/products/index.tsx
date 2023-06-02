@@ -61,7 +61,7 @@ export default function Products() {
     },
     {
       fieldType: "text" as "text",
-      name: "search",
+      name: "name",
     },
     {
       fieldType: "date_range" as "date_range",
@@ -148,7 +148,7 @@ export default function Products() {
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormTextComponent
-                      name="search"
+                      name="name"
                       label="Palabras clave"
                     />
                   </Grid>
