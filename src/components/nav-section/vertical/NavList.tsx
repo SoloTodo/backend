@@ -27,7 +27,7 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
   if (
     typeof list.hasPermission !== "undefined" &&
     !user?.permissions.includes(list.hasPermission) &&
-    (!user?.is_staff && list.hasPermission === "is_staff")
+    !(user?.is_staff && list.hasPermission === "is_staff")
   ) {
     return null;
   }
