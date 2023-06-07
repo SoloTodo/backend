@@ -118,7 +118,7 @@ MyApp.getInitialProps = async (context: MyAppContext) => {
   } catch (err) {
     // Invalid token or some other network error, invalidate the
     // possible auth cookie
-    ctx.res?.setHeader("error", err.message);
+    ctx.res?.setHeader("error", err.message || 'Unknown error');
     deleteAuthTokens(ctx as unknown as GetServerSidePropsContext);
   }
 

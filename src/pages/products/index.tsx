@@ -60,17 +60,43 @@ export default function Products() {
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
+      fieldType: "select" as "select",
+      name: "exclude_refurbished",
+      multiple: false,
+      choices: [
+          {
+            value: '0',
+            label: 'Ver todos'
+          },
+          {
+            value: '1',
+            label: 'Sólo equipos nuevos'
+          }
+      ],
+    },
+    {
+      fieldType: "select" as "select",
+      name: "exclude_marketplace",
+      multiple: false,
+      choices: [
+          {
+            value: '0',
+            label: 'Ver todos'
+          },
+          {
+            value: '1',
+            label: 'Sólo de venta directa'
+          }
+      ],
+    },
+    {
       fieldType: "text" as "text",
       name: "name",
     },
     {
       fieldType: "date_range" as "date_range",
       name: "creation_date",
-    },
-    {
-      fieldType: "date_range" as "date_range",
-      name: "last_updated",
-    },
+    }
   ];
 
   const columns: any[] = [
@@ -95,14 +121,7 @@ export default function Products() {
       field: "creation_date",
       renderCell: (row: any) => fDateTimeSuffix(row.creation_date),
       flex: 1,
-    },
-    {
-      headerName: "Última actualización",
-      field: "last_updated",
-      renderCell: (row: any) =>
-        row.last_updated ? fDateTimeSuffix(row.last_updated) : "Inactiva",
-      flex: 1,
-    },
+    }
   ];
 
   return (
@@ -143,7 +162,7 @@ export default function Products() {
                   <Grid item xs={6}>
                     <ApiFormSelectComponent
                       name="availability_stores"
-                      label="Disponibilidad en tienda"
+                      label="Disponibilidad en retailer"
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -153,15 +172,21 @@ export default function Products() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <ApiFormDateRangePickerComponent
-                      name="creation_date"
-                      label="Fecha creación"
+                    <ApiFormSelectComponent
+                      name="exclude_refurbished"
+                      label="¿Mostrar reacondicionados?"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent
+                      name="exclude_marketplace"
+                      label="¿Mostrar productos de marketplace?"
                     />
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormDateRangePickerComponent
-                      name="last_updated"
-                      label="Última act."
+                      name="creation_date"
+                      label="Fecha creación"
                     />
                   </Grid>
                 </Grid>
