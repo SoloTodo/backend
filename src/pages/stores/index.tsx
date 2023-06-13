@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import NextLink from "next/link";
 import {
   Card,
@@ -8,13 +8,16 @@ import {
   Stack,
   Link,
   Grid,
+  Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 // layouts
 import Layout from "src/layouts";
 // sections
-import ApiFormResultsTable from "src/components/api_form/ApiFormResultsTable";
+import ApiFormStoreTable from "src/components/api_form/ApiFormStoreTable";
 // components
 import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
@@ -30,6 +33,8 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
+import { STATUS, Store, Update } from "src/frontend-utils/types/store";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +46,21 @@ Stores.getLayout = function getLayout(page: ReactElement) {
 
 export default function Stores() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const [lastUpdates, setLastUpdates] = useState<Record<string, Update> | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    jwtFetch(
+      null,
+      apiSettings.apiResourceEndpoints.store_update_logs + "latest/"
+    ).then((res) => {
+      setLastUpdates(res);
+      setLoading(false);
+    });
+  }, []);
 
   const fieldsMetadata = [
     {
@@ -57,7 +77,7 @@ export default function Stores() {
     },
   ];
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef<Store>[] = [
     {
       headerName: "Nombre",
       field: "name",
@@ -81,18 +101,71 @@ export default function Stores() {
       renderCell: (params) => apiResourceObjects[params.row.type].name,
     },
     {
-      headerName: "Última Activación",
-      field: "last_activation",
+      headerName: "Última Actualización",
+      field: "last_updated",
       renderCell: (params) =>
-        params.row.last_activation
-          ? fDateTimeSuffix(params.row.last_activation)
-          : "Inactiva",
+        !loading && lastUpdates ? (
+          lastUpdates[params.row.url] ? (
+            <Typography noWrap variant="body2">
+              {fDateTimeSuffix(lastUpdates[params.row.url].last_updated)}
+            </Typography>
+          ) : (
+            "Inactiva"
+          )
+        ) : (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ),
       flex: 1,
     },
+    // {
+    //   headerName: "Scraper",
+    //   field: "storescraper_class",
+    //   flex: 1,
+    //   renderCell: (params) =>
+    //     (apiResourceObjects[params.row.store] as Store).storescraper_class,
+    // },
     {
-      headerName: "Scraper",
-      field: "storescraper_class",
+      headerName: "Estado",
+      field: "state",
       flex: 1,
+      renderCell: (params) =>
+        !loading && lastUpdates ? (
+          lastUpdates[params.row.url].status === 3 &&
+          !lastUpdates[params.row.url].available_products_count ? (
+            "Error"
+          ) : (
+            STATUS[lastUpdates[params.row.url].status as 1 | 2 | 3 | 4]
+          )
+        ) : (
+          <Box>
+            <CircularProgress />
+          </Box>
+        ),
+    },
+    {
+      headerName: "Result",
+      field: "result",
+      flex: 1,
+      renderCell: (params) => {
+        if (loading || !lastUpdates) {
+          return (
+            <Box>
+              <CircularProgress />
+            </Box>
+          );
+        }
+        const l = lastUpdates[params.row.url];
+        const text = l.available_products_count
+          ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
+          : "N/A";
+        return (
+          <Typography noWrap variant="body2">
+            {text}
+          </Typography>
+        );
+      },
     },
   ];
 
@@ -132,7 +205,7 @@ export default function Stores() {
             <Card>
               <CardHeader title="Listado de Tiendas" />
               <CardContent>
-                <ApiFormResultsTable columns={columns} withPagination={false} />
+                <ApiFormStoreTable columns={columns} />
               </CardContent>
             </Card>
           </Stack>

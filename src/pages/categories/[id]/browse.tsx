@@ -23,8 +23,8 @@ import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useRouter } from "next/router";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
-import { GetServerSideProps } from "next/types";
-import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import { NextPageContext } from "next/types";
+import { getCategorySpecsFromLayout } from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBrowseTable";
@@ -33,37 +33,7 @@ import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/Ap
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 import ApiFormPriceRangeComponent from "src/frontend-utils/api_form/fields/price_range/ApiFormPriceRangeComponent";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
-
-// ----------------------------------------------------------------------
-
-type filter = {
-  choices: {
-    id: number;
-    name: string;
-    value: string | null;
-  }[];
-  continuous_range_step: string | null;
-  continuous_range_unit: string | null;
-  country: string | null;
-  id: number;
-  label: string;
-  name: string;
-  type: string;
-};
-
-type CategorySpecsFormLayoutProps = {
-  category: string;
-  fieldsets: {
-    id: number;
-    label: string;
-    filters: filter[];
-  }[];
-  id: number;
-  name: string | null;
-  orders: any[];
-  url: string;
-  website: string;
-};
+import { CategorySpecsFormLayoutProps } from "src/frontend-utils/types/store";
 
 // ----------------------------------------------------------------------
 
@@ -76,11 +46,9 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 export default function CategoryBrowse({
   categorySpecsFormLayout,
   brands,
-}: // initResults
-{
+}: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
   brands: Brand[];
-  // initResults: any;
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
@@ -90,16 +58,6 @@ export default function CategoryBrowse({
     "categories",
     categoryId
   );
-
-  // const [initResults, setInitResults] = useState<{ price_ranges: any } | null>(
-  //   null
-  // );
-
-  // useEffect(() => {
-  //   jwtFetch(null, `${category.url}full_browse/`).then((data) => {
-  //     setInitResults(data);
-  //   });
-  // }, []);
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
     {
@@ -310,36 +268,6 @@ export default function CategoryBrowse({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  let categorySpecsFormLayout = {};
-  try {
-    const response = await jwtFetch(
-      context,
-      `${apiSettings.apiResourceEndpoints.category_specs_form_layouts}?category=${context.params?.id}`
-    );
-    categorySpecsFormLayout = response[0];
-    response.forEach((res: { website: string }) => {
-      if (res.website == "http://localhost:8000/websites/1/")
-        categorySpecsFormLayout = res;
-    });
-    const brands = await jwtFetch(
-      context,
-      apiSettings.apiResourceEndpoints.brands
-    );
-    // const initResults = await jwtFetch(
-    //   context,
-    //   `${apiSettings.apiResourceEndpoints.categories}${context.params?.id}/full_browse/`
-    // );
-    return {
-      props: {
-        categorySpecsFormLayout: categorySpecsFormLayout,
-        brands: brands,
-        // initResults: initResults
-      },
-    };
-  } catch {
-    return {
-      notFound: true,
-    };
-  }
+export const getServerSideProps = async (context: NextPageContext) => {
+  return await getCategorySpecsFromLayout(context);
 };

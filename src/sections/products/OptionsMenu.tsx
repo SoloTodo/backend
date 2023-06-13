@@ -11,6 +11,7 @@ import { useState } from "react";
 import { JSONTree } from "react-json-tree";
 import { useSnackbar } from "notistack";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
+import AddAlertModal from "./AddAlertModal";
 
 export default function OptionsMenu({ product }: { product: Product }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -141,6 +142,11 @@ export default function OptionsMenu({ product }: { product: Product }) {
           Ver en SoloTodo
         </Link>
       ),
+    },
+    {
+      text: "",
+      path: "",
+      renderObject: <AddAlertModal product={product} />,
     },
   ];
 

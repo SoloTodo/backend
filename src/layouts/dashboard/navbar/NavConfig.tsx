@@ -7,16 +7,26 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StorageIcon from "@mui/icons-material/Storage";
+import CompareIcon from "@mui/icons-material/Compare";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import KeyIcon from "@mui/icons-material/Key";
+import SellIcon from "@mui/icons-material/Sell";
 // routes
 import {
+  PATH_ALERT,
   PATH_BANNERS,
+  PATH_BRAND_COMPARISONS,
   PATH_CATEGORY,
   PATH_ENTITY,
+  PATH_KEYWORD,
   PATH_METAMODEL,
+  PATH_MICROSITE,
   PATH_PRODUCT,
   PATH_RATING,
   PATH_REPORTS,
   PATH_STORE,
+  PATH_STORE_SUBSCRIPTION,
   PATH_USER,
   PATH_WTB,
 } from "src/routes/paths";
@@ -40,6 +50,11 @@ const ICONS = {
   fileDownload: <FileDownloadIcon />,
   visibility: <VisibilityIcon />,
   storage: <StorageIcon />,
+  compare: <CompareIcon />,
+  alert: <NotificationsIcon />,
+  storeFront: <StorefrontIcon />,
+  key: <KeyIcon />,
+  sell: <SellIcon />,
 };
 
 const sidebarConfig = [
@@ -115,6 +130,25 @@ const sidebarConfig = [
         ],
       },
       {
+        title: "Comparación de marcas",
+        path: "-",
+        icon: ICONS.compare,
+        hasPermission: "brand_comparisons.backend_list_brand_comparisons",
+        children: [
+          {
+            title: "Todos",
+            path: PATH_BRAND_COMPARISONS.root,
+            hasPermission: "brand_comparisons.backend_list_brand_comparisons",
+          },
+        ],
+      },
+      {
+        title: "Sitios",
+        path: PATH_MICROSITE.root,
+        icon: ICONS.sell,
+        hasPermission: "microsite.pricing_view_microsite",
+      },
+      {
         title: "Ratings",
         path: "-",
         icon: ICONS.thumbUp,
@@ -156,6 +190,16 @@ const sidebarConfig = [
         ],
       },
       {
+        title: "Alertas",
+        path: PATH_ALERT.root,
+        icon: ICONS.alert,
+      },
+      {
+        title: "Suscripción a tiendas",
+        path: PATH_STORE_SUBSCRIPTION.root,
+        icon: ICONS.storeFront,
+      },
+      {
         title: "Reportes",
         path: "-",
         icon: ICONS.fileDownload,
@@ -172,12 +216,12 @@ const sidebarConfig = [
         title: "Banner Visibility",
         path: "-",
         icon: ICONS.visibility,
-        hasPermission: "banners.is_staff_of_banner_assets",
+        hasPermission: "banners.backend_list_banners",
         children: [
           {
             title: "Banners",
             path: PATH_BANNERS.banners,
-            hasPermission: "banners.is_staff_of_banner_assets",
+            hasPermission: "banners.backend_list_banners",
           },
           {
             title: "Assets",
@@ -198,6 +242,36 @@ const sidebarConfig = [
             title: "Últimas actualizaciones",
             path: PATH_BANNERS.updatesLatest,
             hasPermission: "banners.is_staff_of_banner_assets",
+          },
+          {
+            title: "Active Participation",
+            path: PATH_BANNERS.activeParticipation,
+            hasPermission: "banners.backend_list_banners",
+          },
+          {
+            title: "Historic Participation",
+            path: PATH_BANNERS.historicParticipation,
+            hasPermission: "banners.backend_list_banners",
+          },
+        ],
+      },
+      {
+        title: "Keyword Visibility",
+        path: "-",
+        icon: ICONS.key,
+        hasPermission: "keyword_search_positions.backend_list_keyword_searches",
+        children: [
+          {
+            title: "Búsquedas",
+            path: PATH_KEYWORD.root,
+            hasPermission:
+              "keyword_search_positions.backend_list_keyword_searches",
+          },
+          {
+            title: "Reporte actual",
+            path: PATH_KEYWORD.report,
+            hasPermission:
+              "keyword_search_positions.backend_list_keyword_searches",
           },
         ],
       },

@@ -31,13 +31,14 @@ export default function StoreAnalytics() {
       fieldType: "select" as "select",
       name: "store",
       multiple: false,
-      required: true,
+      required: false,
       choices: selectApiResourceObjects(apiResourceObjects, "stores"),
     },
     {
       fieldType: "select" as "select",
-      name: "categories",
-      multiple: true,
+      name: "category",
+      multiple: false,
+      required: false,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
@@ -82,8 +83,8 @@ export default function StoreAnalytics() {
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSelectComponent
-                    name="categories"
-                    label="Categorías"
+                    name="category"
+                    label="Categoría"
                   />
                 </Grid>
                 <Grid item xs={6}>

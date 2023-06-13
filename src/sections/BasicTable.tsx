@@ -1,5 +1,6 @@
 import { Box, Card, CardContent, CardHeader, Stack } from "@mui/material";
 import { DataGrid, GridColDef, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import { ReactElement } from "react";
 
 function QuickSearchToolbar() {
   return (
@@ -20,15 +21,17 @@ export default function BasicTable({
   columns,
   data,
   setSelectedRows,
+  action,
 }: {
   title: string;
   columns: GridColDef[];
   data: any[];
   setSelectedRows?: Function;
+  action?: ReactElement;
 }) {
   return (
     <Card>
-      <CardHeader title={title} />
+      <CardHeader title={title} action={action ? action : null} />
       <CardContent>
         <Box sx={{ height: "70vh", width: "100%" }}>
           {setSelectedRows ? (

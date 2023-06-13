@@ -8,10 +8,13 @@ import {
   Grid,
   Link,
   Stack,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
+import WarningIcon from "@mui/icons-material/Warning";
 // layouts
 import Layout from "src/layouts";
 // routes
@@ -72,6 +75,18 @@ export default function Entities() {
     },
     {
       fieldType: "select" as "select",
+      name: "countries",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "countries"),
+    },
+    {
+      fieldType: "select" as "select",
+      name: "types",
+      multiple: true,
+      choices: selectApiResourceObjects(apiResourceObjects, "types"),
+    },
+    {
+      fieldType: "select" as "select",
       name: "is_available",
       multiple: false,
       choices: choicesYesNo,
@@ -106,7 +121,43 @@ export default function Entities() {
     },
   ];
 
+  const getWarnings = (entity: Entity) => {
+    const warnings = [];
+    if (!entity.product) {
+      warnings.push("Este SKU aún no ha sido homologado");
+    }
+    if (!(entity.active_registry && entity.active_registry.is_available)) {
+      warnings.push("Este SKU no está disponible para compra");
+    }
+    if (!entity.is_visible) {
+      warnings.push(
+        "Este SKU ha sido marcado como no relevante por el staff de SoloTodo"
+      );
+    }
+    return warnings;
+  };
+
   const columns: any[] = [
+    {
+      headerName: "",
+      field: "warnings",
+      flex: 1,
+      renderCell: (row: Entity) => {
+        const warnings = getWarnings(row);
+        if (warnings.length) {
+          const message = warnings.reduce((acc, a) => {
+            return a + ". " + acc;
+          }, "");
+          return (
+            <Tooltip title={message}>
+              <WarningIcon fontSize="small" color="warning" />
+            </Tooltip>
+          );
+        } else {
+          return "";
+        }
+      },
+    },
     {
       headerName: "Nombre",
       field: "name",
@@ -143,7 +194,7 @@ export default function Entities() {
       headerName: "Vendedor",
       field: "seller",
       flex: 1,
-      renderCell: (row: Entity) => row.seller || "N/A"
+      renderCell: (row: Entity) => row.seller || "N/A",
     },
     {
       headerName: "SKU",
@@ -179,7 +230,17 @@ export default function Entities() {
         ),
     },
     {
-      headerName: "¿Disp?",
+      headerName: (
+        <Tooltip title="El SKU está disponible para compra actualmente">
+          <Typography
+            variant="body2"
+            fontWeight={600}
+            sx={{ textDecoration: "underline" }}
+          >
+            ¿Disp?
+          </Typography>
+        </Tooltip>
+      ),
       field: "active_registry",
       flex: 1,
       renderCell: (row: Entity) =>
@@ -190,14 +251,24 @@ export default function Entities() {
         ),
     },
     {
-      headerName: "Act?",
+      headerName: "¿Act?",
       field: "key",
       flex: 1,
       renderCell: (row: Entity) =>
         row.active_registry ? <CheckIcon /> : <ClearIcon />,
     },
     {
-      headerName: "Vis?",
+      headerName: (
+        <Tooltip title="El SKU ha sido marcado como relevante por el staff de SoloTodo">
+          <Typography
+            variant="body2"
+            fontWeight={600}
+            sx={{ textDecoration: "underline" }}
+          >
+            ¿Vis?
+          </Typography>
+        </Tooltip>
+      ),
       field: "is_visible",
       flex: 1,
       renderCell: (row: Entity) =>
@@ -270,7 +341,7 @@ export default function Entities() {
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.entities}?ordering=name`}
+          endpoint={`${apiSettings.apiResourceEndpoints.entities}?ordering=-id`}
         >
           <Stack spacing={3}>
             <Card>
@@ -290,6 +361,12 @@ export default function Entities() {
                       label="Categorías"
                     />
                   </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="countries" label="Países" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="types" label="Tipos" />
+                  </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent
                       name="is_available"
@@ -298,7 +375,11 @@ export default function Entities() {
                     />
                   </Grid>
                   <Grid item xs={2}>
-                    <ApiFormSelectComponent name="is_active" label="¿Activa?" selectOnly />
+                    <ApiFormSelectComponent
+                      name="is_active"
+                      label="¿Activa?"
+                      selectOnly
+                    />
                   </Grid>
                   <Grid item xs={2}>
                     <ApiFormSelectComponent

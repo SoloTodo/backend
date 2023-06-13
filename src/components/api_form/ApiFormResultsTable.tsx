@@ -7,40 +7,34 @@ import Scrollbar from "../Scrollbar";
 // context
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
 import { StyledDataGrid } from "../my_components/StyledDatGrid";
-import CustomTable from "src/sections/CustomTable";
 
 export default function ApiFormResultsTable({
   columns,
   getRowId,
-  withPagination=true,
 }: {
   columns: GridColDef[];
   getRowId?: GridRowIdGetter<any>;
-  withPagination?: Boolean
 }) {
   const context = useContext(ApiFormContext);
   const data = context.currentResult;
 
-  return (
-    context.isLoading ? (
-      <Box textAlign="center">
-        <CircularProgress color="inherit" />
+  return context.isLoading ? (
+    <Box textAlign="center">
+      <CircularProgress color="inherit" />
+    </Box>
+  ) : (
+    <Scrollbar>
+      <Box sx={{ height: "70vh", width: "100%" }}>
+        <StyledDataGrid
+          columns={columns}
+          rows={data ? data : []}
+          rowsPerPageOptions={[100]}
+          getRowId={getRowId}
+          rowHeight={104}
+          disableColumnSelector
+        />
       </Box>
-    )
-    : withPagination ? 
-      <Scrollbar>
-        <Box sx={{ height: "70vh", width: "100%" }}>
-          <StyledDataGrid
-            columns={columns}
-            rows={data ? data : []}
-            rowsPerPageOptions={[100]}
-            getRowId={getRowId}
-            rowHeight={104}
-            disableColumnSelector
-          />
-        </Box>
-      </Scrollbar>
-    :
-      <CustomTable data={data ? data : []} columns={columns} />
+    </Scrollbar>
   );
+  // <CustomTable data={data ? data : []} columns={columns} />
 }

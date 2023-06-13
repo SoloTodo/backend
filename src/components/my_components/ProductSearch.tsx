@@ -1,17 +1,18 @@
-import { MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Select, TextField, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
-import { Entity } from "src/frontend-utils/types/entity";
 
 export default function ProductSearch({
   entityCategory,
   selectedProduct,
   setSelectedProduct,
+  extraParams,
 }: {
   entityCategory: string;
   selectedProduct: any;
   setSelectedProduct: Function;
+  extraParams?: string;
 }) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [value, setValue] = useState("");
@@ -28,7 +29,7 @@ export default function ProductSearch({
       null,
       `${entityCategory}products/?page_size=200&search=${encodeURIComponent(
         value
-      )}`
+      )}${extraParams}`
     ).then((data) => {
       const l = data.results.length;
       setProductChoices(data.results);

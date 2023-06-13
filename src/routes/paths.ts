@@ -15,6 +15,11 @@ const ROOTS_WTB = "/wtb";
 const ROOTS_REPORTS = "/reports";
 const ROOTS_BANNERS = "/banners";
 const ROOTS_METAMODEL = "/metamodel";
+const ROOTS_BRAND_COMPARISONS = "/brand_comparisons";
+const ROOTS_ALERT = "/alerts";
+const ROOTS_STORE_SUBSCRIPTION = "/store_subscriptions";
+const ROOTS_KEYWORD = "/keyword_searches";
+const ROOTS_MICROSITE = "/microsites";
 
 // ----------------------------------------------------------------------
 
@@ -81,10 +86,33 @@ export const PATH_BANNERS = {
   assetsPending: path(ROOTS_BANNERS, "/assets/pending"),
   updates: path(ROOTS_BANNERS, "/updates"),
   updatesLatest: path(ROOTS_BANNERS, "/updates/latest"),
+  activeParticipation: path(ROOTS_BANNERS, "/active_participation"),
+  historicParticipation: path(ROOTS_BANNERS, "/historic_participation"),
 };
 
 export const PATH_METAMODEL = {
   metamodel: ROOTS_METAMODEL,
   models: path(ROOTS_METAMODEL, "/models"),
   instances: path(ROOTS_METAMODEL, "/instances"),
+};
+export const PATH_BRAND_COMPARISONS = {
+  root: ROOTS_BRAND_COMPARISONS,
+};
+
+export const PATH_ALERT = {
+  root: ROOTS_ALERT,
+};
+
+export const PATH_STORE_SUBSCRIPTION = {
+  root: ROOTS_STORE_SUBSCRIPTION,
+};
+
+export const PATH_KEYWORD = {
+  root: ROOTS_KEYWORD,
+  report: path(ROOTS_KEYWORD, "/active_report"),
+  updates: "/keyword_search_updates",
+};
+
+export const PATH_MICROSITE = {
+  root: ROOTS_MICROSITE,
 };

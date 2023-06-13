@@ -32,7 +32,6 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
     return null;
   }
 
-
   if (hasChildren) {
     return (
       <>
