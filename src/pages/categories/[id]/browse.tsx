@@ -24,16 +24,24 @@ import { useRouter } from "next/router";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import { NextPageContext } from "next/types";
-import { getCategorySpecsFromLayout } from "src/frontend-utils/nextjs/utils";
+import {
+  getCategoryColumns,
+  getCategorySpecsFromLayout
+} from "src/frontend-utils/nextjs/utils";
 import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import CategoryDetailBrowseTable from "src/sections/categories/CategoryDetailBrowseTable";
-import { Brand } from "src/frontend-utils/types/banner";
 import ApiFormSliderComponent from "src/frontend-utils/api_form/fields/slider/ApiFormSliderComponent";
 import { ApiFormFieldMetadata } from "src/frontend-utils/api_form/ApiForm";
 import ApiFormPriceRangeComponent from "src/frontend-utils/api_form/fields/price_range/ApiFormPriceRangeComponent";
 import { Currency } from "src/frontend-utils/redux/api_resources/types";
-import { CategorySpecsFormLayoutProps } from "src/frontend-utils/types/store";
+import {
+  CategoryColumn,
+  CategorySpecsFormLayoutProps
+} from "src/frontend-utils/types/store";
+import {websiteId} from "../../../config";
+import ApiFormPaginationComponent
+  from "../../../frontend-utils/api_form/fields/pagination/ApiFormPaginationComponent";
 
 // ----------------------------------------------------------------------
 
@@ -45,10 +53,10 @@ CategoryBrowse.getLayout = function getLayout(page: ReactElement) {
 
 export default function CategoryBrowse({
   categorySpecsFormLayout,
-  brands,
+    columns
 }: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
-  brands: Brand[];
+  columns:CategoryColumn[];
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
@@ -60,6 +68,9 @@ export default function CategoryBrowse({
   );
 
   const fieldsMetadata: ApiFormFieldMetadata[] = [
+    {
+        fieldType: "pagination" as "pagination",
+    },
     {
       fieldType: "select" as "select",
       name: "stores",
@@ -85,6 +96,36 @@ export default function CategoryBrowse({
     {
       fieldType: "price_range" as "price_range",
       name: "offer_price_usd",
+    },
+      {
+      fieldType: "select" as "select",
+      name: "exclude_refurbished",
+      multiple: false,
+      choices: [
+          {
+            value: '0',
+            label: 'Ver todos'
+          },
+          {
+            value: '1',
+            label: 'Sólo equipos nuevos'
+          }
+      ],
+    },
+    {
+      fieldType: "select" as "select",
+      name: "exclude_marketplace",
+      multiple: false,
+      choices: [
+          {
+            value: '0',
+            label: 'Ver todos'
+          },
+          {
+            value: '1',
+            label: 'Sólo de venta directa'
+          }
+      ],
     },
   ];
 
@@ -201,7 +242,7 @@ export default function CategoryBrowse({
         />
         <ApiFormComponent
           fieldsMetadata={fieldsMetadata}
-          endpoint={`${category.url}full_browse/`}
+          endpoint={`${category.url}browse/`}
         >
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
@@ -214,13 +255,25 @@ export default function CategoryBrowse({
                     columns={{ xs: 6, lg: 12 }}
                   >
                     <Grid item xs={6}>
-                      <ApiFormSelectComponent name="stores" label="Tiendas" />
+                      <ApiFormSelectComponent name="stores" label="Retailers" />
                     </Grid>
                     <Grid item xs={6}>
                       <ApiFormSelectComponent name="countries" label="Países" />
                     </Grid>
                     <Grid item xs={6}>
                       <ApiFormSelectComponent name="types" label="Tipos" />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <ApiFormSelectComponent
+                        name="exclude_refurbished"
+                        label="¿Mostrar reacondicionados?"
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <ApiFormSelectComponent
+                        name="exclude_marketplace"
+                        label="¿Mostrar productos de marketplace?"
+                      />
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -257,7 +310,10 @@ export default function CategoryBrowse({
               <Card>
                 <CardHeader title="Resultados" />
                 <CardContent>
-                  <CategoryDetailBrowseTable brands={brands} />
+                  <ApiFormPaginationComponent />
+                  <CategoryDetailBrowseTable
+                      columns={columns}
+                  />
                 </CardContent>
               </Card>
             </Grid>
@@ -269,5 +325,19 @@ export default function CategoryBrowse({
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
-  return await getCategorySpecsFromLayout(context);
+  const formLayout = await getCategorySpecsFromLayout(context, websiteId);
+  const columns = await getCategoryColumns(context, websiteId, 1)
+
+  if (!formLayout || !columns) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return {
+    props: {
+      categorySpecsFormLayout: formLayout,
+      columns: columns
+    }
+  }
 };

@@ -32,6 +32,7 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormTextComponent from "src/frontend-utils/api_form/fields/text/ApiFormTextComponent";
 import ApiFormSubmitComponent from "src/frontend-utils/api_form/fields/submit/ApiFormSubmitComponent";
 import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
+import {websiteId} from "../../../config";
 
 // ----------------------------------------------------------------------
 
@@ -45,10 +46,8 @@ CategoryHistoricShareOfShelves.getLayout = function getLayout(
 
 export default function CategoryHistoricShareOfShelves({
   categorySpecsFormLayout,
-  brands,
 }: {
   categorySpecsFormLayout: CategorySpecsFormLayoutProps;
-  brands: Brand[];
 }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const router = useRouter();
@@ -277,5 +276,5 @@ export default function CategoryHistoricShareOfShelves({
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
-  return await getCategorySpecsFromLayout(context);
+  return await getCategorySpecsFromLayout(context, websiteId);
 };

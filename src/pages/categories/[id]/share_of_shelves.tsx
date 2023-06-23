@@ -33,6 +33,7 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import CategoryShareOfshelvesChart from "src/sections/categories/CategoryShareOfShelvesChart";
 import CategoryShareOfShelvesTable from "src/sections/categories/CategoryShareOfShelvesTable";
 import CategoryShareOfShelvesReportButton from "src/sections/categories/CategoryShareOfShelvesReportButton";
+import {websiteId} from "../../../config";
 
 // ----------------------------------------------------------------------
 
@@ -280,5 +281,5 @@ export default function CategoryShareOfShelves({
 }
 
 export const getServerSideProps = async (context: NextPageContext) => {
-  return await getCategorySpecsFromLayout(context);
+  return await getCategorySpecsFromLayout(context, websiteId);
 };

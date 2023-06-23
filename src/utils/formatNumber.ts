@@ -1,4 +1,6 @@
 import numeral from 'numeral';
+import {Currency} from "../frontend-utils/redux/api_resources/types";
+import currencyjs from 'currency.js'
 
 // ----------------------------------------------------------------------
 
@@ -20,4 +22,9 @@ export function fShortenNumber(number: string | number) {
 
 export function fData(number: string | number) {
   return numeral(number).format('0.0 b');
+}
+
+export function formatCurrency(currency:Currency, number:number | string) {
+  console.log(currency)
+  return currencyjs(number, {symbol: currency.prefix, precision: currency.decimal_places, separator: '.'}).format()
 }
