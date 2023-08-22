@@ -1,7 +1,7 @@
 import { Container, Link } from "@mui/material";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next/types";
-import { ReactElement } from "react";
+import {ReactElement, useState} from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -9,12 +9,13 @@ import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/ap
 import { useUser } from "src/frontend-utils/redux/user";
 import { apiSettings } from "src/frontend-utils/settings";
 import { Detail } from "src/frontend-utils/types/extras";
-import { Rating } from "src/frontend-utils/types/ratings";
+import {Rating} from "src/frontend-utils/types/ratings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_PRODUCT, PATH_RATING, PATH_STORE } from "src/routes/paths";
 import Details from "src/sections/Details";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { fDateTimeSuffix } from "src/utils/formatTime";
+import RatingStatusSelector from "../../../components/RatingStatusSelector";
 
 // ----------------------------------------------------------------------
 
@@ -24,9 +25,10 @@ RatingPage.getLayout = function getLayout(page: ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function RatingPage({ rating }: { rating: Rating }) {
+export default function RatingPage({ originalRating }: { originalRating: Rating }) {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const user = useAppSelector(useUser);
+  const [rating, setRating] = useState<Rating>(originalRating)
 
   const details: Detail[] = [
     {
@@ -78,12 +80,14 @@ export default function RatingPage({ rating }: { rating: Rating }) {
           : "Producto no recibido",
     },
     {
-      key: "approval_date",
-      label: "Fecha aprobación",
-      renderData: (rating: Rating) =>
-        rating.approval_date
-          ? fDateTimeSuffix(rating.approval_date)
-          : "Pendiente",
+      key: "status",
+      label: "Estado",
+      renderData: (rating: Rating) => <RatingStatusSelector rating={rating} setRating={setRating} />,
+    },
+    {
+      key: "last_updated",
+      label: "Última actualización",
+      renderData: (rating: Rating) => fDateTimeSuffix(rating.last_updated),
     },
   ];
 
@@ -143,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
     return {
       props: {
-        rating: rating,
+        originalRating: rating,
       },
     };
   } catch {

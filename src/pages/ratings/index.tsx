@@ -25,7 +25,7 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { apiSettings } from "src/frontend-utils/settings";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormPaginationTable from "src/components/api_form/ApiFormPaginationTable";
-import { Rating } from "src/frontend-utils/types/ratings";
+import {Rating, RatingStatusDict} from "src/frontend-utils/types/ratings";
 import { fDateTimeSuffix } from "src/utils/formatTime";
 import { useUser } from "src/frontend-utils/redux/user";
 
@@ -40,6 +40,7 @@ Ratings.getLayout = function getLayout(page: ReactElement) {
 export default function Ratings() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const user = useAppSelector(useUser);
+  const ratingStatusChoices = Object.entries(RatingStatusDict).map(entry => ({value: entry[0], label: entry[1]}))
 
   const fieldMetadata = [
     {
@@ -57,6 +58,13 @@ export default function Ratings() {
       multiple: true,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
+    {
+      fieldType: "select" as "select",
+      name: "status",
+      multiple: true,
+      choices: ratingStatusChoices
+    },
+
   ];
 
   const columns: any[] = [
@@ -79,8 +87,13 @@ export default function Ratings() {
     {
       headerName: "Última actualización",
       field: "last_updated",
-      renderCell: (row: Rating) =>
-        row.approval_date ? fDateTimeSuffix(row.approval_date) : "N/A",
+      renderCell: (row: Rating) => fDateTimeSuffix(row.last_updated),
+      flex: 1,
+    },
+    {
+      headerName: "Estado",
+      field: "status",
+      renderCell: (row: Rating) => RatingStatusDict[row.status],
       flex: 1,
     },
     {
@@ -96,6 +109,7 @@ export default function Ratings() {
     {
       headerName: "Rating producto",
       field: "product_rating",
+      renderCell: (row: Rating) => row.product_rating || 'No recibido',
       flex: 1,
     },
     {
@@ -162,6 +176,9 @@ export default function Ratings() {
                   </Grid>
                   <Grid item xs={6}>
                     <ApiFormSelectComponent name="categories" label="Categorías" />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ApiFormSelectComponent name="status" label="Estado" />
                   </Grid>
                 </Grid>
               </CardContent>
