@@ -29,7 +29,7 @@ export default function ProductSearch({
       null,
       `${entityCategory}products/?page_size=200&search=${encodeURIComponent(
         value
-      )}${extraParams}`
+      )}${extraParams || ''}`
     ).then((data) => {
       const l = data.results.length;
       setProductChoices(data.results);
