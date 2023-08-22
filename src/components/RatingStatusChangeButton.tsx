@@ -6,7 +6,7 @@ type RatingStatusChangeButtonProps = {
     rating: Rating,
     status: Number,
     label: String,
-    onSuccess: () => {}
+    onSuccess: () => void
 }
 
 export default function RatingStatusChangeButton(props: RatingStatusChangeButtonProps) {

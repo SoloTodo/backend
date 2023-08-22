@@ -23,7 +23,7 @@ export default function PendingRatingssTable() {
     const user = useAppSelector(useUser);
     const context = useContext(ApiFormContext);
 
-    const handleRatingChange = (rating) => {
+    const handleRatingChange = (rating:Rating) => {
         context.setCurrentResult({
             ...context.currentResult,
             count: context.currentResult.count - 1,

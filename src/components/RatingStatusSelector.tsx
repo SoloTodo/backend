@@ -5,14 +5,14 @@ import {jwtFetch} from "../frontend-utils/nextjs/utils";
 
 type RatingStatusSelectorProps = {
     rating: Rating,
-    setRating: (rating: Rating) => {}
+    setRating: (rating: Rating) => void
 }
 
 export default function RatingStatusSelector(props: RatingStatusSelectorProps) {
     const {rating, setRating} = props
     const {enqueueSnackbar} = useSnackbar();
 
-    const handleChange = newStatus => {
+    const handleChange = (newStatus:number) => {
         if (rating.status == newStatus) {
             return
         }
@@ -34,7 +34,7 @@ export default function RatingStatusSelector(props: RatingStatusSelectorProps) {
 
     return <Select
         value={rating.status}
-        onChange={evt => handleChange(parseInt(evt.target.value))}
+        onChange={evt => handleChange(parseInt(evt.target.value as string))}
     >
         {Object.entries(RatingStatusDict).map(statusEntry => (
             <MenuItem key={statusEntry[0]} value={statusEntry[0]}>

@@ -82,7 +82,7 @@ export default function RatingPage({ originalRating }: { originalRating: Rating 
     {
       key: "status",
       label: "Estado",
-      renderData: (rating: Rating) => <RatingStatusSelector rating={rating} setRating={setRating} />,
+      renderData: (rating: Rating) => <RatingStatusSelector rating={rating} setRating={rating => setRating(rating)} />,
     },
     {
       key: "last_updated",
