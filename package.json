@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "dev": "next dev -p 8084",
     "start": "next start",
-    "build": "next build"
+    "build": "next build",
     "deploy": "components-v1"
   },
   "dependencies": {
