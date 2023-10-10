@@ -20,6 +20,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
+          <meta httpEquiv="Content-Security-Policy" content="default-src 'self' data: 'unsafe-inline' 'unsafe-eval' api.solotodo.com fonts.googleapis.com fonts.gstatic.com api.unisvg.com api.simplesvg.com api.iconify.design" />
           <link rel="apple-touch-icon" sizes="180x180" href="/favicon/logo_monocromatico.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
