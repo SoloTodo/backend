@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import {ReactElement} from "react";
 import NextLink from "next/link";
 import {
   Card,
@@ -13,7 +13,7 @@ import Layout from "src/layouts";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 // types
-import { Entity } from "src/frontend-utils/types/entity";
+import {Entity} from "src/frontend-utils/types/entity";
 import { Category } from "src/frontend-utils/types/store";
 // components
 import CategorySelect from "src/components/my_components/CategorySelect";
@@ -21,6 +21,7 @@ import ConditionSelect from "src/components/my_components/ConditionSelect";
 import VisibilitySwitch from "src/components/my_components/VisibilitySwitch";
 // paths
 import { PATH_PRODUCT } from "src/routes/paths";
+import EntitySecInfoComponent from "./EntitySecInfoComponent";
 
 // ----------------------------------------------------------------------
 
@@ -120,7 +121,9 @@ export default function AssociateInformation({
               )}
             </Typography>
           </Grid>
-          <Grid item xs={12} md={6}></Grid>
+          <Grid item xs={12} md={6}>
+            <EntitySecInfoComponent entity={entity} />
+          </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h6">Bundle actual</Typography>
             <Typography>{entity.bundle ? entity.bundle.name : "N/A"}</Typography>
