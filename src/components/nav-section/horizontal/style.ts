@@ -1,14 +1,15 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 // @mui
-import { alpha, styled } from '@mui/material/styles';
-import { Button, Popover, ButtonProps, LinkProps } from '@mui/material';
+import { alpha, styled } from "@mui/material/styles";
+import { Button, Popover, ButtonProps, LinkProps } from "@mui/material";
 // config
-import { NAVBAR } from '../../../config';
+import { NAVBAR } from "../../../config";
 
 // ----------------------------------------------------------------------
 
 type IProps = LinkProps & ButtonProps;
 
+// @ts-ignore
 interface ListItemStyleProps extends IProps {
   component?: ReactNode;
   activeRoot?: boolean;
@@ -19,9 +20,12 @@ interface ListItemStyleProps extends IProps {
 
 export const ListItemStyle = styled(Button, {
   shouldForwardProp: (prop) =>
-    prop !== 'activeRoot' && prop !== 'activeSub' && prop !== 'subItem' && prop !== 'open',
+    prop !== "activeRoot" &&
+    prop !== "activeSub" &&
+    prop !== "subItem" &&
+    prop !== "open",
 })<ListItemStyleProps>(({ activeRoot, activeSub, subItem, open, theme }) => {
-  const isLight = theme.palette.mode === 'light';
+  const isLight = theme.palette.mode === "light";
 
   const activeRootStyle = {
     color: theme.palette.grey[800],
@@ -38,7 +42,7 @@ export const ListItemStyle = styled(Button, {
     padding: theme.spacing(0, 1),
     color: theme.palette.text.secondary,
     height: NAVBAR.DASHBOARD_ITEM_HORIZONTAL_HEIGHT,
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.text.primary,
       backgroundColor: theme.palette.background.paper,
     },
@@ -46,7 +50,7 @@ export const ListItemStyle = styled(Button, {
     ...(activeRoot && {
       ...theme.typography.subtitle2,
       ...activeRootStyle,
-      '&:hover': { ...activeRootStyle },
+      "&:hover": { ...activeRootStyle },
     }),
     // activeSub
     ...(activeSub && {
@@ -55,11 +59,11 @@ export const ListItemStyle = styled(Button, {
     }),
     // subItem
     ...(subItem && {
-      width: '100%',
+      width: "100%",
       margin: 0,
       paddingRight: 0,
       paddingLeft: theme.spacing(1),
-      justifyContent: 'space-between',
+      justifyContent: "space-between",
     }),
     // open
     ...(open &&
@@ -73,10 +77,10 @@ export const ListItemStyle = styled(Button, {
 // ----------------------------------------------------------------------
 
 export const PaperStyle = styled(Popover)(({ theme }) => ({
-  pointerEvents: 'none',
-  '& .MuiPopover-paper': {
+  pointerEvents: "none",
+  "& .MuiPopover-paper": {
     width: 160,
-    pointerEvents: 'auto',
+    pointerEvents: "auto",
     padding: theme.spacing(1),
     borderRadius: Number(theme.shape.borderRadius) * 1.5,
     boxShadow: theme.customShadows.dropdown,

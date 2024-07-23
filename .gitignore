@@ -33,12 +33,11 @@ yarn-error.log*
 # vercel
 .vercel
 
-# Local Netlify folder
-.netlify
-
 _static
 .idea
 
-# Serverless deploy
-.serverless
-.serverless_nextjs
+# sst
+.sst
+
+# open-next
+.open-next
