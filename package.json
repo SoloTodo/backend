@@ -11,7 +11,7 @@
     "dev": "next dev -p 8084",
     "start": "next start",
     "build": "next build",
-    "deploy": "components-v1"
+    "deploy": "sst deploy --stage prod"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.13.1",

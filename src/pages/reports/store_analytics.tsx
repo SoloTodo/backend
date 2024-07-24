@@ -14,6 +14,7 @@ import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_REPORTS } from "src/routes/paths";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
+import { useSnackbar } from "notistack";
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ StoreAnalytics.getLayout = function getLayout(page: ReactElement) {
 
 export default function StoreAnalytics() {
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
+  const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
@@ -66,9 +68,11 @@ export default function StoreAnalytics() {
           fieldsMetadata={fieldsMetadata}
           endpoint={`${apiSettings.apiResourceEndpoints.reports}store_analytics/`}
           requiresSubmit={true}
-          onResultsChange={(json: { url: string }) => {
-            if (json) window.location.href = json.url;
-          }}
+          onResultsChange={() =>
+            enqueueSnackbar(
+              "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
+            )
+          }
         >
           <Card>
             <CardHeader title="Filtros" />
@@ -82,10 +86,7 @@ export default function StoreAnalytics() {
                   <ApiFormSelectComponent name="store" label="Tienda" />
                 </Grid>
                 <Grid item xs={6}>
-                  <ApiFormSelectComponent
-                    name="category"
-                    label="Categoría"
-                  />
+                  <ApiFormSelectComponent name="category" label="Categoría" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormDateRangePickerComponent
