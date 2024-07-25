@@ -5,15 +5,11 @@ import Page from "src/components/Page";
 import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import ApiFormSelectComponent from "src/frontend-utils/api_form/fields/select/ApiFormSelectComponent";
 import ApiFormSubmitComponent from "src/frontend-utils/api_form/fields/submit/ApiFormSubmitComponent";
-import {
-  selectApiResourceObjects,
-  useApiResourceObjects,
-} from "src/frontend-utils/redux/api_resources/apiResources";
+import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
 import Layout from "src/layouts";
 import { PATH_DASHBOARD, PATH_REPORTS } from "src/routes/paths";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
-import ApiFormDateRangePickerComponent from "src/frontend-utils/api_form/fields/range_picker/ApiFormDateRangePickerComponent";
 import { useSnackbar } from "notistack";
 import ApiFormTextComponent from "../../frontend-utils/api_form/fields/text/ApiFormTextComponent";
 
@@ -26,13 +22,20 @@ MercadoLibreChileCatalog.getLayout = function getLayout(page: ReactElement) {
 // ----------------------------------------------------------------------
 
 export default function MercadoLibreChileCatalog() {
-  const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const { enqueueSnackbar } = useSnackbar();
 
   const fieldsMetadata = [
     {
-      fieldType: "text" as "text",
+      fieldType: "select" as "select",
       name: "seller_id",
+      multiple: false,
+      required: true,
+      choices: [
+        {
+          value: "176688303",
+          label: "Dreamtec (176688303)",
+        },
+      ],
     },
     {
       fieldType: "submit" as "submit",
@@ -69,7 +72,7 @@ export default function MercadoLibreChileCatalog() {
                 columns={{ xs: 6, md: 12 }}
               >
                 <Grid item xs={6}>
-                  <ApiFormTextComponent name="seller_id" label="Seller ID" />
+                  <ApiFormSelectComponent name="seller_id" label="Seller" />
                 </Grid>
                 <Grid item xs={6}>
                   <ApiFormSubmitComponent />
