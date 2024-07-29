@@ -33,7 +33,7 @@ export default function CurrentPrices() {
       fieldType: "select" as "select",
       name: "category",
       multiple: false,
-      required: true,
+      required: false,
       choices: selectApiResourceObjects(apiResourceObjects, "categories"),
     },
     {
