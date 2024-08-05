@@ -193,11 +193,13 @@ const sidebarConfig = [
         title: "Alertas",
         path: PATH_ALERT.root,
         icon: ICONS.alert,
+        hasPermission: "deactivated_section",
       },
       {
         title: "Suscripción a tiendas",
         path: PATH_STORE_SUBSCRIPTION.root,
         icon: ICONS.storeFront,
+        hasPermission: "deactivated_section",
       },
       {
         title: "Reportes",
