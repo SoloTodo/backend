@@ -127,6 +127,11 @@ const sidebarConfig = [
             path: PATH_PRODUCT.root,
             hasPermission: "solotodo.backend_list_products",
           },
+          {
+            title: "Campos pendientes",
+            path: PATH_PRODUCT.pending_fields,
+            hasPermission: "solotodo.is_category_staff",
+          },
         ],
       },
       {
