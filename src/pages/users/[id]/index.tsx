@@ -31,7 +31,6 @@ export default function UserPage(props: { userDetail: User }) {
   const { userDetail } = props;
 
   const baseRoute = `${PATH_USER.root}/${userDetail.id}`;
-  const displaySidebar = me && (me.is_superuser || userDetail.id === me.id);
 
   const details: Detail[] = [
     {
@@ -45,18 +44,17 @@ export default function UserPage(props: { userDetail: User }) {
     },
   ];
 
-  const options: Option[] = [];
-  if (displaySidebar) {
-    options.push(
-      {
-        text: "Resumen staff",
-        path: `${baseRoute}/staff_summary`,
-      },
-      {
+  const options: Option[] = []
+
+  if (me && (me.is_superuser || me.id == userDetail.id || me.permissions.includes('solotodo.is_staff_manager'))) {
+    options.push({
+      text: "Resumen staff",
+      path: `${baseRoute}/staff_summary`,
+    })
+    options.push({
         text: "Acciones staff",
         path: `${baseRoute}/staff_actions`,
-      }
-    );
+      })
   }
 
   return (

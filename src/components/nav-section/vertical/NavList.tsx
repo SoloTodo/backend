@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 // @mui
 import { List, Collapse } from "@mui/material";
 // type
-import { NavListProps } from "../type";
+import {NavListProps, NavListPropsChildren} from "../type";
 //
 import { NavItemRoot, NavItemSub } from "./NavItem";
 import { getActive } from "..";
@@ -32,6 +32,22 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
     return null;
   }
 
+  const checkPermission = (item:NavListPropsChildren) => {
+    if (!user) {
+      return false
+    }
+    if (typeof item.hasPermission == "undefined") {
+      return true
+    }
+    if (user.is_staff && item.hasPermission === 'is_staff') {
+      return true
+    }
+    if (user.permissions.includes(item.hasPermission)) {
+      return true
+    }
+    return false
+  }
+
   if (hasChildren) {
     return (
       <>
@@ -47,10 +63,7 @@ export function NavListRoot({ list, isCollapse }: NavListRootProps) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {(list.children || []).map((item) =>
-                typeof item.hasPermission !== "undefined" &&
-                !user?.permissions.includes(item.hasPermission) ? null : (
-                  <NavListSub key={item.title} list={item} />
-                )
+                checkPermission(item) && <NavListSub key={item.title} list={item} />
               )}
             </List>
           </Collapse>
