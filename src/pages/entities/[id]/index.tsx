@@ -39,13 +39,11 @@ EntityPage.getLayout = function getLayout(page: ReactElement) {
 
 type EntityProps = {
   entity: Entity;
-  users: User[];
 };
 
 // ----------------------------------------------------------------------
 
 export default function EntityPage(props: EntityProps) {
-  const { users } = props;
   const [entity, setEntity] = useState<Entity>(props.entity);
   const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
 
@@ -114,7 +112,6 @@ export default function EntityPage(props: EntityProps) {
             <StaffInformation
               entity={entity}
               setEntity={setEntity}
-              users={users}
               staffInfo={staffInfo}
               setStaffInfo={setStaffInfo}
             />
@@ -136,10 +133,6 @@ export default function EntityPage(props: EntityProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const users = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.users_with_staff_actions
-  );
   try {
     const entity = await jwtFetch(
       context,
@@ -147,8 +140,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
     return {
       props: {
-        entity: entity,
-        users: users,
+        entity: entity
       },
     };
   } catch {

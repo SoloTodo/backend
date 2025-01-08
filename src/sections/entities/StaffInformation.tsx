@@ -22,13 +22,11 @@ import { useUser } from "src/frontend-utils/redux/user";
 export default function StaffInformation({
   entity,
   setEntity,
-  users,
   staffInfo,
   setStaffInfo,
 }: {
   entity: Entity;
   setEntity: Function;
-  users: User[];
   staffInfo: StaffInfo | null;
   setStaffInfo: Function;
 }) {
@@ -55,7 +53,7 @@ export default function StaffInformation({
             new Date(data.last_staff_access)
           );
           if (millisecondsToMinutes(durationSinceLastStaffAccess) < 10) {
-            if (data.last_staff_access_user !== user?.detail_url) {
+            if (data.last_staff_access_user?.id !== user?.id) {
               enqueueSnackbar(
                 "Alguien ha estado trabajando en esta entidad hace poco. ¡Cuidado!",
                 { persist: true, variant: "warning" }
@@ -82,11 +80,6 @@ export default function StaffInformation({
       myAbortController.abort();
     };
   }, []);
-
-  const userDict = users.reduce((acc: Record<string, User>, a: User) => {
-    acc[a.url] = a;
-    return acc;
-  }, {});
 
   const staffDetails: Detail[] = [
     {
@@ -121,8 +114,8 @@ export default function StaffInformation({
           entityPlus.last_association_user !== null
         ) {
           return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            userDict[entityPlus.last_association_user].first_name
-          } ${userDict[entityPlus.last_association_user].last_name})`;
+            entityPlus.last_association_user.first_name
+          } ${entityPlus.last_association_user.last_name})`;
         } else {
           return;
         }
@@ -137,8 +130,8 @@ export default function StaffInformation({
           entityPlus.last_staff_access_user !== null
         ) {
           return `${fDateTimeSuffix(entityPlus.last_staff_access)} (${
-            userDict[entityPlus.last_staff_access_user].first_name
-          } ${userDict[entityPlus.last_staff_access_user].last_name})`;
+            entityPlus.last_staff_access_user.first_name
+          } ${entityPlus.last_staff_access_user.last_name})`;
         } else {
           return;
         }

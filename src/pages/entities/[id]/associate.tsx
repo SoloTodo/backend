@@ -66,7 +66,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
             new Date(data.last_staff_access)
           );
           if (millisecondsToMinutes(durationSinceLastStaffAccess) < 10) {
-            if (data.last_staff_access_user !== user?.detail_url) {
+            if (data.last_staff_access_user?.id !== user?.id) {
               enqueueSnackbar(
                 "Alguien ha estado trabajando en esta entidad hace poco. ¡Cuidado!",
                 { persist: true, variant: "warning" }
