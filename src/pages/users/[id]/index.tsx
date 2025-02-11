@@ -48,8 +48,8 @@ export default function UserPage(props: { userDetail: User }) {
 
   if (me && (me.is_superuser || me.id == userDetail.id || me.permissions.includes('solotodo.is_staff_manager'))) {
     options.push({
-      text: "Resumen staff",
-      path: `${baseRoute}/staff_summary`,
+      text: "Métricas staff",
+      path: `${baseRoute}/staff_metrics`,
     })
     options.push({
         text: "Acciones staff",

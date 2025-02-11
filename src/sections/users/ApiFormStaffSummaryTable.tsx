@@ -1,53 +1,61 @@
-import { Stack, Typography } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
+import {Paper, Stack, Table, TableBody, TableContainer, TableFooter, TableHead, Typography} from "@mui/material";
 import { useContext } from "react";
 import ApiFormContext from "src/frontend-utils/api_form/ApiFormContext";
-import CustomTable from "../CustomTable";
-import currency from "currency.js";
+import {StyledTableCell, StyledTableRow} from "../../components/my_components/StyledTable";
 
-export default function ApiFormStaffSummaryTable({
-  columns,
-}: {
-  columns: GridColDef[];
-}) {
+type StaffMetricEntry = {
+    date: string;
+    disqus_comments: number;
+    zendesk_solved_tickets: number;
+    associated_entities: number;
+    created_products: number
+}
+
+
+export default function ApiFormStaffSummaryTable() {
   const context = useContext(ApiFormContext);
-  let currentResult = context.currentResult;
-  if (currentResult === null) currentResult = [];
+  let result : StaffMetricEntry[] | null = context.currentResult;
+  if (result === null) {
+      return null
+  }
 
-  const currentItems = [
-    { id: "Entidades asociadas", ...currentResult.entities },
-    { id: "Entidades WTB asociadas", ...currentResult.wtb_entities },
-    { id: <strong>Productos creados</strong> },
-  ];
-
-  if (currentResult.products)
-    currentItems.push(
-      ...currentResult.products.map((p: { tier: string }) => ({
-        id: p.tier,
-        ...p,
-      }))
-    );
+  const totalDisqusComments = result.reduce((value, entry) => value + entry.disqus_comments, 0)
+  const totalZendeskSolvedTickets = result.reduce((value, entry) => value + entry.zendesk_solved_tickets, 0)
+  const totalAssociatedEntities = result.reduce((value, entry) => value + entry.associated_entities, 0)
+  const totalCreatedProducts = result.reduce((value, entry) => value + entry.created_products, 0)
 
   return (
-    <div>
-      <CustomTable data={currentItems} columns={columns} />
-      <br />
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        spacing={2}
-        mr={4}
+    <TableContainer component={Paper}>
+      <Table
+        sx={{ minWidth: 700 }}
+        aria-label="customized table"
       >
-        <Typography variant="h6">
-          <strong>
-            Total:{" "}
-            {currency(currentResult.total_amount, {
-              precision: 0,
-            }).format()}
-          </strong>
-        </Typography>
-      </Stack>
-    </div>
+        <TableHead>
+          <StyledTableRow>
+              <StyledTableCell>Fecha</StyledTableCell>
+              <StyledTableCell>Comentarios Disqus</StyledTableCell>
+              <StyledTableCell>Tickets resueltos</StyledTableCell>
+              <StyledTableCell>Entidades asociadas</StyledTableCell>
+              <StyledTableCell>Productos creados</StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+            {result.map(entry => <StyledTableRow key={entry.date}>
+                <StyledTableCell>{entry.date}</StyledTableCell>
+                <StyledTableCell>{entry.disqus_comments}</StyledTableCell>
+                <StyledTableCell>{entry.zendesk_solved_tickets}</StyledTableCell>
+                <StyledTableCell>{entry.associated_entities}</StyledTableCell>
+                <StyledTableCell>{entry.created_products}</StyledTableCell>
+            </StyledTableRow>)}
+            <StyledTableRow>
+              <StyledTableCell>Total</StyledTableCell>
+              <StyledTableCell>{totalDisqusComments}</StyledTableCell>
+              <StyledTableCell>{totalZendeskSolvedTickets}</StyledTableCell>
+              <StyledTableCell>{totalAssociatedEntities}</StyledTableCell>
+              <StyledTableCell>{totalCreatedProducts}</StyledTableCell>
+          </StyledTableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
