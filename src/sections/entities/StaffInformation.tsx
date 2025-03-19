@@ -117,12 +117,12 @@ export default function StaffInformation({
       label: "Última asociación",
       renderData: (entityPlus: Entity & StaffInfo) => {
         if (
-          entityPlus.last_association !== null &&
-          entityPlus.last_association_user !== null
+          entityPlus.last_association &&
+          entityPlus.last_association_user
         ) {
           return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            userDict[entityPlus.last_association_user].first_name
-          } ${userDict[entityPlus.last_association_user].last_name})`;
+            userDict[entityPlus.last_association_user.url].first_name
+          } ${userDict[entityPlus.last_association_user.url].last_name})`;
         } else {
           return;
         }
@@ -133,12 +133,12 @@ export default function StaffInformation({
       label: "Último acceso",
       renderData: (entityPlus: Entity & StaffInfo) => {
         if (
-          entityPlus.last_staff_access !== null &&
-          entityPlus.last_staff_access_user !== null
+          entityPlus.last_staff_access &&
+          entityPlus.last_staff_access_user
         ) {
           return `${fDateTimeSuffix(entityPlus.last_staff_access)} (${
-            userDict[entityPlus.last_staff_access_user].first_name
-          } ${userDict[entityPlus.last_staff_access_user].last_name})`;
+            userDict[entityPlus.last_staff_access_user.url].first_name
+          } ${userDict[entityPlus.last_staff_access_user.url].last_name})`;
         } else {
           return;
         }
