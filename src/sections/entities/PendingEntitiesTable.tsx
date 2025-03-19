@@ -14,6 +14,7 @@ const BootstrapButton = styled(Button)({
   "&:focus": {
     boxShadow: "0 0 0 0.3rem rgba(24, 144, 255, .5)",
   },
+  "minWidth": "max-content",
 });
 
 export default function PendingEntitiesTable() {
@@ -96,6 +97,22 @@ export default function PendingEntitiesTable() {
             disableRipple
           >
             Asociar
+          </BootstrapButton>
+        </NextLink>
+      ),
+    },
+    {
+      headerName: "Asociar IA",
+      field: "ai id",
+      flex: 1,
+      renderCell: (row: any) => (
+        <NextLink href={`${PATH_ENTITY.root}/${row.id}/ai_associate`} passHref>
+          <BootstrapButton
+            variant="contained"
+            href={`${PATH_ENTITY.root}/${row.id}/ai_associate`}
+            disableRipple
+          >
+            Asociar IA
           </BootstrapButton>
         </NextLink>
       ),
