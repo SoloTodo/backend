@@ -102,22 +102,6 @@ export default function PendingEntitiesTable() {
       ),
     },
     {
-      headerName: "Asociar IA",
-      field: "ai id",
-      flex: 1,
-      renderCell: (row: any) => (
-        <NextLink href={`${PATH_ENTITY.root}/${row.id}/ai_associate`} passHref>
-          <BootstrapButton
-            variant="contained"
-            href={`${PATH_ENTITY.root}/${row.id}/ai_associate`}
-            disableRipple
-          >
-            Asociar IA
-          </BootstrapButton>
-        </NextLink>
-      ),
-    },
-    {
       headerName: "Esconder",
       field: "is_visible",
       flex: 1,

@@ -1,10 +1,12 @@
-import { Button, Card, CardContent, CardHeader, Stack } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import BundleSelect from "src/components/my_components/BundleSelect";
 import CellPlanSelect from "src/components/my_components/CellPlanSelect";
 import ProductSearch from "src/components/my_components/ProductSearch";
+import AIInferProductDataTable from "src/components/my_components/AIInferProductDataTable";
+import AIFindSimilarProductsTable from "src/components/my_components/AIFindSimilarProductsTable";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
 import { apiSettings } from "src/frontend-utils/settings";
@@ -109,7 +111,34 @@ export default function AssociateForm({
       });
   };
 
+  const [aiAssociate, setAIAssociate] = useState({});
+  const [loadingAIAssociate, setLoadingAIAssociate] = useState(false);
+
+  const handleAIAssociateSubmit = () => {
+    setLoadingAIAssociate(true)
+    const key = enqueueSnackbar("Asociando entidad, por favor espera!", {
+      persist: true,
+      variant: "info",
+    });
+    jwtFetch(null, `https://api.solotodo.com/entities/${entity.id}/ai_associate/`, {
+      method: "POST",
+    }).then((data) => {
+      setAIAssociate(data)
+      setLoadingAIAssociate(false)
+      closeSnackbar(key);
+      enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
+        variant: "success",
+      });
+    }).catch((error) => { 
+      error.json().then((message) => {
+        setAIAssociate(message)
+        setLoadingAIAssociate(false)
+      })
+    });
+  }
+
   return (
+    <>
     <Card>
       <CardHeader title="Formulario" />
       <CardContent>
@@ -189,5 +218,28 @@ export default function AssociateForm({
         </Stack>
       </CardContent>
     </Card>
+    <br />
+    <Grid container spacing={2}>
+      <Grid item xs={5}>
+       <AIInferProductDataTable entityId={entity.id}/>
+      </Grid>
+      <Grid item xs={7}>
+       <AIFindSimilarProductsTable entity={entity}/>
+       <br />
+       <Card>
+          <CardHeader title={"AI Associate"}></CardHeader>
+            <CardContent>
+              <Box component="pre" maxHeight={320} overflow={"auto"}>
+                {JSON.stringify(aiAssociate, null, 2)}
+              </Box>
+              <br />
+                <Button disabled={loadingAIAssociate} variant="contained" onClick={() => {handleAIAssociateSubmit()}}>
+                {loadingAIAssociate ? "Procesando..." : "AI Associate"}
+                </Button> 
+            </CardContent>       
+        </Card>
+      </Grid>
+    </Grid>
+  </>
   );
 }
