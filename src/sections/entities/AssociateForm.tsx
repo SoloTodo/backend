@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
@@ -14,6 +14,7 @@ import { Bundle, CellPlan, Entity } from "src/frontend-utils/types/entity";
 import { Product } from "src/frontend-utils/types/product";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
+import AIAssociateTable from "src/components/my_components/AIAssociateTable";
 
 export default function AssociateForm({
   entity,
@@ -111,31 +112,6 @@ export default function AssociateForm({
       });
   };
 
-  const [aiAssociate, setAIAssociate] = useState({});
-  const [loadingAIAssociate, setLoadingAIAssociate] = useState(false);
-
-  const handleAIAssociateSubmit = () => {
-    setLoadingAIAssociate(true)
-    const key = enqueueSnackbar("Asociando entidad, por favor espera!", {
-      persist: true,
-      variant: "info",
-    });
-    jwtFetch(null, `https://api.solotodo.com/entities/${entity.id}/ai_associate/`, {
-      method: "POST",
-    }).then((data) => {
-      setAIAssociate(data)
-      setLoadingAIAssociate(false)
-      closeSnackbar(key);
-      enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
-        variant: "success",
-      });
-    }).catch((error) => { 
-      error.json().then((message) => {
-        setAIAssociate(message)
-        setLoadingAIAssociate(false)
-      })
-    });
-  }
 
   return (
     <>
@@ -226,18 +202,7 @@ export default function AssociateForm({
       <Grid item xs={7}>
        <AIFindSimilarProductsTable entity={entity}/>
        <br />
-       <Card>
-          <CardHeader title={"AI Associate"}></CardHeader>
-            <CardContent>
-              <Box component="pre" maxHeight={320} overflow={"auto"}>
-                {JSON.stringify(aiAssociate, null, 2)}
-              </Box>
-              <br />
-                <Button disabled={loadingAIAssociate} variant="contained" onClick={() => {handleAIAssociateSubmit()}}>
-                {loadingAIAssociate ? "Procesando..." : "AI Associate"}
-                </Button> 
-            </CardContent>       
-        </Card>
+       <AIAssociateTable entity={entity}/>
       </Grid>
     </Grid>
   </>
