@@ -26,33 +26,37 @@ export default function AIFindSimilarProductsTable({
     confidence: number;
     reasoning: string;
   }
+  
+  interface FindSimilarProductsError {
+    error: string;
+  }
 
   const [loadingAIFindSimilarProducts, setLoadingAIFindSimilarProducts] = useState(false)
   const [aiFindSimilarProducts, setAIFindSimilarProducts] = useState<FindSimilarProduct[] | null>(null)
+  const [aiFindSimilarProductsError, setAIFindSimilarProductsError] = useState<FindSimilarProductsError | null>(null)
 
   useEffect(() => {
     setLoadingAIFindSimilarProducts(true)
-    jwtFetch(null, `https://api.solotodo.com/entities/${entity.id}/ai_find_similar_products/`).then((data) => {
+    jwtFetch(null, `entities/${entity.id}/ai_find_similar_products/`).then((data) => {
       setAIFindSimilarProducts(data)
       setLoadingAIFindSimilarProducts(false)
     }).catch((error) => { 
-      error.json().then((message: SetStateAction<FindSimilarProduct[] | null>) => {
-        setAIFindSimilarProducts(message)
+      error.json().then((message: SetStateAction<FindSimilarProductsError | null>) => {
+        setAIFindSimilarProductsError(message)
         setLoadingAIFindSimilarProducts(false)
       })
     });
-
   }, [])
 
 
   const handleAIFindSimilarProductsSubmit = () => {
     setLoadingAIFindSimilarProducts(true)
-    jwtFetch(null, `https://api.solotodo.com/entities/${entity.id}/ai_find_similar_products/`).then((data) => {
+    jwtFetch(null, `entities/${entity.id}/ai_find_similar_products/`).then((data) => {
       setAIFindSimilarProducts(data)
       setLoadingAIFindSimilarProducts(false)
     }).catch((error) => { 
-      error.json().then((message: SetStateAction<FindSimilarProduct[] | null>) => {
-        setAIFindSimilarProducts(message)
+      error.json().then((message: SetStateAction<FindSimilarProductsError | null>) => {
+        setAIFindSimilarProductsError(message)
         setLoadingAIFindSimilarProducts(false)
       })
     });
@@ -114,6 +118,12 @@ export default function AIFindSimilarProductsTable({
                 <TableCell><CircularProgress size={16}/></TableCell>
               </TableRow>
             ):(
+            aiFindSimilarProductsError ? (
+              <TableRow>
+                <TableCell>Error</TableCell>
+                <TableCell colSpan={3}>{aiFindSimilarProductsError["error"]}</TableCell>
+              </TableRow>
+            ):(
             aiFindSimilarProducts && aiFindSimilarProducts.map((productData, index) => (
               <TableRow key={index}>
                 <TableCell> 
@@ -130,7 +140,7 @@ export default function AIFindSimilarProductsTable({
                 </TableCell>
               </TableRow>
           ))
-        )}
+        ))}
         </TableBody>
         </Table>
       </TableContainer>

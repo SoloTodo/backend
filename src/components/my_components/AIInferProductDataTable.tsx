@@ -1,4 +1,6 @@
-import {Button, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress} from "@mui/material";
+import NextLink from "next/link";
+import { PATH_PRODUCT, PATH_METAMODEL} from "src/routes/paths";
+import {Button, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Link} from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
@@ -15,10 +17,13 @@ export default function AIInferProductDataTable({
 
   const [aiInferProductData, setAIInferProductData] = useState<InferredProductData | null>(null)
   const [loadingAIInferProductData, setLoadingAIInferProductData] = useState(false)
+  const [loadingAICreateProduct, setLoadingAICreateProduct] = useState(false)
+  const [aiCreatedProduct, setAICreatedProduct] = useState(false)
+  const [aiCreatedProductError, setAICreatedProductError] = useState(false)
 
   useEffect(() => {
     setLoadingAIInferProductData(true)
-    jwtFetch(null, `https://api.solotodo.com/entities/${entityId}/ai_infer_product_data/`)
+    jwtFetch(null, `entities/${entityId}/ai_infer_product_data/`)
       .then((data) => {
         setAIInferProductData(data);
         setLoadingAIInferProductData(false)
@@ -33,7 +38,7 @@ export default function AIInferProductDataTable({
 
   const handleAIInferProductDataSubmit = () => {
     setLoadingAIInferProductData(true);
-    jwtFetch(null, `https://api.solotodo.com/entities/${entityId}/ai_infer_product_data/`)
+    jwtFetch(null, `entities/${entityId}/ai_infer_product_data/`)
       .then((data) => {
         setAIInferProductData(data);
         setLoadingAIInferProductData(false);
@@ -42,6 +47,23 @@ export default function AIInferProductDataTable({
         error.json().then((message: SetStateAction<InferredProductData | null>) => {
           setAIInferProductData(message);
           setLoadingAIInferProductData(false);
+        });
+      });
+  };
+
+  const handleAICreateProductSubmit = () => {
+    setLoadingAICreateProduct(true);
+    jwtFetch(null, `entities/${entityId}/ai_create_product/`, {
+      method: "POST",
+      body: JSON.stringify({"ignore_errors": true})
+    }).then((data) => {
+        setAICreatedProduct(data);
+        setLoadingAICreateProduct(false);
+      })
+      .catch((error) => { 
+        error.json().then((message: SetStateAction<InferredProductData | null>) => {
+          setAICreatedProductError(message);
+          setLoadingAICreateProduct(false);
         });
       });
   };
@@ -92,8 +114,75 @@ export default function AIInferProductDataTable({
           </Table>
         </TableContainer>
         <br />
+        {aiInferProductData && Object.keys(aiInferProductData["errors"]).length > 0 && (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Error</TableCell>
+                <TableCell>Message</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.keys(aiInferProductData["errors"]).map((key) => (
+              <TableRow>
+                <TableCell>{key}</TableCell>
+                <TableCell>{aiInferProductData["errors"][key]}</TableCell>
+              </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        )}
+        {aiCreatedProduct && (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product</TableCell>
+                <TableCell>Edit instance model</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <NextLink href={`${PATH_PRODUCT.root}/${aiCreatedProduct["id"]}`} passHref>
+                    <Link>{aiCreatedProduct["name"]}</Link>
+                  </NextLink>
+                </TableCell>
+                <TableCell>
+                  <Link target="_blank" href={`https://api.solotodo.com/metamodel/instances/${aiCreatedProduct['instance_model_id']}`}>Link</Link>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        )}
+         {aiCreatedProductError && (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Error</TableCell>
+                <TableCell>Message</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>Error</TableCell>
+                <TableCell>{aiCreatedProductError["error"]}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        )}
+        <br />
         <Button disabled={loadingAIInferProductData} variant="contained" onClick={handleAIInferProductDataSubmit}>
           {loadingAIInferProductData ? "Procesando..." : "Refresh inferred product data"}
+        </Button> 
+        &nbsp;&nbsp;
+        <Button disabled={loadingAIInferProductData || loadingAICreateProduct} variant="contained" onClick={handleAICreateProductSubmit}>
+          {loadingAIInferProductData || loadingAICreateProduct ? "Procesando..." : "Create product"}
         </Button> 
       </CardContent>
     </Card>
