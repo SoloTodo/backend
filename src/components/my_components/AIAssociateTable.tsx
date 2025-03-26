@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import { PATH_PRODUCT } from "src/routes/paths";
-import { Button, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Link, Typography, Grid} from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Link, Typography, Grid } from "@mui/material";
 import { SetStateAction, useState } from "react";
 import CustomTable from "src/components/my_components/CustomTable";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
@@ -44,72 +44,52 @@ export default function AIAssociateTable({
       <CardHeader title={"Asociar con IA"} />
       <CardContent>
         {aiAssociateError && aiAssociateError["error"] && (
-          <CustomTable headers={["Error", "Mensaje"]} rows={[["Error", aiAssociateError["error"]]]} />
+          <CustomTable
+            headers={["Error", "Mensaje"]}
+            rows={[["Error", aiAssociateError["error"]]]}
+          />
         )}
         {aiAssociate && aiAssociate["ai_association_result"] && (
           <>
-    <Grid container spacing={2}>
-    <Grid item xs={5}>
-    <Typography>Información inferida</Typography>
-      <br />
-      <CustomTable headers={["Field", "Value"]} rows={Object.entries(aiAssociate["ai_association_result"]["inferred_product_data"])}/>  
-      </Grid>
-      <Grid item xs={7}>
-      <Typography>Productos similares</Typography>
-            <br />
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Producto</TableCell>
-                    <TableCell>Confianza</TableCell>
-                    <TableCell>Razonamiento</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {aiAssociate["ai_association_result"]["similar_product_entries"].map((productData, index) => (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <NextLink href={`${PATH_PRODUCT.root}/${productData["product"]["id"]}`} passHref>
-                          <Link>{productData["product"]["name"]}</Link>
-                        </NextLink>
-                      </TableCell>
-                      <TableCell>{productData["confidence"]}%</TableCell>
-                      <TableCell>{productData["reasoning"]}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <br />
-      <Typography>Producto asociado</Typography>
-            <br />
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Producto</TableCell>
-                    <TableCell>Producto creado</TableCell>
-                    <TableCell>Instance model</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Typography>Información inferida</Typography>
+                <br />
+                <CustomTable
+                  headers={["Field", "Value"]}
+                  rows={Object.entries(aiAssociate["ai_association_result"]["inferred_product_data"])}
+                />
+              </Grid>
+              <Grid item xs={7}>
+                <Typography>Productos similares</Typography>
+                <br />
+                <CustomTable
+                  headers={["Producto", "Confianza", "Razonamiento"]}
+                  rows={aiAssociate["ai_association_result"]["similar_product_entries"].map((entry: { [key: string]: any; }) => [
+                    <NextLink href={`${PATH_PRODUCT.root}/${entry["product"]["id"]}`} passHref>
+                      <Link>{entry["product"]["name"]}</Link>
+                    </NextLink>,
+                    entry["confidence"],
+                    entry["reasoning"],
+                  ])}
+                />
+                <br />
+                <Typography>Producto asociado</Typography>
+                <br />
+                <CustomTable
+                  headers={["Producto", "Creado durante la asociación", "Instance model"]}
+                  rows={[
+                    [
                       <NextLink href={`${PATH_PRODUCT.root}/${aiAssociate["ai_association_result"]["associated_product"]["id"]}`} passHref>
                         <Link>{aiAssociate["ai_association_result"]["associated_product"]["name"]}</Link>
-                      </NextLink>
-                    </TableCell>
-                    <TableCell>{aiAssociate["ai_association_result"]["product_created"] ? "Si" : "No"}</TableCell>
-                    <TableCell>
+                      </NextLink>,
+                      aiAssociate["ai_association_result"]["product_created"],
                       <Link target="_blank" href={`https://api.solotodo.com/metamodel/instances/${aiAssociate["ai_association_result"]["associated_product"]['instance_model_id']}`}>Link</Link>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-        </Grid>
-           </Grid>
+                    ]
+                  ]}
+                />
+              </Grid>
+            </Grid>
           </>
         )}
         <br />

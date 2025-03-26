@@ -12,6 +12,7 @@ import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/ap
 import { apiSettings } from "src/frontend-utils/settings";
 import { Bundle, CellPlan, Entity } from "src/frontend-utils/types/entity";
 import { Product } from "src/frontend-utils/types/product";
+import { Category } from "src/frontend-utils/types/store";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import AIAssociateTable from "src/components/my_components/AIAssociateTable";
@@ -26,7 +27,6 @@ export default function AssociateForm({
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedCellPlan, setSelectedCellPlan] = useState<CellPlan | null>(
     null
@@ -194,7 +194,7 @@ export default function AssociateForm({
         </Stack>
       </CardContent>
     </Card>
-    {apiResourceObjects[entity.category].is_ai_managed && (
+    {(apiResourceObjects[entity.category] as Category).is_ai_managed && (
       <>
       <br />
       <Grid container spacing={2}>
@@ -202,11 +202,11 @@ export default function AssociateForm({
           <AIAssociateTable entity={entity}/>
         </Grid>
         </Grid>
-</>
+    </>
     )}
     <>
-    <br />
-    <Grid container spacing={2}>
+      <br />
+      <Grid container spacing={2}>
         <Grid item xs={5}>
           <AIInferProductDataTable entity={entity}/>
         </Grid>
@@ -214,7 +214,7 @@ export default function AssociateForm({
           <AIFindSimilarProductsTable entity={entity}/>
         </Grid>
       </Grid>
-      </>
+     </>
   </>
   );
 }

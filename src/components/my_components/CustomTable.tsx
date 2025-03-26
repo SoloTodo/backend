@@ -5,7 +5,7 @@ export default function CustomTable({
   rows,
 }: {
   headers: Array<string>
-  rows: Array<Array<string>>
+  rows: Array<Array<any>>
 }) {
   return (
         <TableContainer>

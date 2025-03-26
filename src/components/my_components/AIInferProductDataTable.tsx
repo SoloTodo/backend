@@ -1,6 +1,6 @@
 import NextLink from "next/link";
 import { PATH_ENTITY, PATH_PRODUCT } from "src/routes/paths";
-import { Button, Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Link} from "@mui/material";
+import { Button, Card, CardContent, CardHeader, CircularProgress, Link } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { useSnackbar } from "notistack";
@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { Entity } from "src/frontend-utils/types/entity";
 import { useApiResourceObjects } from "src/frontend-utils/redux/api_resources/apiResources";
+import CustomTable from "./CustomTable";
 
 export default function AIInferProductDataTable({
   entity
@@ -21,86 +22,88 @@ export default function AIInferProductDataTable({
   interface InferredProductData {
     inferred_product_data: {
       [key: string]: string | boolean | number
-    }
+    };
     errors: {
       [key: string]: string
-    }
+    };
   }
+
   interface CreatedProduct {
-    id: number
-    name: string
-    instance_model_id: number
+    id: number;
+    name: string;
+    instance_model_id: number;
   }
+
   interface CreatedProductError {
     [key: string]: string
   }
 
-  const [aiInferProductData, setAIInferProductData] = useState<InferredProductData | null>(null)
-  const [loadingAIInferProductData, setLoadingAIInferProductData] = useState(false)
-  const [loadingAICreateProduct, setLoadingAICreateProduct] = useState(false)
-  const [aiCreatedProduct, setAICreatedProduct] = useState<CreatedProduct | null>(null)
-  const [aiCreatedProductError, setAICreatedProductError] = useState<CreatedProductError | null>(null)
+  const [aiInferProductData, setAIInferProductData] = useState<InferredProductData | null>(null);
+  const [loadingAIInferProductData, setLoadingAIInferProductData] = useState(false);
+  const [loadingAICreateProduct, setLoadingAICreateProduct] = useState(false);
+  const [aiCreatedProduct, setAICreatedProduct] = useState<CreatedProduct | null>(null);
+  const [aiCreatedProductError, setAICreatedProductError] = useState<CreatedProductError | null>(null);
 
   useEffect(() => {
-    setLoadingAIInferProductData(true)
+    setLoadingAIInferProductData(true);
     jwtFetch(null, `entities/${entity.id}/ai_infer_product_data/`)
       .then((data) => {
         setAIInferProductData(data);
-        setLoadingAIInferProductData(false)
+        setLoadingAIInferProductData(false);
       })
       .catch((error) => { 
         error.json().then((message: SetStateAction<InferredProductData | null>) => {
-          setAIInferProductData(message)
-          setLoadingAIInferProductData(false)
-        })
-      })
-  }, [])
+          setAIInferProductData(message);
+          setLoadingAIInferProductData(false);
+        });
+      });
+  }, []);
 
   const handleAIInferProductDataSubmit = () => {
-    setLoadingAIInferProductData(true)
-    setAICreatedProductError(null)
+    setLoadingAIInferProductData(true);
+    setAICreatedProductError(null);
     jwtFetch(null, `entities/${entity.id}/ai_infer_product_data/`)
       .then((data) => {
-        setAIInferProductData(data)
-        setLoadingAIInferProductData(false)
+        setAIInferProductData(data);
+        setLoadingAIInferProductData(false);
       })
       .catch((error) => { 
         error.json().then((message: SetStateAction<InferredProductData | null>) => {
-          setAIInferProductData(message)
-          setLoadingAIInferProductData(false)
-        })
-      })
-  }
+          setAIInferProductData(message);
+          setLoadingAIInferProductData(false);
+        });
+      });
+  };
 
   const handleAICreateProductSubmit = () => {
-    setAICreatedProductError(null)
-    setLoadingAICreateProduct(true)
+    setAICreatedProductError(null);
+    setLoadingAICreateProduct(true);
     jwtFetch(null, `entities/${entity.id}/ai_create_product/`, {
       method: "POST",
       body: JSON.stringify({"ignore_errors": true})
     }).then((data) => {
-        setAICreatedProduct(data);
+      setAICreatedProduct(data);
+      setLoadingAICreateProduct(false);
+    })
+    .catch((error) => { 
+      error.json().then((message: SetStateAction<CreatedProductError | null>) => {
+        setAICreatedProductError(message);
         setLoadingAICreateProduct(false);
-      })
-      .catch((error) => { 
-        error.json().then((message: SetStateAction<CreatedProductError | null>) => {
-          setAICreatedProductError(message)
-          setLoadingAICreateProduct(false)
-        })
-      })
-  }
+      });
+    });
+  };
 
   const handleTableProductAssociationSubmit = (productId: number) => {
     const key = enqueueSnackbar("Asociando entidad, por favor espera!", {
       persist: true,
       variant: "info",
-    })
+    });
 
     const payload = {
       product: productId,
       bundle: null,
       cell_plan: null,
-    }
+    };
 
     jwtFetch(null, entity.url + "associate/", {
       method: "POST",
@@ -109,129 +112,59 @@ export default function AIInferProductDataTable({
       closeSnackbar(key);
       enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
         variant: "success",
-      })
+      });
       router.push(
         `${PATH_ENTITY.pending}/?categories=${
-          apiResourceObjects[entity.category]
+          apiResourceObjects[entity.category].id
         }`
-      )
-    })
-  }
+      );
+    });
+  };
+
+  const generateLoadingElements = (count: number) => {
+    return Array.from({ length: count }, (_, index) => <CircularProgress key={index} size={16} />);
+  };
 
   return (
     <Card>
       <CardHeader title="Información inferida" />
-      <CardContent> 
-        
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Campo</TableCell>
-                <TableCell>Valor</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {aiInferProductData && aiInferProductData["inferred_product_data"] ? (
-                Object.keys(aiInferProductData["inferred_product_data"]).map((key) => (
-                  <TableRow key={key}>
-                    <TableCell>{key}</TableCell>
-                    {loadingAIInferProductData ? (
-                      <TableCell>
-                        <CircularProgress size={16} />
-                      </TableCell>
-                    ) : (
-                      aiInferProductData["inferred_product_data"] && (
-                        <TableCell>
-                          {typeof aiInferProductData["inferred_product_data"][key] === 'boolean'
-                            ? aiInferProductData["inferred_product_data"][key] ? 'Sí' : 'No'
-                            : aiInferProductData["inferred_product_data"][key]}
-                        </TableCell>
-                      )
-                    )}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell>
-                    <CircularProgress size={16}/>
-                  </TableCell>
-                  <TableCell>
-                    <CircularProgress size={16}/>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <br />
+      <CardContent>
+        {loadingAIInferProductData ? (
+          <CustomTable 
+            headers={["Campo", "Valor"]}
+            rows={[generateLoadingElements(2)]}
+          />
+        ) : aiInferProductData && aiInferProductData["inferred_product_data"] && (
+          <CustomTable 
+            headers={["Campo", "Valor"]}
+            rows={Object.entries(aiInferProductData["inferred_product_data"])}
+          />
+        )}
         {aiInferProductData && Object.keys(aiInferProductData["errors"]).length > 0 && (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Error</TableCell>
-                <TableCell>Mensaje</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(aiInferProductData["errors"]).map((key) => (
-              <TableRow>
-                <TableCell>{key}</TableCell>
-                <TableCell>{aiInferProductData["errors"][key]}</TableCell>
-              </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+          <CustomTable 
+            headers={["Error", "Message"]}
+            rows={Object.entries(aiInferProductData["errors"])}
+          />
         )}
         {aiCreatedProduct && (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Producto</TableCell>
-                <TableCell>Editar instance model</TableCell>
-                <TableCell>Asociar</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <NextLink href={`${PATH_PRODUCT.root}/${aiCreatedProduct["id"]}`} passHref>
-                    <Link>{aiCreatedProduct["name"]}</Link>
-                  </NextLink>
-                </TableCell>
-                <TableCell>
-                  <Link target="_blank" href={`https://api.solotodo.com/metamodel/instances/${aiCreatedProduct['instance_model_id']}`}>Link</Link>
-                </TableCell>
-                <TableCell>
-                  <Button variant="contained" onClick={() => {handleTableProductAssociationSubmit(aiCreatedProduct["id"], entity)}}>
-                    Asociar
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+          <CustomTable
+            headers={["Producto", "Editar Instance Model", "Asociar"]}
+            rows={[[
+              <NextLink href={`${PATH_PRODUCT.root}/${aiCreatedProduct["id"]}`} passHref>
+                <Link>{aiCreatedProduct["name"]}</Link>
+              </NextLink>,
+              <Link target="_blank" href={`https://api.solotodo.com/metamodel/instances/${aiCreatedProduct['instance_model_id']}`}>Link</Link>,
+              <Button variant="contained" onClick={() => { handleTableProductAssociationSubmit(aiCreatedProduct["id"]) }}>
+                Asociar
+              </Button>
+            ]]}
+          />
         )}
-         {aiCreatedProductError && (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Error</TableCell>
-                <TableCell>Mensaje</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Error</TableCell>
-                <TableCell>{aiCreatedProductError["error"]}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {aiCreatedProductError && (
+          <CustomTable
+            headers={["Error", "Message"]}
+            rows={[[aiCreatedProductError["error"]]]}
+          />
         )}
         <br />
         <Button disabled={loadingAIInferProductData} variant="contained" onClick={handleAIInferProductDataSubmit}>
@@ -243,5 +176,5 @@ export default function AIInferProductDataTable({
         </Button> 
       </CardContent>
     </Card>
-  )
+  );
 }
