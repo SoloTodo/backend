@@ -121,8 +121,8 @@ export default function StaffInformation({
           entityPlus.last_association_user
         ) {
           return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            userDict[entityPlus.last_association_user.url].first_name
-          } ${userDict[entityPlus.last_association_user.url].last_name})`;
+            userDict[entityPlus.last_association_user.url]?.first_name
+          } ${userDict[entityPlus.last_association_user.url]?.last_name})`;
         } else {
           return;
         }
@@ -137,8 +137,8 @@ export default function StaffInformation({
           entityPlus.last_staff_access_user
         ) {
           return `${fDateTimeSuffix(entityPlus.last_staff_access)} (${
-            userDict[entityPlus.last_staff_access_user.url].first_name
-          } ${userDict[entityPlus.last_staff_access_user.url].last_name})`;
+            userDict[entityPlus.last_staff_access_user.url]?.first_name
+          } ${userDict[entityPlus.last_staff_access_user.url]?.last_name})`;
         } else {
           return;
         }
