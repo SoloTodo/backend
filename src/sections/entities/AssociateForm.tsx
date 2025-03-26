@@ -194,17 +194,27 @@ export default function AssociateForm({
         </Stack>
       </CardContent>
     </Card>
+    {apiResourceObjects[entity.category].is_ai_managed && (
+      <>
+      <br />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <AIAssociateTable entity={entity}/>
+        </Grid>
+        </Grid>
+</>
+    )}
+    <>
     <br />
     <Grid container spacing={2}>
-      <Grid item xs={5}>
-       <AIInferProductDataTable entityId={entity.id}/>
+        <Grid item xs={5}>
+          <AIInferProductDataTable entity={entity}/>
+        </Grid>
+        <Grid item xs={7}>
+          <AIFindSimilarProductsTable entity={entity}/>
+        </Grid>
       </Grid>
-      <Grid item xs={7}>
-       <AIFindSimilarProductsTable entity={entity}/>
-       <br />
-       <AIAssociateTable entity={entity}/>
-      </Grid>
-    </Grid>
+      </>
   </>
   );
 }

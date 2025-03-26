@@ -50,6 +50,7 @@ export default function AIFindSimilarProductsTable({
 
 
   const handleAIFindSimilarProductsSubmit = () => {
+    setAIFindSimilarProductsError(null)
     setLoadingAIFindSimilarProducts(true)
     jwtFetch(null, `entities/${entity.id}/ai_find_similar_products/`).then((data) => {
       setAIFindSimilarProducts(data)
@@ -70,13 +71,13 @@ export default function AIFindSimilarProductsTable({
     const key = enqueueSnackbar("Asociando entidad, por favor espera!", {
       persist: true,
       variant: "info",
-    });
+    })
 
     const payload = {
       product: productId,
       bundle: null,
       cell_plan: null,
-    };
+    }
 
     jwtFetch(null, entity.url + "associate/", {
       method: "POST",
@@ -85,28 +86,27 @@ export default function AIFindSimilarProductsTable({
       closeSnackbar(key);
       enqueueSnackbar("La entidad ha sido asociada exitosamente!", {
         variant: "success",
-      });
+      })
       router.push(
         `${PATH_ENTITY.pending}/?categories=${
           apiResourceObjects[entity.category].id
         }`
-      );
-    });
-
-  };
+      )
+    })
+  }
 
   return (
     <Card>
-    <CardHeader title="Similar products"/> 
+    <CardHeader title="Productos similares"/> 
     <CardContent>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Product</TableCell>
-              <TableCell>Confidence</TableCell>
-              <TableCell>Reasoning</TableCell>
-              <TableCell>Associate</TableCell>
+              <TableCell>Producto</TableCell>
+              <TableCell>Confianza</TableCell>
+              <TableCell>Razonamiento</TableCell>
+              <TableCell>Asociar</TableCell>
             </TableRow> 
           </TableHead>
           <TableBody>
@@ -146,7 +146,7 @@ export default function AIFindSimilarProductsTable({
       </TableContainer>
       <br />
       <Button disabled={loadingAIFindSimilarProducts} variant="contained" onClick={() => {handleAIFindSimilarProductsSubmit()}}>
-                {loadingAIFindSimilarProducts ? "Procesando..." : "Refresh similar products"}
+                {loadingAIFindSimilarProducts ? "Procesando..." : "Actualizar productos similares"}
                 </Button> 
     </CardContent>
     </Card>
