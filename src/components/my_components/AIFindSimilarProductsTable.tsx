@@ -123,6 +123,7 @@ export default function AIFindSimilarProductsTable({
               entry["confidence"],
               entry["reasoning"],
               <Button 
+                disabled={entity.product !== null}
                 variant="contained" 
                 onClick={() => { handleTableProductAssociationSubmit(entry["product"]["id"]) }}
               >

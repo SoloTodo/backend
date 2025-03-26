@@ -90,10 +90,13 @@ export default function AIAssociateTable({
                 />
               </Grid>
             </Grid>
+            <br />
           </>
         )}
-        <br />
-        <Button disabled={loadingAIAssociate} variant="contained" onClick={() => { handleAIAssociateSubmit(); }}>
+        <Button 
+          disabled={loadingAIAssociate || entity.product !== null} 
+          variant="contained" 
+          onClick={() => { handleAIAssociateSubmit(); }}>
           {loadingAIAssociate ? "Procesando..." : "Asociar con IA"}
         </Button>
       </CardContent>
