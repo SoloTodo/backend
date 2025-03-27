@@ -121,8 +121,8 @@ export default function StaffInformation({
           entityPlus.last_association_user
         ) {
           return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            userDict[entityPlus.last_association_user.url]?.first_name
-          } ${userDict[entityPlus.last_association_user.url]?.last_name})`;
+            userDict[entityPlus.last_association_user]?.first_name
+          } ${userDict[entityPlus.last_association_user]?.last_name})`;
         } else {
           return;
         }
