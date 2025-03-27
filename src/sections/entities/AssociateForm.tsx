@@ -199,7 +199,7 @@ export default function AssociateForm({
       <br />
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <AIAssociateTable entity={entity}/>
+          <AIAssociateTable entity={entity} setEntity={setEntity}/>
         </Grid>
         </Grid>
     </>

@@ -155,7 +155,6 @@ export default function AIInferProductDataTable({
               </NextLink>,
               <Link target="_blank" href={`https://api.solotodo.com/metamodel/instances/${aiCreatedProduct['instance_model_id']}`}>Link</Link>,
               <Button 
-                disabled={entity.product !== null}
                 variant="contained" 
                 onClick={() => { handleTableProductAssociationSubmit(aiCreatedProduct["id"]) }}>
                 Asociar

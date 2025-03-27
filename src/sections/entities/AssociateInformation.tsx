@@ -1,11 +1,17 @@
 import {ReactElement} from "react";
 import NextLink from "next/link";
 import {
+  Button,
+  Box,
   Card,
   CardContent,
   CardHeader,
+  Divider,
   Grid,
   Link,
+  Modal,
+  Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import Layout from "src/layouts";
@@ -22,6 +28,8 @@ import VisibilitySwitch from "src/components/my_components/VisibilitySwitch";
 // paths
 import { PATH_PRODUCT } from "src/routes/paths";
 import EntitySecInfoComponent from "./EntitySecInfoComponent";
+import { useState } from "react";
+import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +51,41 @@ export default function AssociateInformation({
   const hasStaffPermission = (
     apiResourceObjects[entity.category] as Category
   ).permissions.includes("is_category_staff");
+
+  const [reason, setReason] = useState("");
+  const [openAssociationModel, setOpenAssociationModel] = useState(false);
+  const handleOpenAssociationModal = () => setOpenAssociationModel(true);
+  const handleCloseAssociationModal = () => {
+    setOpenAssociationModel(false);
+    setReason("");
+  };
+
+  const handleDissociate = async () => {
+    await jwtFetch(null, `${entity.url}dissociate/`, {
+      method: "post",
+      body: JSON.stringify({ reason: reason }),
+    })
+      .then((data) => {
+        setEntity(data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setReason(event.target.value);
+  };
+
+  const dissociateModalStyle = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 500,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   return (
     <Card>
@@ -72,6 +115,7 @@ export default function AssociateInformation({
               hasStaffPermission={hasStaffPermission}
             />
           </Grid>
+         
           <Grid item xs={12} md={6}>
             <Typography variant="h6">URL</Typography>
             <Typography>
@@ -86,6 +130,7 @@ export default function AssociateInformation({
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h6">Producto actual</Typography>
+            <Box sx={{display: 'flex'}}>
             <Typography>
               {entity.product ? (
                 <NextLink
@@ -98,6 +143,62 @@ export default function AssociateInformation({
                 "N/A"
               )}
             </Typography>
+            {entity.product && (
+              <>
+                <Button sx={{marginLeft: "10px", padding: "0px 10px"}} variant="contained" size="small" onClick={handleOpenAssociationModal}>
+                  Disociar
+                </Button>
+                <Modal
+                  open={openAssociationModel}
+                  onClose={handleCloseAssociationModal}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={dissociateModalStyle}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                      Confirme disociación de la entidad
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                      Por favor confirme la disociación de la entidad
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                      Esta entidad fue asociada por un usuario distinto. Si es posible
+                      por favor deje un mensaje para el/ella especificando el motivo
+                      para disociar la entidad.
+                    </Typography>
+                    <br />
+                    <TextField
+                      id="reasons"
+                      label="Motivo de la disociación (opcional)"
+                      multiline
+                      rows={3}
+                      value={reason}
+                      onChange={handleChange}
+                      style={{ width: "100%" }}
+                    />
+                    <br />
+                    <br />
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      divider={<Divider orientation="vertical" flexItem />}
+                      spacing={2}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={handleDissociate}
+                      >
+                        Disociar
+                      </Button>
+                      <Button variant="contained" onClick={handleCloseAssociationModal}>
+                        Cancelar
+                      </Button>
+                    </Stack>
+                  </Box>
+                </Modal>
+              </>
+            )}
+          </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h6">¿Visible?</Typography>

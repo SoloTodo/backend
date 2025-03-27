@@ -7,9 +7,11 @@ import { jwtFetch } from "src/frontend-utils/nextjs/utils";
 import { Entity } from "src/frontend-utils/types/entity";
 
 export default function AIAssociateTable({
-  entity
+  entity,
+  setEntity
 }: {
   entity: Entity;
+  setEntity: Function;
 }) {
   interface AssociateError {
     [key: string]: string;
@@ -30,6 +32,7 @@ export default function AIAssociateTable({
       method: "POST",
     }).then((data) => {
       setAIAssociate(data);
+      setEntity(data["entity"]);
       setLoadingAIAssociate(false);
     }).catch((error) => {
       error.json().then((message: SetStateAction<AssociateError | null>) => {
@@ -94,7 +97,7 @@ export default function AIAssociateTable({
           </>
         )}
         <Button 
-          disabled={loadingAIAssociate || entity.product !== null} 
+          disabled={loadingAIAssociate} 
           variant="contained" 
           onClick={() => { handleAIAssociateSubmit(); }}>
           {loadingAIAssociate ? "Procesando..." : "Asociar con IA"}
