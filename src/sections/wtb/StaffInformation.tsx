@@ -38,8 +38,6 @@ export default function StaffInformation({
       key: "last_association",
       label: "Última asociación",
       renderData: (entityPlus: WtbEntity & StaffInfo) => {
-        alert(entityPlus)
-        console.log(entityPlus)
         if (
           entityPlus.last_association !== null &&
           entityPlus.last_association_user !== null
