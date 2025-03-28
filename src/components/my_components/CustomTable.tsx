@@ -21,7 +21,7 @@ export default function CustomTable({
                     {rows.map((row, index) => (
                         <TableRow key={"row_" + index}>
                             {row.map((data, dataIndex) => (
-                                <TableCell>
+                                <TableCell key={dataIndex}>
                                     {typeof data === 'boolean'
                                     ? data ? 'Sí' : 'No'
                                     :data}
