@@ -130,19 +130,19 @@ export default function Stores() {
       headerName: "Estado",
       field: "state",
       flex: 1,
-      renderCell: (params) =>
-        !loading && lastUpdates ? (
-          lastUpdates[params.row.url].status === 3 &&
-          !lastUpdates[params.row.url].available_products_count ? (
-            "Error"
-          ) : (
-            STATUS[lastUpdates[params.row.url].status as 1 | 2 | 3 | 4]
-          )
-        ) : (
-          <Box>
+      renderCell: (params) => {
+        if (loading || !lastUpdates) {
+          return <Box>
             <CircularProgress />
           </Box>
-        ),
+        } else if (!lastUpdates[params.row.url]) {
+          return 'Sin información'
+        } else if (lastUpdates[params.row.url].status === 3 &&
+          !lastUpdates[params.row.url].available_products_count) {
+          return "Error"
+        } else {
+          return STATUS[lastUpdates[params.row.url].status as 1 | 2 | 3 | 4]
+        }}
     },
     {
       headerName: "Result",
@@ -157,6 +157,9 @@ export default function Stores() {
           );
         }
         const l = lastUpdates[params.row.url];
+        if (!l) {
+          return "N/A"
+        }
         const text = l.available_products_count
           ? `${l.available_products_count} / ${l.unavailable_products_count} / ${l.discovery_urls_without_products_count}`
           : "N/A";
