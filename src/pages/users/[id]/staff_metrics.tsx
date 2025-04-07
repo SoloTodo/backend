@@ -80,7 +80,7 @@ export default function StaffSummary(props: { userDetail: User }) {
   ];
 
   return (
-    <Page title={`${userDetail.email} | Resumen staff`}>
+    <Page title={`${userDetail.email} | Métricas staff`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -91,12 +91,12 @@ export default function StaffSummary(props: { userDetail: User }) {
               name: userDetail.email,
               href: `${PATH_USER.root}/${userDetail.id}`,
             },
-            { name: "Resumen staff" },
+            { name: "Métricas staff" },
           ]}
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.users}${userDetail.id}/staff_summary/`}
+          endpoint={`${apiSettings.apiResourceEndpoints.users}${userDetail.id}/staff_metrics/`}
         >
           <Stack spacing={3}>
             <Card>
@@ -117,9 +117,9 @@ export default function StaffSummary(props: { userDetail: User }) {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader title="Resumen staff" />
+              <CardHeader title="Métricas" />
               <CardContent>
-                <ApiFormStaffSummaryTable columns={columns} />
+                <ApiFormStaffSummaryTable />
               </CardContent>
             </Card>
           </Stack>

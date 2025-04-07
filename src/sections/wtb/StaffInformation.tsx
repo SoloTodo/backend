@@ -18,20 +18,10 @@ import Details from "../Details";
 
 export default function StaffInformation({
   entity,
-  users,
 }: {
   entity: WtbEntity;
-  users: User[];
 }) {
   const [staffInfo, setStaffInfo] = useState({});
-
-  const userDict = users.reduce(
-    (acc: { [x: string]: any }, a: { url: string }) => {
-      acc[a.url] = a;
-      return acc;
-    },
-    {}
-  );
 
   const staffDetails: Detail[] = [
     {
@@ -43,8 +33,8 @@ export default function StaffInformation({
           entityPlus.last_association_user !== null
         ) {
           return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            userDict[entityPlus.last_association_user].first_name
-          } ${userDict[entityPlus.last_association_user].last_name})`;
+            entityPlus.last_association_user.first_name
+          } ${entityPlus.last_association_user.last_name})`;
         } else {
           return;
         }

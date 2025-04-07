@@ -39,13 +39,13 @@ EntityPage.getLayout = function getLayout(page: ReactElement) {
 
 type EntityProps = {
   entity: Entity;
-  users: User[];
+    users: User[];
 };
 
 // ----------------------------------------------------------------------
 
 export default function EntityPage(props: EntityProps) {
-  const { users } = props;
+    const { users } = props;
   const [entity, setEntity] = useState<Entity>(props.entity);
   const [staffInfo, setStaffInfo] = useState<StaffInfo | null>(null);
 

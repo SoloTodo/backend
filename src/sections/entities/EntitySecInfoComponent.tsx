@@ -21,7 +21,7 @@ export default function EntitySecInfoComponent({entity}: { entity: Entity }) {
         <Typography variant="h6">Información SEC</Typography>
 
         {sec_data.map(sec_entry =>
-            <dl className={styles.list}>
+            <dl className={styles.list} key={sec_entry.code}>
                 <li className={styles.list_item}><strong>Código: </strong> {sec_entry.code}</li>
                 <li className={styles.list_item}><strong>URL: </strong> <Link href={sec_entry.sec_url} target="_blank">{sec_entry.sec_url}</Link>
                 </li>

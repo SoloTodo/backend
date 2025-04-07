@@ -127,6 +127,11 @@ const sidebarConfig = [
             path: PATH_PRODUCT.root,
             hasPermission: "solotodo.backend_list_products",
           },
+          {
+            title: "Campos pendientes",
+            path: PATH_PRODUCT.pending_fields,
+            hasPermission: "solotodo.is_category_staff",
+          },
         ],
       },
       {
@@ -295,7 +300,7 @@ const sidebarConfig = [
         title: "users",
         path: "-",
         icon: ICONS.user,
-        hasPermission: "solotodo.backend_list_users",
+        hasPermission: "is_staff",
         children: [
           {
             title: "Todos",
@@ -305,7 +310,7 @@ const sidebarConfig = [
           {
             title: "Mi usuario",
             path: `${PATH_USER.root}/me`,
-            hasPermission: "solotodo.view_users_with_staff_actions",
+            hasPermission: "is_staff",
           },
         ],
       },

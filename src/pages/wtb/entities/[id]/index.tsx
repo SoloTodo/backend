@@ -42,13 +42,12 @@ WtbEntityPage.getLayout = function getLayout(page: ReactElement) {
 type WtbEntityProps = {
   entity: WtbEntity;
   brand: Brand;
-  users: User[];
 };
 
 // ----------------------------------------------------------------------
 
 export default function WtbEntityPage(props: WtbEntityProps) {
-  const { brand, users } = props;
+  const { brand } = props;
   const [entity, setEntity] = useState<WtbEntity>(props.entity);
   const apiResourceObjects = useAppSelector(useApiResourceObjects);
   const hasStaffPermission =
@@ -96,7 +95,7 @@ export default function WtbEntityPage(props: WtbEntityProps) {
           <Grid item xs={12} md={6}>
             <Stack spacing={2}>
               <PricingInformation entity={entity} setEntity={setEntity} />
-              <StaffInformation entity={entity} users={users} />
+              <StaffInformation entity={entity} />
             </Stack>
           </Grid>
         </Grid>
@@ -106,10 +105,6 @@ export default function WtbEntityPage(props: WtbEntityProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const users = await jwtFetch(
-    context,
-    apiSettings.apiResourceEndpoints.users_with_staff_actions
-  );
   try {
     const entity = await jwtFetch(
       context,
@@ -120,7 +115,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         entity: entity,
         brand: brand,
-        users: users,
       },
     };
   } catch {

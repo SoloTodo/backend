@@ -58,6 +58,7 @@ export const PATH_USER = {
 
 export const PATH_PRODUCT = {
   root: ROOTS_PRODUCT,
+  pending_fields: path(ROOTS_PRODUCT, "/pending_fields"),
 };
 
 export const PATH_VISIT = {
