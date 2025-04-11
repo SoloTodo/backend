@@ -32,9 +32,7 @@ export default function StaffInformation({
           entityPlus.last_association !== null &&
           entityPlus.last_association_user !== null
         ) {
-          return `${fDateTimeSuffix(entityPlus.last_association)} (${
-            entityPlus.last_association_user.first_name
-          } ${entityPlus.last_association_user.last_name})`;
+          return `${fDateTimeSuffix(entityPlus.last_association)}`;
         } else {
           return;
         }
