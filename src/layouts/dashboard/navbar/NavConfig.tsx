@@ -130,7 +130,7 @@ const sidebarConfig = [
           {
             title: "Campos pendientes",
             path: PATH_PRODUCT.pending_fields,
-            hasPermission: "solotodo.is_category_staff",
+            hasPermission: "is_staff",
           },
         ],
       },
