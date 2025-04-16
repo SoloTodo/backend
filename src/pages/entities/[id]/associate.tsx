@@ -7,7 +7,6 @@ import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import ReactMarkdown from "react-markdown";
 // sections
-import CarouselBasic from "src/sections/mui/CarouselBasic";
 import AssociateInformation from "src/sections/entities/AssociateInformation";
 import AssociateForm from "src/sections/entities/AssociateForm";
 // types
@@ -23,6 +22,7 @@ import { useSnackbar } from "notistack";
 import { useAppSelector } from "src/frontend-utils/redux/hooks";
 import { useUser } from "src/frontend-utils/redux/user";
 import { useRouter } from "next/router";
+import ImageGallery from "react-image-gallery";
 
 // ----------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ export default function EntityAssociate(props: EntityAssociateProps) {
             <Card>
               <CardHeader title="Fotografías" />
               <CardContent>
-                <CarouselBasic images={entity.picture_urls} />
+                <ImageGallery items={entity.picture_urls.map(url => {return {'original': url, 'thumbnail': url}})} />
               </CardContent>
             </Card>
           </Grid>

@@ -1,5 +1,6 @@
 // scroll bar
 import "simplebar/src/simplebar.css";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 // lazy image
 import "react-lazy-load-image-component/src/effects/blur.css";
