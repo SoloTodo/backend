@@ -28,6 +28,7 @@ import ReactMarkdown from "react-markdown";
 import { Entity, StaffInfo } from "src/frontend-utils/types/entity";
 import { User } from "src/frontend-utils/types/user";
 import UpdatePricingInformation from "src/sections/entities/UpdatePricingInformation";
+import ImageGallery from "react-image-gallery";
 
 // ----------------------------------------------------------------------
 
@@ -90,7 +91,7 @@ export default function EntityPage(props: EntityProps) {
             <Card>
               <CardHeader title="Fotografías" />
               <CardContent>
-                <CarouselBasic images={entity.picture_urls} />
+                <ImageGallery items={(entity.picture_urls || []).map(url => {return {'original': url, 'thumbnail': url}})} />
               </CardContent>
             </Card>
           </Grid>

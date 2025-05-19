@@ -125,12 +125,14 @@ export default function EntityAssociate(props: EntityAssociateProps) {
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
+            {entity.picture_urls &&
             <Card>
               <CardHeader title="Fotografías" />
               <CardContent>
                 <ImageGallery items={entity.picture_urls.map(url => {return {'original': url, 'thumbnail': url}})} />
               </CardContent>
             </Card>
+            }
           </Grid>
         </Grid>
       </Container>
