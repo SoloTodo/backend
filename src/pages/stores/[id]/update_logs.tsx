@@ -15,6 +15,7 @@ import ApiFormComponent from "src/frontend-utils/api_form/ApiFormComponent";
 import { PATH_DASHBOARD, PATH_STORE } from "src/routes/paths";
 import { getStore } from "src/frontend-utils/nextjs/utils";
 import { NextPageContext } from "next/types";
+import NextLink from "next/link";
 
 // ----------------------------------------------------------------------
 
@@ -80,20 +81,15 @@ export default function StoreUpdateLogs(props: { store: Store }) {
     },
     {
       headerName: "Registro",
-      field: "registry_file",
+      field: "updateId",
       flex: 1,
       renderCell: (params: Update) =>
-        params.registry_file ? (
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            href={params.registry_file}
+          <NextLink
+            href={'/store_update_logs/' + params.id}
+            passHref
           >
-            Descargar
-          </Link>
-        ) : (
-          "No disponible"
-        ),
+            <Link>Visualizar</Link>
+          </NextLink>
     },
   ];
 

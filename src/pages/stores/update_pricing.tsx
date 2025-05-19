@@ -136,20 +136,15 @@ export default function UpdatePricing() {
     },
     {
       headerName: "Registro",
-      field: "registry_file",
+      field: "updateId",
       flex: 1,
       renderCell: (params) =>
-        params.row.registry_file ? (
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            href={params.row.registry_file}
+          <NextLink
+            href={'/store_update_logs/' + params.row.updateId}
+            passHref
           >
-            Descargar
-          </Link>
-        ) : (
-          "No disponible"
-        ),
+            <Link>Visualizar</Link>
+          </NextLink>
     },
   ];
 
