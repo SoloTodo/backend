@@ -98,7 +98,7 @@ export default function Stores() {
       field: "state",
       flex: 1,
       renderCell: (params) =>
-        !loading && lastUpdates ? (
+        !loading && lastUpdates && lastUpdates[params.row.url] ? (
             STATUS[lastUpdates[params.row.url].status as 1 | 2 | 3 | 4]
         ) : (
           <Box>
@@ -111,7 +111,7 @@ export default function Stores() {
       field: "updateId",
       flex: 1,
       renderCell: (params) =>
-          !loading && lastUpdates ? (
+          !loading && lastUpdates && lastUpdates[params.row.url] ? (
             <NextLink
             href={'/store_section_positions_update_logs/' + lastUpdates[params.row.url].id}
             passHref
