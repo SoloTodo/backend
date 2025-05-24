@@ -43,6 +43,11 @@ export default function OptionsMenu({ store }: { store: Store }) {
       path: `${baseRoute}/update_logs`,
       hasPermission: store.permissions.includes('view_store_update_logs') || user?.permissions.includes('solotodo.view_store_update_logs')
     },
+      {
+      text: "Registros de posicionamiento",
+      path: `${baseRoute}/section_positions_update_logs`,
+      hasPermission: store.permissions.includes('view_store_update_logs') || user?.permissions.includes('solotodo.view_store_update_logs')
+    },
     {
       text: "Entidades en conflicto",
       path: `${PATH_ENTITY.conflicts}/?stores=${store.id}`,

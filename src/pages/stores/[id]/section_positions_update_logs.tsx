@@ -19,13 +19,13 @@ import NextLink from "next/link";
 
 // ----------------------------------------------------------------------
 
-StoreUpdateLogs.getLayout = function getLayout(page: ReactElement) {
+StoreSectionPositionsUpdateLogs.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function StoreUpdateLogs(props: { store: Store }) {
+export default function StoreSectionPositionsUpdateLogs(props: { store: Store }) {
   const { store } = props;
   const fieldMetadata = [
     {
@@ -40,38 +40,17 @@ export default function StoreUpdateLogs(props: { store: Store }) {
       field: "store",
       flex: 1,
       renderCell: (params: Update) =>
-        params.status === 3 && params.available_products_count !== 0
+        params.status === 3
           ? "Exitosa"
           : params.status === 2
           ? "En proceso"
           : "Error",
     },
     {
-      headerName: "Resultado",
-      field: "resultado",
-      flex: 1,
-      renderCell: (params: Update) =>
-        params.status === 3 && params.available_products_count !== 0
-          ? `${params.available_products_count} / ${params.unavailable_products_count} / ${params.discovery_urls_without_products_count}`
-          : "N/A",
-    },
-    {
       headerName: "Última actualización",
       field: "last_updated",
       flex: 1,
       renderCell: (params: Update) => fDateTimeSuffix(params.last_updated),
-    },
-    {
-      headerName: "Categorías",
-      field: "id",
-      flex: 1,
-      renderCell: (params: Update) =>
-        params.categories.reduce((acc: string, a: { name: string }) => {
-          if (acc === "") {
-            return a.name;
-          }
-          return acc + " / " + a.name;
-        }, ""),
     },
     {
       headerName: "Inicio",
@@ -85,7 +64,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
       flex: 1,
       renderCell: (params: Update) =>
           <NextLink
-            href={'/store_update_logs/' + params.id}
+            href={'/store_section_positions_update_logs/' + params.id}
             passHref
           >
             <Link>Visualizar</Link>
@@ -94,7 +73,7 @@ export default function StoreUpdateLogs(props: { store: Store }) {
   ];
 
   return (
-    <Page title={`${store.name} | Registros de actualización`}>
+    <Page title={`${store.name} | Registros de actualización de posicionamiento`}>
       <Container maxWidth={false}>
         <HeaderBreadcrumbs
           heading=""
@@ -102,15 +81,15 @@ export default function StoreUpdateLogs(props: { store: Store }) {
             { name: "Inicio", href: PATH_DASHBOARD.root },
             { name: "Tiendas", href: PATH_STORE.root },
             { name: `${store.name}`, href: `${PATH_STORE.root}/${store.id}` },
-            { name: "Registros de actualización" },
+            { name: "Registros de actualización de posicionamiento" },
           ]}
         />
         <ApiFormComponent
           fieldsMetadata={fieldMetadata}
-          endpoint={`${apiSettings.apiResourceEndpoints.store_update_logs}?store=${store.id}`}
+          endpoint={`${apiSettings.apiResourceEndpoints.store_section_positions_update_logs}?store=${store.id}`}
         >
           <PaginationTable
-            title="Registros de actualización"
+            title="Registros de actualización de posicionamiento"
             columns={columns}
           />
         </ApiFormComponent>

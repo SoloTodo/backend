@@ -83,6 +83,11 @@ const sidebarConfig = [
             path: PATH_STORE.update_pricing,
             hasPermission: "solotodo.update_store_pricing",
           },
+          {
+            title: "Actualización de posicionamiento",
+            path: PATH_STORE.section_positions_update_logs,
+            hasPermission: "solotodo.update_store_pricing",
+          },
         ],
         hasPermission: "solotodo.backend_list_stores",
       },

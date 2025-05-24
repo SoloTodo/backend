@@ -18,6 +18,10 @@ export function fDateTimeSuffix(date: Date | string | number) {
   return format(new Date(date), 'dd/MM/yyyy p');
 }
 
+export function fDateTimeSuffixSecs(date: Date | string | number) {
+  return format(new Date(date), 'dd/MM/yyyy pp');
+}
+
 export function fToNow(date: Date | string | number) {
   return formatDistanceToNow(new Date(date), {
     addSuffix: true
