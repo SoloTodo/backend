@@ -39,6 +39,7 @@ export const PATH_STORE = {
   root: ROOTS_STORE,
   all: path(ROOTS_STORE, "/all"),
   update_pricing: path(ROOTS_STORE, "/update_pricing"),
+  section_positions_update_logs: path(ROOTS_STORE, "/section_positions_update_logs"),
 };
 
 export const PATH_CATEGORY = {
