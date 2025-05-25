@@ -1,5 +1,5 @@
 import {Container, Grid} from "@mui/material";
-import { ReactElement } from "react";
+import {ReactElement, useEffect, useState} from "react";
 import HeaderBreadcrumbs from "src/components/HeaderBreadcrumbs";
 import Page from "src/components/Page";
 import Layout from "src/layouts";
@@ -22,7 +22,6 @@ type StoreUpdateLogEntry = {
 };
 
 type StoreUpdateLogPageProps = {
-  update_logs_registry: StoreUpdateLogEntry[];
   update_log: Update;
 }
 
@@ -37,6 +36,13 @@ StoreUpdateLogPage.getLayout = function getLayout(page: ReactElement) {
 export default function StoreUpdateLogPage(props: StoreUpdateLogPageProps) {
     const apiResourceObjects = useAppSelector(useApiResourceObjects);
     const store = apiResourceObjects[props.update_log.store] as Store;
+
+    const [updateLogsRegistry, setUpdateLogsRegistry] = useState<StoreUpdateLogEntry[]>([]);
+    useEffect(() => {
+        jwtFetch(null, `${apiSettings.apiResourceEndpoints.store_update_logs}${props.update_log.id}/registry/`).then(res => {
+            setUpdateLogsRegistry(res)
+        })
+    }, []);
 
     const columns: GridColDef[] = [
     {
@@ -74,7 +80,7 @@ export default function StoreUpdateLogPage(props: StoreUpdateLogPageProps) {
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <CustomTable data={props.update_logs_registry} columns={columns} />
+            <CustomTable data={updateLogsRegistry} columns={columns} />
           </Grid>
         </Grid>
       </Container>
@@ -84,17 +90,12 @@ export default function StoreUpdateLogPage(props: StoreUpdateLogPageProps) {
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const update_logs_registry = await jwtFetch(
-    context,
-    `${apiSettings.apiResourceEndpoints.store_update_logs}${context.params?.id}/registry/`
-  );
   const update_log = await jwtFetch(
     context,
     `${apiSettings.apiResourceEndpoints.store_update_logs}${context.params?.id}/`
   );
   return {
     props: {
-      update_logs_registry,
         update_log
     },
   };
