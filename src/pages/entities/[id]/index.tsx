@@ -29,7 +29,6 @@ import {Entity, StaffInfo} from "src/frontend-utils/types/entity";
 import {User} from "src/frontend-utils/types/user";
 import UpdatePricingInformation from "src/sections/entities/UpdatePricingInformation";
 import ImageGallery from "react-image-gallery";
-import {exception} from "@smithy/eventstream-serde-universal/dist-types/fixtures/event.fixture";
 
 // ----------------------------------------------------------------------
 
@@ -142,7 +141,7 @@ export default function EntityPage(props: EntityProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     let users: User[] = []
     try {
-        const users = await jwtFetch(
+        users = await jwtFetch(
             context,
             apiSettings.apiResourceEndpoints.users_with_staff_actions
         );

@@ -62,7 +62,7 @@
     "react-redux": "^7.2.6",
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
-    "sst": "^2.43.4",
+    "sst": "^2.49.4",
     "stylis": "^4.0.13",
     "stylis-plugin-rtl": "^2.1.1",
     "yup": "^0.32.11"
@@ -82,6 +82,9 @@
     "eslint-config-prettier": "^8.3.0",
     "prettier": "2.5.1",
     "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "20.19.4"
   },
   "browser": {
     "fs": false
