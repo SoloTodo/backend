@@ -12,8 +12,9 @@ import {
 } from "src/frontend-utils/redux/api_resources/apiResources";
 import {apiSettings} from "src/frontend-utils/settings";
 import Layout from "src/layouts";
-import {PATH_DASHBOARD, PATH_REPORTS} from "src/routes/paths";
+import {PATH_DASHBOARD, PATH_REPORTS, PATH_REPORT_DOWNLOADS} from "src/routes/paths";
 import {useAppSelector} from "src/frontend-utils/redux/hooks";
+import router from "next/router";
 
 // ----------------------------------------------------------------------
 
@@ -54,10 +55,12 @@ export default function GroceriesCurrentPrices() {
                     fieldsMetadata={fieldsMetadata}
                     endpoint={`${apiSettings.apiResourceEndpoints.reports}groceries_current_prices/`}
                     requiresSubmit={true}
-                    onResultsChange={() =>
+                    onResultsChange={() => {
                         enqueueSnackbar(
                             "El reporte está siendo generado. Una vez finalizado este será enviado a su correo"
                         )
+                        router.push(`${PATH_REPORT_DOWNLOADS.root}`);
+                    }
                     }
                 >
                     <Card>

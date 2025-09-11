@@ -327,8 +327,6 @@ export default function CategoryBrowse({
 export const getServerSideProps = async (context: NextPageContext) => {
     const formLayout = await getCategorySpecsFromLayout(context, websiteId);
     const columns = await getCategoryColumns(context, 1)
-    console.log(formLayout)
-    console.log(columns)
 
     if (!formLayout || !columns) {
         return {
